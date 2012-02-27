@@ -23,7 +23,7 @@ public class NewMapDialog extends JDialog {
 	
 	public NewMapDialog(JFrame parent, String title, boolean modal){
 		super(parent, title, modal);
-		this.setSize(300, 270);
+		this.setSize(400, 300);
 		this.setLocationRelativeTo(null);
 		this.setResizable(false);
 		this.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
@@ -46,7 +46,7 @@ public class NewMapDialog extends JDialog {
 		//Name
 		JPanel panNom = new JPanel();
 		panNom.setBackground(Color.white);
-		panNom.setPreferredSize(new Dimension(220, 60));
+		panNom.setPreferredSize(new Dimension(240, 60));
 		name = new JTextField();
 		name.setPreferredSize(new Dimension(100, 25));
 		panNom.setBorder(BorderFactory.createTitledBorder("Name of the map"));
@@ -58,27 +58,77 @@ public class NewMapDialog extends JDialog {
 		//Length
 		JPanel panLength = new JPanel();
 		panLength.setBackground(Color.white);
-		panLength.setPreferredSize(new Dimension(220, 60));
+		panLength.setPreferredSize(new Dimension(240, 60));
 		panLength.setBorder(BorderFactory.createTitledBorder("Length of the map"));
 		length = new JTextField();
-		length.setPreferredSize(new Dimension(100, 25));
+		length.setPreferredSize(new Dimension(35, 25));
+		length.setEditable(false);
+		length.setText("1");
+		
 		lengthLabel = new JLabel("Select a length :");
+		JButton plusButtonLength = new JButton("+");
+		JButton minusButtonLength = new JButton("-");
+		plusButtonLength.setPreferredSize(new Dimension(25, 25));
+		minusButtonLength.setPreferredSize(new Dimension(25, 25));
+		
+		plusButtonLength.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent arg0) {
+				int lengthInt=Integer.parseInt(length.getText());
+				if(lengthInt<50){lengthInt++;}
+				length.setText(String.valueOf(lengthInt));
+			}
+			});
+		
+		minusButtonLength.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent arg0) {
+				int lengthInt=Integer.parseInt(length.getText());
+				if(lengthInt>1){lengthInt--;}
+				length.setText(String.valueOf(lengthInt));
+			}
+			});
+		
 		panLength.add(lengthLabel);
+		panLength.add(minusButtonLength);
 		panLength.add(length);
-		length.setText("");
+		panLength.add(plusButtonLength);
+		
 		
 		//Width
 		JPanel panWidth = new JPanel();
 		panWidth.setBackground(Color.white);
-		panWidth.setPreferredSize(new Dimension(220, 60));
+		panWidth.setPreferredSize(new Dimension(240, 60));
 		panWidth.setBorder(BorderFactory.createTitledBorder("Width of the map"));
 		width = new JTextField();
-		width.setPreferredSize(new Dimension(100, 25));
+		width.setEditable(false);
+		width.setPreferredSize(new Dimension(35, 25));
 		widthLabel = new JLabel("Select a width :");
+		
+		width.setText("1");
+		
+		JButton plusButtonWidth = new JButton("+");
+		JButton minusButtonWidth = new JButton("-");
+		plusButtonWidth.setPreferredSize(new Dimension(25, 25));
+		minusButtonWidth.setPreferredSize(new Dimension(25, 25));	
+		plusButtonWidth.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent arg0) {
+				int widthInt=Integer.parseInt(width.getText());
+				if(widthInt<50){widthInt++;}
+				width.setText(String.valueOf(widthInt));
+			}
+			});
+		minusButtonWidth.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent arg0) {
+				int widthInt=Integer.parseInt(width.getText());
+				if(widthInt>1){widthInt--;}
+				width.setText(String.valueOf(widthInt));
+			}
+			});
 		panWidth.add(widthLabel);
+		panWidth.add(minusButtonWidth);
 		panWidth.add(width);
-		width.setText("");
-				
+		panWidth.add(plusButtonWidth);
+		
+		
 		JPanel content = new JPanel();
 		content.setBackground(Color.white);
 		content.add(panNom);
@@ -90,24 +140,12 @@ public class NewMapDialog extends JDialog {
 		
 		okBouton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent arg0) {	
-				if(name.getText()!="" && length.getText()!="" && width.getText()!=""){
-					newMapDialogInfo = new NewMapDialogInfo(name.getText(),Integer.parseInt(length.getText()),Integer.parseInt(width.getText()));
-					if(newMapDialogInfo.getLength()<1){newMapDialogInfo.setLength(1);}
-					if(newMapDialogInfo.getWidth()<1){newMapDialogInfo.setWidth(1);}
-					if(newMapDialogInfo.getLength()>50){newMapDialogInfo.setLength(50);}
-					if(newMapDialogInfo.getWidth()>50){newMapDialogInfo.setWidth(50);}
-					setVisible(false);
+				if(name.getText().equals("") || name.getText().equals("ERROR") || !(name.getText().matches("[0-9a-zA-Z]+"))){
+					name.setText("ERROR");
 				}
 				else{
-					if(name.getText()==""){
-						name.setText("ERROR");
-					}
-					if(length.getText()==""){
-						name.setText("ERROR");
-					}
-					if(width.getText()==""){
-						name.setText("ERROR");
-					}
+					newMapDialogInfo = new NewMapDialogInfo(name.getText(),Integer.parseInt(length.getText()),Integer.parseInt(width.getText()));
+					setVisible(false);
 				}
 			}		
 		});
