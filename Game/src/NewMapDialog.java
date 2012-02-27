@@ -7,13 +7,10 @@ import java.awt.event.ActionListener;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JRadioButton;
-import javax.swing.ButtonGroup;
 import javax.swing.JTextField;
 
 public class NewMapDialog extends JDialog {
@@ -47,9 +44,9 @@ public class NewMapDialog extends JDialog {
 		JPanel panNom = new JPanel();
 		panNom.setBackground(Color.white);
 		panNom.setPreferredSize(new Dimension(240, 60));
+		panNom.setBorder(BorderFactory.createTitledBorder("Name of the map"));
 		name = new JTextField();
 		name.setPreferredSize(new Dimension(100, 25));
-		panNom.setBorder(BorderFactory.createTitledBorder("Name of the map"));
 		nameLabel = new JLabel("Select a name :");
 		panNom.add(nameLabel);
 		panNom.add(name);
@@ -64,13 +61,11 @@ public class NewMapDialog extends JDialog {
 		length.setPreferredSize(new Dimension(35, 25));
 		length.setEditable(false);
 		length.setText("1");
-		
 		lengthLabel = new JLabel("Select a length :");
 		JButton plusButtonLength = new JButton("+");
 		JButton minusButtonLength = new JButton("-");
 		plusButtonLength.setPreferredSize(new Dimension(25, 25));
 		minusButtonLength.setPreferredSize(new Dimension(25, 25));
-		
 		plusButtonLength.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent arg0) {
 				int lengthInt=Integer.parseInt(length.getText());
@@ -78,7 +73,6 @@ public class NewMapDialog extends JDialog {
 				length.setText(String.valueOf(lengthInt));
 			}
 			});
-		
 		minusButtonLength.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent arg0) {
 				int lengthInt=Integer.parseInt(length.getText());
@@ -86,7 +80,6 @@ public class NewMapDialog extends JDialog {
 				length.setText(String.valueOf(lengthInt));
 			}
 			});
-		
 		panLength.add(lengthLabel);
 		panLength.add(minusButtonLength);
 		panLength.add(length);
@@ -101,10 +94,7 @@ public class NewMapDialog extends JDialog {
 		width = new JTextField();
 		width.setEditable(false);
 		width.setPreferredSize(new Dimension(35, 25));
-		widthLabel = new JLabel("Select a width :");
-		
 		width.setText("1");
-		
 		JButton plusButtonWidth = new JButton("+");
 		JButton minusButtonWidth = new JButton("-");
 		plusButtonWidth.setPreferredSize(new Dimension(25, 25));
@@ -123,6 +113,7 @@ public class NewMapDialog extends JDialog {
 				width.setText(String.valueOf(widthInt));
 			}
 			});
+		widthLabel = new JLabel("Select a width :");	
 		panWidth.add(widthLabel);
 		panWidth.add(minusButtonWidth);
 		panWidth.add(width);
