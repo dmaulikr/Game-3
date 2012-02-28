@@ -14,6 +14,7 @@ public class TileEditionPan extends JPanel{
 	private JComboBox decorationCombo = new JComboBox();
 	
 	
+	
 	public TileEditionPan(){
 		textureCombo.addItem(textureType.Grass.toString());
 		textureCombo.addItem(textureType.Sand.toString());
