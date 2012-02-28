@@ -1,6 +1,7 @@
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -61,11 +62,11 @@ public class NewMapDialog extends JDialog {
 		length.setPreferredSize(new Dimension(35, 25));
 		length.setEditable(false);
 		length.setText("1");
-		lengthLabel = new JLabel("Select a length :");
-		JButton plusButtonLength = new JButton("+");
-		JButton minusButtonLength = new JButton("-");
-		plusButtonLength.setPreferredSize(new Dimension(25, 25));
-		minusButtonLength.setPreferredSize(new Dimension(25, 25));
+		lengthLabel = new JLabel("Select a length:");
+		
+		JButton plusButtonLength = new JButton("+");		
+		plusButtonLength.setFont(new Font("Arial" ,Font.BOLD,10));
+		plusButtonLength.setPreferredSize(new Dimension(40, 25));		
 		plusButtonLength.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent arg0) {
 				int lengthInt=Integer.parseInt(length.getText());
@@ -73,6 +74,10 @@ public class NewMapDialog extends JDialog {
 				length.setText(String.valueOf(lengthInt));
 			}
 			});
+		
+		JButton minusButtonLength = new JButton("-");
+		minusButtonLength.setFont(new Font("Arial" ,Font.BOLD,10));
+		minusButtonLength.setPreferredSize(new Dimension(40, 25));
 		minusButtonLength.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent arg0) {
 				int lengthInt=Integer.parseInt(length.getText());
@@ -80,6 +85,7 @@ public class NewMapDialog extends JDialog {
 				length.setText(String.valueOf(lengthInt));
 			}
 			});
+		
 		panLength.add(lengthLabel);
 		panLength.add(minusButtonLength);
 		panLength.add(length);
@@ -95,10 +101,10 @@ public class NewMapDialog extends JDialog {
 		width.setEditable(false);
 		width.setPreferredSize(new Dimension(35, 25));
 		width.setText("1");
+		
 		JButton plusButtonWidth = new JButton("+");
-		JButton minusButtonWidth = new JButton("-");
-		plusButtonWidth.setPreferredSize(new Dimension(25, 25));
-		minusButtonWidth.setPreferredSize(new Dimension(25, 25));	
+		plusButtonWidth.setFont(new Font("Arial" ,Font.BOLD,10));
+		plusButtonWidth.setPreferredSize(new Dimension(40, 25));
 		plusButtonWidth.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent arg0) {
 				int widthInt=Integer.parseInt(width.getText());
@@ -106,6 +112,10 @@ public class NewMapDialog extends JDialog {
 				width.setText(String.valueOf(widthInt));
 			}
 			});
+		
+		JButton minusButtonWidth = new JButton("-");
+		minusButtonWidth.setFont(new Font("Arial" ,Font.BOLD,10));
+		minusButtonWidth.setPreferredSize(new Dimension(40, 25));	
 		minusButtonWidth.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent arg0) {
 				int widthInt=Integer.parseInt(width.getText());
@@ -113,6 +123,7 @@ public class NewMapDialog extends JDialog {
 				width.setText(String.valueOf(widthInt));
 			}
 			});
+		
 		widthLabel = new JLabel("Select a width :");	
 		panWidth.add(widthLabel);
 		panWidth.add(minusButtonWidth);
