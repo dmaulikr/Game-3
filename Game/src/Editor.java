@@ -121,7 +121,7 @@ public class Editor extends JFrame {
 		saveMenu.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent arg0) {
 				try {
-					BufferedWriter out = new BufferedWriter(new FileWriter(currentPath+currentMap.getName()+".map"));
+					BufferedWriter out = new BufferedWriter(new FileWriter(currentPath));
 					out.write(currentMap.toXMLString());
 					out.close(); 
 					System.out.println(currentMap.toXMLString());
@@ -139,7 +139,7 @@ public class Editor extends JFrame {
 				fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 				int status = fc.showOpenDialog(null);
 				if (status == JFileChooser.APPROVE_OPTION) {
-		        	currentPath = fc.getSelectedFile().getPath()+"/";
+		        	currentPath = fc.getSelectedFile().getPath()+"/"+currentMap.getName()+".map";
 		        	UpdateSaveButton();
 		            try {
 		            	BufferedWriter out = new BufferedWriter(new FileWriter(currentPath+currentMap.getName()+".map"));
