@@ -18,6 +18,8 @@ public class Map {
 			for(int j=0;j<width;j++)
 			{
 				map[i][j]=new Tile();
+				map[i][j].setPosX(i);
+				map[i][j].setPosY(j);
 			}
 		}		
 	}

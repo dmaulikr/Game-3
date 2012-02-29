@@ -2,6 +2,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.BorderLayout;
 import java.awt.Color;
+
+import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -31,12 +33,13 @@ public class Editor extends JFrame {
 	private JMenuItem quitMenu = new JMenuItem("Quit");
 	
 	
-	private JPanel pantest = new JPanel();
-	private TileEditionPan tileEditionPan=new TileEditionPan();
+	private JPanel selectionPan = new JPanel();
+	private TileEditionPan tileEditionPan = new TileEditionPan();
 	private JSplitPane split;
 	
 	private Map currentMap;
-
+	private MapButtonCanvas	currentMapCanvas;
+	
 	private String currentPath="";
 	
 	public Editor(){
@@ -48,17 +51,26 @@ public class Editor extends JFrame {
 		//On initialise nos menus
 		//--------------------------			
 		this.InitialiseMenus();
-		
-		//this.getContentPane().add(pantest);
-		//this.getContentPane().add(tileEditionPan);
-		split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, pantest, tileEditionPan);
-		this.getContentPane().add(split, BorderLayout.CENTER);
-		split.setDividerLocation(750);
-		UpdateSaveButton();	
+		this.MiseEnPage();
 		this.setJMenuBar(menuBar);
 		this.setVisible(true);
-		}
 	
+		}
+	private void MiseEnPage(){
+		split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, selectionPan, tileEditionPan);
+		this.getContentPane().add(split, BorderLayout.CENTER);
+		split.setDividerLocation(750);
+	}
+	
+	private void ChangeMap(Map newMap){
+		currentMap=newMap;
+		currentMapCanvas=new MapButtonCanvas(currentMap,tileEditionPan);
+		selectionPan.removeAll();
+		selectionPan.setLayout(new BorderLayout(5, 5));
+		selectionPan.add(currentMapCanvas, BorderLayout.CENTER);
+		selectionPan.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));	
+		this.setVisible(true);
+	}
 	
 	private void InitialiseMenus(){
 		this.file.add(newMenu);
@@ -67,8 +79,8 @@ public class Editor extends JFrame {
 				NewMapDialog newMapDialog=new NewMapDialog(null, "Create new Map", true);
 				NewMapDialogInfo newMapDialogInfo=newMapDialog.showDialog();
 				if(newMapDialogInfo.isValid()){
-					currentMap=new Map(newMapDialogInfo.getLength(),newMapDialogInfo.getWidth(),newMapDialogInfo.getName());
-					System.out.println(currentMap.toXMLString());
+					Map newMap=new Map(newMapDialogInfo.getLength(),newMapDialogInfo.getWidth(),newMapDialogInfo.getName());
+					ChangeMap(newMap);
 				}
 			}});
 		
@@ -83,10 +95,11 @@ public class Editor extends JFrame {
 		        	currentPath = fc.getSelectedFile().getPath();
 		            try {
 						BufferedReader in = new BufferedReader(new FileReader(currentPath));
-						currentMap=new Map(in.readLine());
-						UpdateSaveButton();
+						Map newMap=new Map(in.readLine());
 						in.close(); 
-						System.out.println(currentMap.toXMLString());
+						
+						UpdateSaveButton();
+						ChangeMap(newMap);						
 					} catch (FileNotFoundException e) {
 						e.printStackTrace();
 					} catch (IOException e) {
@@ -96,7 +109,8 @@ public class Editor extends JFrame {
 		            System.out.println(JFileChooser.CANCEL_OPTION);
 		        }else {
 		            System.out.println("erreur select file");
-		        }}});
+		        }
+		        }});
 		
 		this.file.add(saveMenu);
 		saveMenu.addActionListener(new ActionListener(){
@@ -143,7 +157,9 @@ public class Editor extends JFrame {
 			public void actionPerformed(ActionEvent arg0) {
 				System.exit(0);
 			}});
+		
         this.menuBar.add(file);
+        UpdateSaveButton();
 	}
 	
 	private void UpdateSaveButton(){

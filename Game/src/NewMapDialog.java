@@ -61,7 +61,7 @@ public class NewMapDialog extends JDialog {
 		length = new JTextField();
 		length.setPreferredSize(new Dimension(35, 25));
 		length.setEditable(false);
-		length.setText("1");
+		length.setText("10");
 		lengthLabel = new JLabel("Select a length:");
 		
 		JButton plusButtonLength = new JButton("+");		
@@ -100,7 +100,7 @@ public class NewMapDialog extends JDialog {
 		width = new JTextField();
 		width.setEditable(false);
 		width.setPreferredSize(new Dimension(35, 25));
-		width.setText("1");
+		width.setText("10");
 		
 		JButton plusButtonWidth = new JButton("+");
 		plusButtonWidth.setFont(new Font("Arial" ,Font.BOLD,10));
