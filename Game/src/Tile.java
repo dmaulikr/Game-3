@@ -1,9 +1,9 @@
 enum textureType{
 	Grass,
+	Earth,
 	Sand,
-	Stone,
-	Gravel,
-	Dust
+	Stone
+	
 }
 
 enum tileType{

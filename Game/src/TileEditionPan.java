@@ -39,11 +39,14 @@ public class TileEditionPan extends JPanel{
 	
 	private Tile currentTile;
 	
-	public TileEditionPan(){
+	private Editor containerFrame;
+	
+	public TileEditionPan(Editor containerFrame){
 		CreateElements();
 		PreparePanels();
 		AddElements();		
 		CheckSaveButton();
+		this.setContainerFrame(containerFrame);
 	}
 	
 	public void Reset(){
@@ -197,5 +200,14 @@ public class TileEditionPan extends JPanel{
 		currentTile.setTexture(textureType.valueOf(this.textureCombo.getSelectedItem().toString()));
 		currentTile.setType(tileType.valueOf(this.typeCombo.getSelectedItem().toString()));
 		currentTile.setDecoration(decorationType.valueOf(this.decorationCombo.getSelectedItem().toString()));
+		containerFrame.updateCancas();
+	}
+
+	public Editor getContainerFrame() {
+		return containerFrame;
+	}
+
+	public void setContainerFrame(Editor containerFrame) {
+		this.containerFrame = containerFrame;
 	}
 }

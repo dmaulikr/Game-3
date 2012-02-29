@@ -33,7 +33,37 @@ public class MapButtonCanvas extends JPanel{
 				buttonCanvas[i][j].addActionListener(al);
 				this.add(buttonCanvas[i][j]);
 			}
-		}    
+		}
+		UpdateCanvas();
+	}
+	
+	public void UpdateCanvas(){
+		for (int i = 0; i < map.getLength(); i++) {
+			for (int j = 0; j < map.getWidth(); j++) {
+				switch (map.getTile(i, j).getTexture()) {
+				
+				case Grass:
+					buttonCanvas[i][j].setBackground(new Color(45,125,43));
+					break;
+				
+				case Earth:
+					buttonCanvas[i][j].setBackground(new Color(128,64,0));
+					break;
+					
+				case Sand:
+					buttonCanvas[i][j].setBackground(new Color(255,255,128));
+					break;
+				
+				case Stone:
+					buttonCanvas[i][j].setBackground(new Color(128,128,128));
+					break;
+
+				default:
+					buttonCanvas[i][j].setBackground(Color.GRAY);
+					break;
+				}
+			}
+		}
 	}
 		
 	public int getSelectedX() {

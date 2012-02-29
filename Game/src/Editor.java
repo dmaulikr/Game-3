@@ -34,7 +34,7 @@ public class Editor extends JFrame {
 	
 	
 	private JPanel selectionPan = new JPanel();
-	private TileEditionPan tileEditionPan = new TileEditionPan();
+	private TileEditionPan tileEditionPan = new TileEditionPan(this);
 	private JSplitPane split;
 	
 	private Map currentMap;
@@ -172,5 +172,9 @@ public class Editor extends JFrame {
 	
 	public static void main(String[] argv) {
 		Editor e=new Editor();
+	}
+	
+	public void updateCancas(){
+		currentMapCanvas.UpdateCanvas();
 	}
 }
