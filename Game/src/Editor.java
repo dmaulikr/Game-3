@@ -56,6 +56,7 @@ public class Editor extends JFrame {
 		this.setVisible(true);
 	
 		}
+	
 	private void MiseEnPage(){
 		split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, selectionPan, tileEditionPan);
 		this.getContentPane().add(split, BorderLayout.CENTER);
@@ -70,6 +71,10 @@ public class Editor extends JFrame {
 		selectionPan.add(currentMapCanvas, BorderLayout.CENTER);
 		selectionPan.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));	
 		this.setVisible(true);
+	}
+	
+	public Map getMap(){
+		return currentMap;
 	}
 	
 	private void InitialiseMenus(){
