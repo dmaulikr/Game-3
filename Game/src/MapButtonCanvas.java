@@ -6,56 +6,58 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import java.lang.Math;
 
-public class MapButtonCanvas extends JPanel{
-	
+public class MapButtonCanvas extends JPanel {
+
 	JButton[][] buttonCanvas;
-	
+	JButton tempBut;
 	private int selectedX;
 	private int selectedY;
 	private Map map;
 	private TileEditionPan tep;
-	
-	public MapButtonCanvas(Map map,TileEditionPan tep){
+
+	public MapButtonCanvas(Map map, TileEditionPan tep) {
 		GridLayout gl = new GridLayout(map.getLength(), map.getWidth());
-		this.setLayout(gl);		
+		this.setLayout(gl);
 		setMap(map);
 		setTep(tep);
-	    buttonCanvas= new JButton[map.getLength()][map.getWidth()];
-	    
+		buttonCanvas = new JButton[map.getLength()][map.getWidth()];
+
 		for (int i = 0; i < map.getLength(); i++) {
 			for (int j = 0; j < map.getWidth(); j++) {
-				buttonCanvas[i][j]=new JButton();
-				SelectionAction al = new SelectionAction(i,j);
+				buttonCanvas[i][j] = new JButton();
+				SelectionAction al = new SelectionAction(i, j);
 				buttonCanvas[i][j].addActionListener(al);
+				buttonCanvas[i][j].setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));
 				this.add(buttonCanvas[i][j]);
 			}
 		}
 		UpdateCanvas();
 	}
-	
-	public void UpdateCanvas(){
+
+	public void UpdateCanvas() {
 		for (int i = 0; i < map.getLength(); i++) {
 			for (int j = 0; j < map.getWidth(); j++) {
 				switch (map.getTile(i, j).getTexture()) {
-				
+
 				case Grass:
-					buttonCanvas[i][j].setBackground(new Color(45,125,43));
+					buttonCanvas[i][j].setBackground(new Color(45, 125, 43));
 					break;
-				
+
 				case Earth:
-					buttonCanvas[i][j].setBackground(new Color(128,64,0));
+					buttonCanvas[i][j].setBackground(new Color(128, 64, 0));
 					break;
-					
+
 				case Sand:
-					buttonCanvas[i][j].setBackground(new Color(255,255,128));
+					buttonCanvas[i][j].setBackground(new Color(255, 255, 128));
 					break;
-				
+
 				case Stone:
-					buttonCanvas[i][j].setBackground(new Color(128,128,128));
+					buttonCanvas[i][j].setBackground(new Color(128, 128, 128));
 					break;
 
 				default:
@@ -65,7 +67,19 @@ public class MapButtonCanvas extends JPanel{
 			}
 		}
 	}
-		
+
+	public void setFocusOn(int X, int Y) {
+		clearFocus();
+		tempBut = buttonCanvas[X][Y];
+		tempBut.setBorder(BorderFactory.createLineBorder(Color.RED, 2));
+	}
+
+	private void clearFocus() {
+		if (tempBut != null) {
+			tempBut.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));
+		}
+	}
+
 	public int getSelectedX() {
 		return selectedX;
 	}
@@ -98,19 +112,20 @@ public class MapButtonCanvas extends JPanel{
 		this.tep = tep;
 	}
 
-	class SelectionAction implements ActionListener{
+	class SelectionAction implements ActionListener {
 		private int X;
 		private int Y;
-		
-		public SelectionAction(int X, int Y){
+
+		public SelectionAction(int X, int Y) {
 			setX(X);
 			setY(Y);
 		}
-		
+
 		@Override
 		public void actionPerformed(ActionEvent e) {
+			setFocusOn(X, Y);
 			getTep().LoadTile(getMap().getTile(getX(), getY()));
-			if(getTep().isFocusable()){
+			if (getTep().isFocusable()) {
 				getTep().requestFocusInWindow();
 			}
 		}
@@ -132,8 +147,3 @@ public class MapButtonCanvas extends JPanel{
 		}
 	}
 }
-
-	        
-
-	
-

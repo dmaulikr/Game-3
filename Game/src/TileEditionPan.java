@@ -262,6 +262,7 @@ public class TileEditionPan extends JPanel {
 						if (isFocusable()) {
 							requestFocusInWindow();
 						}
+						containerFrame.setCanvasFocusOn(currentTile.getPosX(),currentTile.getPosY());
 						break;
 					// arrowleft
 					case 37:
@@ -274,6 +275,7 @@ public class TileEditionPan extends JPanel {
 						if (isFocusable()) {
 							requestFocusInWindow();
 						}
+						containerFrame.setCanvasFocusOn(currentTile.getPosX(),currentTile.getPosY());
 						break;
 					// arrowrigth
 					case 39:
@@ -286,6 +288,7 @@ public class TileEditionPan extends JPanel {
 						if (isFocusable()) {
 							requestFocusInWindow();
 						}
+						containerFrame.setCanvasFocusOn(currentTile.getPosX(),currentTile.getPosY());
 						break;
 					// arrowdown
 					case 40:
@@ -298,6 +301,7 @@ public class TileEditionPan extends JPanel {
 						if (isFocusable()) {
 							requestFocusInWindow();
 						}
+						containerFrame.setCanvasFocusOn(currentTile.getPosX(),currentTile.getPosY());
 						break;
 					default:
 						System.out.println(e.getKeyCode());

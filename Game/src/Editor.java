@@ -77,6 +77,10 @@ public class Editor extends JFrame {
 		return currentMap;
 	}
 	
+	public void setCanvasFocusOn(int X,int Y){
+		currentMapCanvas.setFocusOn(X, Y);
+	}
+	
 	private void InitialiseMenus(){
 		this.file.add(newMenu);
 		newMenu.addActionListener(new ActionListener(){
