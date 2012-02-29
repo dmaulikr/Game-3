@@ -12,6 +12,8 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 public class TileEditionPan extends JPanel {
 
@@ -41,11 +43,14 @@ public class TileEditionPan extends JPanel {
 
 	private boolean saveable;
 
+	private OnSlideEvent slideEvent;
+	
 	public TileEditionPan(Editor containerFrame) {
 		CreateElements();
 		PreparePanels();
 		AddElements();
 		CheckSaveButton();
+		
 		this.setContainerFrame(containerFrame);
 		this.addKeyListener(new KeyShortcut());
 	}
@@ -72,10 +77,13 @@ public class TileEditionPan extends JPanel {
 	}
 
 	public void CreateElements() {
+		slideEvent= new OnSlideEvent();
+		
 		sliderHeightSE = new CornerHeightSlide("HeightSE");
 		sliderHeightNE = new CornerHeightSlide("HeightNE");
 		sliderHeightNO = new CornerHeightSlide("HeightNO");
 		sliderHeightSO = new CornerHeightSlide("HeightSO");
+		ActivateActionToSlides();
 
 		texturePanel = new JPanel();
 		textureCombo = new JComboBox();
@@ -98,6 +106,19 @@ public class TileEditionPan extends JPanel {
 		PrepareTypePanel();
 		PrepareDecorationPanel();
 		PrepareIdPanel();
+	}
+
+	private void ActivateActionToSlides() {
+		sliderHeightSE.slide.addChangeListener(slideEvent);
+		sliderHeightNE.slide.addChangeListener(slideEvent);
+		sliderHeightNO.slide.addChangeListener(slideEvent);
+		sliderHeightSO.slide.addChangeListener(slideEvent);
+	}
+	private void DeactivateActionToSlides() {
+		sliderHeightSE.slide.removeChangeListener(slideEvent);
+		sliderHeightNE.slide.removeChangeListener(slideEvent);
+		sliderHeightNO.slide.removeChangeListener(slideEvent);
+		sliderHeightSO.slide.removeChangeListener(slideEvent);
 	}
 
 	private void PrepareTexturePanel() {
@@ -168,11 +189,12 @@ public class TileEditionPan extends JPanel {
 
 	public void LoadTile(Tile tile) {
 		this.currentTile = tile;
+		DeactivateActionToSlides();
 		this.sliderHeightSE.setTheValueTo(tile.getHeightSE());
 		this.sliderHeightNE.setTheValueTo(tile.getHeightNE());
 		this.sliderHeightNO.setTheValueTo(tile.getHeightNO());
 		this.sliderHeightSO.setTheValueTo(tile.getHeightSO());
-
+		ActivateActionToSlides();
 		this.textureCombo.setSelectedItem(tile.getTexture().toString());
 		this.typeCombo.setSelectedItem(tile.getType().toString());
 		this.decorationCombo.setSelectedItem(tile.getDecoration().toString());
@@ -182,18 +204,34 @@ public class TileEditionPan extends JPanel {
 	}
 
 	public void SaveTile() {
-		currentTile.setHeightSE(this.sliderHeightSE.slide.getValue());
-		currentTile.setHeightNE(this.sliderHeightNE.slide.getValue());
-		currentTile.setHeightNO(this.sliderHeightNO.slide.getValue());
-		currentTile.setHeightSO(this.sliderHeightSO.slide.getValue());
+		if (currentTile.getHeightSE() != this.sliderHeightSE.slide.getValue()
+				|| currentTile.getHeightNE() != this.sliderHeightNE.slide
+						.getValue()
+				|| currentTile.getHeightNO() != this.sliderHeightNO.slide
+						.getValue()
+				|| currentTile.getHeightSO() != this.sliderHeightSO.slide
+						.getValue()
+				|| currentTile.getTexture() != textureType
+						.valueOf(this.textureCombo.getSelectedItem().toString())
+				|| currentTile.getType() != tileType
+						.valueOf(this.typeCombo.getSelectedItem().toString())
+				|| currentTile.getDecoration()!= decorationType
+						.valueOf(this.decorationCombo.getSelectedItem().toString())) {
 
-		currentTile.setTexture(textureType.valueOf(this.textureCombo
-				.getSelectedItem().toString()));
-		currentTile.setType(tileType.valueOf(this.typeCombo.getSelectedItem()
-				.toString()));
-		currentTile.setDecoration(decorationType.valueOf(this.decorationCombo
-				.getSelectedItem().toString()));
-		containerFrame.updateCancas();
+			currentTile.setHeightSE(this.sliderHeightSE.slide.getValue());
+			currentTile.setHeightNE(this.sliderHeightNE.slide.getValue());
+			currentTile.setHeightNO(this.sliderHeightNO.slide.getValue());
+			currentTile.setHeightSO(this.sliderHeightSO.slide.getValue());
+
+			currentTile.setTexture(textureType.valueOf(this.textureCombo
+					.getSelectedItem().toString()));
+			currentTile.setType(tileType.valueOf(this.typeCombo
+					.getSelectedItem().toString()));
+			currentTile
+					.setDecoration(decorationType.valueOf(this.decorationCombo
+							.getSelectedItem().toString()));
+			containerFrame.updateCancas();
+		}
 	}
 
 	public Editor getContainerFrame() {
@@ -215,7 +253,6 @@ public class TileEditionPan extends JPanel {
 	public class KeyShortcut implements KeyListener {
 		@Override
 		public void keyPressed(KeyEvent e) {
-			// TODO Auto-generated method stub
 			if (currentTile != null) {
 				switch (e.getKeyChar()) {
 				case 'a':
@@ -262,46 +299,52 @@ public class TileEditionPan extends JPanel {
 						if (isFocusable()) {
 							requestFocusInWindow();
 						}
-						containerFrame.setCanvasFocusOn(currentTile.getPosX(),currentTile.getPosY());
+						containerFrame.setCanvasFocusOn(currentTile.getPosX(),
+								currentTile.getPosY());
 						break;
 					// arrowleft
 					case 37:
 						SaveTile();
-						if (currentTile.getPosY()-1 >= 0) {
+						if (currentTile.getPosY() - 1 >= 0) {
 							LoadTile(containerFrame.getMap().getTile(
 									currentTile.getPosX(),
-									currentTile.getPosY()-1));
+									currentTile.getPosY() - 1));
 						}
 						if (isFocusable()) {
 							requestFocusInWindow();
 						}
-						containerFrame.setCanvasFocusOn(currentTile.getPosX(),currentTile.getPosY());
+						containerFrame.setCanvasFocusOn(currentTile.getPosX(),
+								currentTile.getPosY());
 						break;
 					// arrowrigth
 					case 39:
 						SaveTile();
-						if (currentTile.getPosY() < containerFrame.getMap().getWidth()-1) {
+						if (currentTile.getPosY() < containerFrame.getMap()
+								.getWidth() - 1) {
 							LoadTile(containerFrame.getMap().getTile(
 									currentTile.getPosX(),
-									currentTile.getPosY()+1));
+									currentTile.getPosY() + 1));
 						}
 						if (isFocusable()) {
 							requestFocusInWindow();
 						}
-						containerFrame.setCanvasFocusOn(currentTile.getPosX(),currentTile.getPosY());
+						containerFrame.setCanvasFocusOn(currentTile.getPosX(),
+								currentTile.getPosY());
 						break;
 					// arrowdown
 					case 40:
 						SaveTile();
-						if (currentTile.getPosX() < containerFrame.getMap().getLength()-1) {
+						if (currentTile.getPosX() < containerFrame.getMap()
+								.getLength() - 1) {
 							LoadTile(containerFrame.getMap().getTile(
-									currentTile.getPosX()+1,
+									currentTile.getPosX() + 1,
 									currentTile.getPosY()));
 						}
 						if (isFocusable()) {
 							requestFocusInWindow();
 						}
-						containerFrame.setCanvasFocusOn(currentTile.getPosX(),currentTile.getPosY());
+						containerFrame.setCanvasFocusOn(currentTile.getPosX(),
+								currentTile.getPosY());
 						break;
 					default:
 						System.out.println(e.getKeyCode());
@@ -314,14 +357,21 @@ public class TileEditionPan extends JPanel {
 
 		@Override
 		public void keyReleased(KeyEvent e) {
-			// TODO Auto-generated method stub
 
 		}
 
 		@Override
 		public void keyTyped(KeyEvent e) {
-			// TODO Auto-generated method stub
 
 		}
+	}
+	
+	public class OnSlideEvent implements ChangeListener{
+
+		@Override
+		public void stateChanged(ChangeEvent e) {
+			SaveTile();
+		}
+		
 	}
 }
