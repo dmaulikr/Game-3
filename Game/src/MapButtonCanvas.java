@@ -110,6 +110,9 @@ public class MapButtonCanvas extends JPanel{
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			getTep().LoadTile(getMap().getTile(getX(), getY()));
+			if(getTep().isFocusable()){
+				getTep().requestFocusInWindow();
+			}
 		}
 
 		public int getX() {
