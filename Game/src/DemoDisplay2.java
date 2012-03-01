@@ -29,14 +29,14 @@ public class DemoDisplay2 {
 
 	public DemoDisplay2(Map demoMap) {
 		setDemoMap(demoMap);
-		float a = 1 / (float) demoMap.getLength();
-		float b = 1 / (float) demoMap.getWidth();
+		float a = 1f / (float) demoMap.getLength();
+		float b = 1f / (float) demoMap.getWidth();
 		setScale(Math.min(a, b));
 	}
 
 	public void start() {
 		try {
-			Display.setDisplayMode(new DisplayMode(800, 600));
+			Display.setDisplayMode(new DisplayMode(1000, 900));
 			Display.setSwapInterval(1);
 			Display.sync(60);
 			Display.create();
@@ -46,15 +46,18 @@ public class DemoDisplay2 {
 		}
 
 		// init OpenGL here
-		GL11.glViewport(0, 0, 800, 600);
+		GL11.glViewport(0, 0, 1000, 900);
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
 		GL11.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
 		GL11.glMatrixMode(GL11.GL_PROJECTION);
 		GL11.glLoadIdentity();
 
+		
 		GL11.glRotatef(angleX, 1, 0, 0); // 26,565
 		GL11.glRotatef(angleY, 0, 1, 0); // -45
+		
+		GL11.glTranslated(-0.6f, -0.6f, -0.6f);
 
 		//
 		GL11.glMatrixMode(GL11.GL_MODELVIEW);
