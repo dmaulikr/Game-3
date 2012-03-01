@@ -25,165 +25,219 @@ import java.io.IOException;
 public class Editor extends JFrame {
 	private JMenuBar menuBar = new JMenuBar();
 	private JMenu file = new JMenu("File");
-		
+	private JMenu preview = new JMenu("Preview");
+
 	private JMenuItem newMenu = new JMenuItem("New");
 	private JMenuItem loadMenu = new JMenuItem("Load");
 	private JMenuItem saveMenu = new JMenuItem("Save");
 	private JMenuItem saveAsMenu = new JMenuItem("Save As");
 	private JMenuItem quitMenu = new JMenuItem("Quit");
-	
-	
+
+	private JMenuItem showPreview = new JMenuItem("Show Preview");
+
 	private JPanel selectionPan = new JPanel();
 	private TileEditionPan tileEditionPan = new TileEditionPan(this);
 	private JSplitPane split;
-	
+
 	private Map currentMap;
-	private MapButtonCanvas	currentMapCanvas;
-	
-	private String currentPath="";
-	
-	public Editor(){
+	private MapButtonCanvas currentMapCanvas;
+
+	private String currentPath = "";
+
+	public Editor() {
 		this.setSize(1000, 800);
 		this.setTitle("Map Editor");
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setLocationRelativeTo(null);
-			
-		//On initialise nos menus
-		//--------------------------			
+
+		// On initialise nos menus
+		// --------------------------
 		this.InitialiseMenus();
 		this.MiseEnPage();
 		this.setJMenuBar(menuBar);
 		this.setVisible(true);
-	
-		}
-	
-	private void MiseEnPage(){
-		split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, selectionPan, tileEditionPan);
+
+	}
+
+	private void MiseEnPage() {
+		split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, selectionPan,
+				tileEditionPan);
 		this.getContentPane().add(split, BorderLayout.CENTER);
 		split.setDividerLocation(750);
 	}
-	
-	private void ChangeMap(Map newMap){
-		currentMap=newMap;
-		currentMapCanvas=new MapButtonCanvas(currentMap,tileEditionPan);
+
+	private void ChangeMap(Map newMap) {
+		currentMap = newMap;
+		currentMapCanvas = new MapButtonCanvas(currentMap, tileEditionPan);
 		selectionPan.removeAll();
 		selectionPan.setLayout(new BorderLayout(5, 5));
 		selectionPan.add(currentMapCanvas, BorderLayout.CENTER);
-		selectionPan.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));	
+		selectionPan.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
 		this.setVisible(true);
 	}
-	
-	public Map getMap(){
+
+	public Map getMap() {
 		return currentMap;
 	}
-	
-	public void setCanvasFocusOn(int X,int Y){
+
+	public void setCanvasFocusOn(int X, int Y) {
 		currentMapCanvas.setFocusOn(X, Y);
 	}
-	
-	private void InitialiseMenus(){
+
+	private void InitialiseMenus() {
 		this.file.add(newMenu);
-		newMenu.addActionListener(new ActionListener(){
-			public void actionPerformed(ActionEvent arg0) {
-				NewMapDialog newMapDialog=new NewMapDialog(null, "Create new Map", true);
-				NewMapDialogInfo newMapDialogInfo=newMapDialog.showDialog();
-				if(newMapDialogInfo.isValid()){
-					Map newMap=new Map(newMapDialogInfo.getLength(),newMapDialogInfo.getWidth(),newMapDialogInfo.getName());
-					ChangeMap(newMap);
-				}
-			}});
-		
+		FileNewAction fna = new FileNewAction();
+		newMenu.addActionListener(fna);
+
 		this.file.add(loadMenu);
-		loadMenu.addActionListener(new ActionListener(){
-			public void actionPerformed(ActionEvent arg0) {
-				JFileChooser fc = new JFileChooser(".");
-				FileFilter filter1 = new ExtensionFileFilter("MAP", new String[] { "MAP" });
-				fc.setFileFilter(filter1);
-				int status = fc.showOpenDialog(null);
-		        if (status == JFileChooser.APPROVE_OPTION) {
-		        	currentPath = fc.getSelectedFile().getPath();
-		            try {
-						BufferedReader in = new BufferedReader(new FileReader(currentPath));
-						Map newMap=new Map(in.readLine());
-						in.close(); 
-						
-						UpdateSaveButton();
-						ChangeMap(newMap);						
-					} catch (FileNotFoundException e) {
-						e.printStackTrace();
-					} catch (IOException e) {
-						e.printStackTrace();
-					} 
-		        } else if (status == JFileChooser.CANCEL_OPTION) {
-		            System.out.println(JFileChooser.CANCEL_OPTION);
-		        }else {
-		            System.out.println("erreur select file");
-		        }
-		        }});
-		
+		FileLoadAction fla = new FileLoadAction();
+		loadMenu.addActionListener(fla);
+
 		this.file.add(saveMenu);
-		saveMenu.addActionListener(new ActionListener(){
-			public void actionPerformed(ActionEvent arg0) {
-				try {
-					BufferedWriter out = new BufferedWriter(new FileWriter(currentPath));
-					out.write(currentMap.toXMLString());
-					out.close(); 
-					System.out.println(currentMap.toXMLString());
-				} catch (FileNotFoundException e) {
-					e.printStackTrace();
-				} catch (IOException e) {
-					e.printStackTrace();
-				} 
-			}});
-		
+		FileSaveAction fsa = new FileSaveAction();
+		saveMenu.addActionListener(fsa);
+
 		this.file.add(saveAsMenu);
-		saveAsMenu.addActionListener(new ActionListener(){
-			public void actionPerformed(ActionEvent arg0) {
-				JFileChooser fc = new JFileChooser(".");
-				fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-				int status = fc.showOpenDialog(null);
-				if (status == JFileChooser.APPROVE_OPTION) {
-		        	currentPath = fc.getSelectedFile().getPath()+"/"+currentMap.getName()+".map";
-		        	UpdateSaveButton();
-		            try {
-		            	BufferedWriter out = new BufferedWriter(new FileWriter(currentPath));
-						out.write(currentMap.toXMLString());
-						out.close(); 
-						System.out.println(currentMap.toXMLString());
-					} catch (FileNotFoundException e){
-						e.printStackTrace();
-					} catch (IOException e){
-						e.printStackTrace();
-					} 
-		        } else if (status == JFileChooser.CANCEL_OPTION) {
-		            System.out.println(JFileChooser.CANCEL_OPTION);
-		        }else {
-		            System.out.println("erreur select file");
-		        }}});
-		
+		FileSaveAsAction fsaa = new FileSaveAsAction();
+		saveAsMenu.addActionListener(fsaa);
+
 		this.file.add(quitMenu);
-		quitMenu.addActionListener(new ActionListener(){
-			public void actionPerformed(ActionEvent arg0) {
-				System.exit(0);
-			}});
-		
-        this.menuBar.add(file);
-        UpdateSaveButton();
+		FileQuitAction fqa = new FileQuitAction();
+		quitMenu.addActionListener(fqa);
+
+		this.menuBar.add(file);
+
+		this.preview.add(showPreview);
+		ShowPreview sp = new ShowPreview();
+		showPreview.addActionListener(sp);
+
+		this.menuBar.add(preview);
+
+		UpdateSaveButton();
 	}
-	
-	private void UpdateSaveButton(){
-		if(currentPath.equals("")){
+
+	private void UpdateSaveButton() {
+		if (currentPath.equals("")) {
 			saveMenu.setEnabled(false);
-		}else{
+		} else {
 			saveMenu.setEnabled(true);
 		}
 	}
-	
-	public static void main(String[] argv) {
-		Editor e=new Editor();
-	}
-	
-	public void updateCancas(){
+
+	public void updateCancas() {
 		currentMapCanvas.UpdateCanvas();
 	}
+
+	public class FileNewAction implements ActionListener {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			NewMapDialog newMapDialog = new NewMapDialog(null,
+					"Create new Map", true);
+			NewMapDialogInfo newMapDialogInfo = newMapDialog.showDialog();
+			if (newMapDialogInfo.isValid()) {
+				Map newMap = new Map(newMapDialogInfo.getLength(),
+						newMapDialogInfo.getWidth(), newMapDialogInfo.getName());
+				ChangeMap(newMap);
+			}
+		}
+	}
+
+	public class FileLoadAction implements ActionListener {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			JFileChooser fc = new JFileChooser(".");
+			FileFilter filter1 = new ExtensionFileFilter("MAP",
+					new String[] { "MAP" });
+			fc.setFileFilter(filter1);
+			int status = fc.showOpenDialog(null);
+			if (status == JFileChooser.APPROVE_OPTION) {
+				currentPath = fc.getSelectedFile().getPath();
+				try {
+					BufferedReader in = new BufferedReader(new FileReader(
+							currentPath));
+					Map newMap = new Map(in.readLine());
+					in.close();
+
+					UpdateSaveButton();
+					ChangeMap(newMap);
+				} catch (FileNotFoundException ex) {
+					ex.printStackTrace();
+				} catch (IOException ex) {
+					ex.printStackTrace();
+				}
+			} else if (status == JFileChooser.CANCEL_OPTION) {
+				System.out.println(JFileChooser.CANCEL_OPTION);
+			} else {
+				System.out.println("erreur select file");
+			}
+		}
+	}
+
+	public class FileSaveAction implements ActionListener {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			try {
+				BufferedWriter out = new BufferedWriter(new FileWriter(
+						currentPath));
+				out.write(currentMap.toXMLString());
+				out.close();
+				System.out.println(currentMap.toXMLString());
+			} catch (FileNotFoundException ex) {
+				ex.printStackTrace();
+			} catch (IOException ex) {
+				ex.printStackTrace();
+			}
+		}
+	}
+
+	public class FileSaveAsAction implements ActionListener {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			JFileChooser fc = new JFileChooser(".");
+			fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+			int status = fc.showOpenDialog(null);
+			if (status == JFileChooser.APPROVE_OPTION) {
+				currentPath = fc.getSelectedFile().getPath() + "/"
+						+ currentMap.getName() + ".map";
+				UpdateSaveButton();
+				try {
+					BufferedWriter out = new BufferedWriter(new FileWriter(
+							currentPath));
+					out.write(currentMap.toXMLString());
+					out.close();
+					System.out.println(currentMap.toXMLString());
+				} catch (FileNotFoundException ex) {
+					ex.printStackTrace();
+				} catch (IOException ex) {
+					ex.printStackTrace();
+				}
+			} else if (status == JFileChooser.CANCEL_OPTION) {
+				System.out.println(JFileChooser.CANCEL_OPTION);
+			} else {
+				System.out.println("erreur select file");
+			}
+		}
+	}
+
+	public class FileQuitAction implements ActionListener {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			System.exit(0);
+		}
+	}
+
+	public class ShowPreview implements ActionListener {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			if (currentMap != null) {
+				DemoDisplay display = new DemoDisplay(currentMap);
+				display.start();
+			}
+		}
+	}
+
+	public static void main(String[] argv) {
+		Editor e = new Editor();
+	}
+
 }
