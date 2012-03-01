@@ -52,10 +52,8 @@ public class Map {
 	public void EditTile(int i,int j,Tile tile){
 		map[i][j].setPosX(tile.getPosX());
 		map[i][j].setPosY(tile.getPosY());
-		map[i][j].setHeightSE(tile.getHeightSE());
-		map[i][j].setHeightNE(tile.getHeightNE());
-		map[i][j].setHeightNO(tile.getHeightNO());
-		map[i][j].setHeightSO(tile.getHeightSO());		
+		map[i][j].setHeight(tile.getHeight());
+		map[i][j].setHeightToDraw(tile.getHeightToDraw());
 		map[i][j].setTexture(tile.getTexture());
 		map[i][j].setType(tile.getType());
 		map[i][j].setDecoration(tile.getDecoration());				

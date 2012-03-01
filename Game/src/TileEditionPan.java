@@ -17,10 +17,8 @@ import javax.swing.event.ChangeListener;
 
 public class TileEditionPan extends JPanel {
 
-	private CornerHeightSlide sliderHeightSE;
-	private CornerHeightSlide sliderHeightNE;
-	private CornerHeightSlide sliderHeightNO;
-	private CornerHeightSlide sliderHeightSO;
+	private CornerHeightSlide sliderHeight;
+	private CornerHeightSlide sliderHeightToDraw;
 
 	private JPanel texturePanel;
 	private JComboBox textureCombo;
@@ -44,23 +42,22 @@ public class TileEditionPan extends JPanel {
 	private boolean saveable;
 
 	private OnSlideEvent slideEvent;
-	
+	private ComboSelectEvent comboSelectEvent;
+
 	public TileEditionPan(Editor containerFrame) {
 		CreateElements();
 		PreparePanels();
 		AddElements();
 		CheckSaveButton();
-		
+
 		this.setContainerFrame(containerFrame);
 		this.addKeyListener(new KeyShortcut());
 	}
 
 	public void Reset() {
 		currentTile = null;
-		sliderHeightSE.Reset();
-		sliderHeightNE.Reset();
-		sliderHeightNO.Reset();
-		sliderHeightSO.Reset();
+		sliderHeight.Reset();
+		sliderHeightToDraw.Reset();
 		textureCombo.setSelectedIndex(0);
 		typeCombo.setSelectedIndex(0);
 		decorationCombo.setSelectedIndex(0);
@@ -77,14 +74,12 @@ public class TileEditionPan extends JPanel {
 	}
 
 	public void CreateElements() {
-		slideEvent= new OnSlideEvent();
-		
-		sliderHeightSE = new CornerHeightSlide("HeightSE");
-		sliderHeightNE = new CornerHeightSlide("HeightNE");
-		sliderHeightNO = new CornerHeightSlide("HeightNO");
-		sliderHeightSO = new CornerHeightSlide("HeightSO");
-		ActivateActionToSlides();
+		slideEvent = new OnSlideEvent();
+		comboSelectEvent = new ComboSelectEvent();
 
+		sliderHeight = new CornerHeightSlide("Height");
+		sliderHeightToDraw = new CornerHeightSlide("Height to Draw");
+		
 		texturePanel = new JPanel();
 		textureCombo = new JComboBox();
 		textureLabel = new JLabel("Texture :");
@@ -106,19 +101,23 @@ public class TileEditionPan extends JPanel {
 		PrepareTypePanel();
 		PrepareDecorationPanel();
 		PrepareIdPanel();
+		ActivateActions();
 	}
 
-	private void ActivateActionToSlides() {
-		sliderHeightSE.slide.addChangeListener(slideEvent);
-		sliderHeightNE.slide.addChangeListener(slideEvent);
-		sliderHeightNO.slide.addChangeListener(slideEvent);
-		sliderHeightSO.slide.addChangeListener(slideEvent);
+	private void ActivateActions() {
+		sliderHeight.slide.addChangeListener(slideEvent);
+		sliderHeightToDraw.slide.addChangeListener(slideEvent);
+		textureCombo.addActionListener(comboSelectEvent);
+		typeCombo.addActionListener(comboSelectEvent);
+		decorationCombo.addActionListener(comboSelectEvent);
 	}
-	private void DeactivateActionToSlides() {
-		sliderHeightSE.slide.removeChangeListener(slideEvent);
-		sliderHeightNE.slide.removeChangeListener(slideEvent);
-		sliderHeightNO.slide.removeChangeListener(slideEvent);
-		sliderHeightSO.slide.removeChangeListener(slideEvent);
+
+	private void DeactivateActions() {
+		sliderHeight.slide.removeChangeListener(slideEvent);
+		sliderHeightToDraw.slide.removeChangeListener(slideEvent);
+		textureCombo.removeActionListener(comboSelectEvent);
+		typeCombo.removeActionListener(comboSelectEvent);
+		decorationCombo.removeActionListener(comboSelectEvent);
 	}
 
 	private void PrepareTexturePanel() {
@@ -129,11 +128,7 @@ public class TileEditionPan extends JPanel {
 		texturePanel.add(textureLabel);
 		texturePanel.add(textureCombo);
 		texturePanel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
-		textureCombo.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				SaveTile();
-			}
-		});
+
 	}
 
 	private void PrepareTypePanel() {
@@ -144,11 +139,6 @@ public class TileEditionPan extends JPanel {
 		typePanel.add(typeLabel);
 		typePanel.add(typeCombo);
 		typePanel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
-		typeCombo.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				SaveTile();
-			}
-		});
 	}
 
 	private void PrepareDecorationPanel() {
@@ -160,11 +150,6 @@ public class TileEditionPan extends JPanel {
 		decorationPanel.add(decorationCombo);
 		decorationPanel.setBorder(BorderFactory
 				.createLineBorder(Color.BLACK, 1));
-		decorationCombo.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				SaveTile();
-			}
-		});
 	}
 
 	private void PrepareIdPanel() {
@@ -174,12 +159,10 @@ public class TileEditionPan extends JPanel {
 	}
 
 	public void AddElements() {
-		this.setLayout(new GridLayout(8, 1));
+		this.setLayout(new GridLayout(6, 1));
 
-		this.add(sliderHeightSE);
-		this.add(sliderHeightNE);
-		this.add(sliderHeightNO);
-		this.add(sliderHeightSO);
+		this.add(sliderHeight);
+		this.add(sliderHeightToDraw);
 
 		this.add(texturePanel);
 		this.add(typePanel);
@@ -189,39 +172,37 @@ public class TileEditionPan extends JPanel {
 
 	public void LoadTile(Tile tile) {
 		this.currentTile = tile;
-		DeactivateActionToSlides();
-		this.sliderHeightSE.setTheValueTo(tile.getHeightSE());
-		this.sliderHeightNE.setTheValueTo(tile.getHeightNE());
-		this.sliderHeightNO.setTheValueTo(tile.getHeightNO());
-		this.sliderHeightSO.setTheValueTo(tile.getHeightSO());
-		ActivateActionToSlides();
+
+		DeactivateActions();
+		
+		this.sliderHeight.setTheValueTo(tile.getHeight());
+		this.sliderHeightToDraw.setTheValueTo(tile.getHeightToDraw());
+
 		this.textureCombo.setSelectedItem(tile.getTexture().toString());
 		this.typeCombo.setSelectedItem(tile.getType().toString());
 		this.decorationCombo.setSelectedItem(tile.getDecoration().toString());
-
+		
+		ActivateActions();
+		
 		this.idLabel.setText(tile.getPosX() + "/" + tile.getPosY());
 		CheckSaveButton();
 	}
 
 	public void SaveTile() {
-		if (currentTile.getHeightSE() != this.sliderHeightSE.slide.getValue()
-				|| currentTile.getHeightNE() != this.sliderHeightNE.slide
-						.getValue()
-				|| currentTile.getHeightNO() != this.sliderHeightNO.slide
-						.getValue()
-				|| currentTile.getHeightSO() != this.sliderHeightSO.slide
+		if (currentTile.getHeight() != this.sliderHeight.slide.getValue()
+				|| currentTile.getHeightToDraw() != this.sliderHeightToDraw.slide
 						.getValue()
 				|| currentTile.getTexture() != textureType
 						.valueOf(this.textureCombo.getSelectedItem().toString())
-				|| currentTile.getType() != tileType
-						.valueOf(this.typeCombo.getSelectedItem().toString())
-				|| currentTile.getDecoration()!= decorationType
-						.valueOf(this.decorationCombo.getSelectedItem().toString())) {
+				|| currentTile.getType() != tileType.valueOf(this.typeCombo
+						.getSelectedItem().toString())
+				|| currentTile.getDecoration() != decorationType
+						.valueOf(this.decorationCombo.getSelectedItem()
+								.toString())) {
 
-			currentTile.setHeightSE(this.sliderHeightSE.slide.getValue());
-			currentTile.setHeightNE(this.sliderHeightNE.slide.getValue());
-			currentTile.setHeightNO(this.sliderHeightNO.slide.getValue());
-			currentTile.setHeightSO(this.sliderHeightSO.slide.getValue());
+			currentTile.setHeight(this.sliderHeight.slide.getValue());
+			currentTile.setHeightToDraw(this.sliderHeightToDraw.slide
+					.getValue());
 
 			currentTile.setTexture(textureType.valueOf(this.textureCombo
 					.getSelectedItem().toString()));
@@ -365,13 +346,21 @@ public class TileEditionPan extends JPanel {
 
 		}
 	}
-	
-	public class OnSlideEvent implements ChangeListener{
+
+	public class OnSlideEvent implements ChangeListener {
 
 		@Override
 		public void stateChanged(ChangeEvent e) {
 			SaveTile();
 		}
-		
+
+	}
+
+	public class ComboSelectEvent implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			SaveTile();
+		}
 	}
 }
