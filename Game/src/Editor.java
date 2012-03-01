@@ -146,7 +146,7 @@ public class Editor extends JFrame {
 		        	currentPath = fc.getSelectedFile().getPath()+"/"+currentMap.getName()+".map";
 		        	UpdateSaveButton();
 		            try {
-		            	BufferedWriter out = new BufferedWriter(new FileWriter(currentPath+currentMap.getName()+".map"));
+		            	BufferedWriter out = new BufferedWriter(new FileWriter(currentPath));
 						out.write(currentMap.toXMLString());
 						out.close(); 
 						System.out.println(currentMap.toXMLString());
