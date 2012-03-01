@@ -25,7 +25,7 @@ public class Tile {
 	public Tile() {
 		this.setPosX(0);
 		this.setPosY(0);
-		this.setHeight(0);
+		this.setHeight(10);
 		this.setHeightToDraw(0);
 		this.setTexture(textureType.Grass);
 		this.setType(tileType.Walkable);

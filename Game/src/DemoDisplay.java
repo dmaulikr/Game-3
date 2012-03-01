@@ -1,5 +1,3 @@
-import java.awt.Color;
-
 import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
@@ -71,10 +69,10 @@ public class DemoDisplay {
 		int internalY = startY+tile.getHeight();	
 		
 		GL11.glBegin(GL11.GL_QUADS);
-		GL11.glVertex2f(startX,startY);
-		GL11.glVertex2f(startX+4*scale,startY);
-		GL11.glVertex2f(startX+scale,startY-3*scale);
-		GL11.glVertex2f(startX-3*scale,startY-3*scale);
+		GL11.glVertex2f(startX,internalY);
+		GL11.glVertex2f(startX+4*scale,internalY);
+		GL11.glVertex2f(startX+scale,internalY-3*scale);
+		GL11.glVertex2f(startX-3*scale,internalY-3*scale);
 		GL11.glEnd();
 	}
 

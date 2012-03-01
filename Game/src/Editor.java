@@ -230,7 +230,7 @@ public class Editor extends JFrame {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			if (currentMap != null) {
-				DemoDisplay display = new DemoDisplay(currentMap);
+				DemoDisplay2 display = new DemoDisplay2(currentMap);
 				display.start();
 			}
 		}
