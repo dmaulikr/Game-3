@@ -1,0 +1,12 @@
+Project for tile-base map games in isometric perspective.
+
+The first thing i'll create is an editor of tile-based map.
+
+For now this editor can 
+-create/save/load maps in .map format (simple XML).
+-change the attribute of a selected Tile.
+-show you a Isometric 3D preview of what the map looks like.
+
+My goal is to improve the Editor to get something quite generic.
+
+I use the LWJGL and slick-util for openGL rendering.
