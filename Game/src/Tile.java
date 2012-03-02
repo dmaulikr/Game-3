@@ -1,5 +1,5 @@
 enum textureType {
-	Grass, Earth, Sand, Stone
+	Grass, Earth, Sand, Stone,none
 }
 
 enum tileType {

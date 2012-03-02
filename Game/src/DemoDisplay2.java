@@ -19,7 +19,11 @@ import org.newdawn.slick.util.ResourceLoader;
 public class DemoDisplay2 {
 	private Map demoMap;
 	private float scale;
-
+	private float zscale;
+	private Texture textureGrass;
+	private Texture textureStone;
+	private Texture textureSand;
+	private Texture textureEarth;
 	float angleX = (float) Math.toDegrees(Math.atan(0.5)); // 26,565
 	float angleY = -45.0f;
 
@@ -32,6 +36,9 @@ public class DemoDisplay2 {
 		float a = 1f / (float) demoMap.getLength();
 		float b = 1f / (float) demoMap.getWidth();
 		setScale(Math.min(a, b));
+
+		float c = 1f / (float) 50;
+		setZscale(c);
 	}
 
 	public void start() {
@@ -61,9 +68,9 @@ public class DemoDisplay2 {
 		//
 		GL11.glMatrixMode(GL11.GL_MODELVIEW);
 		GL11.glLoadIdentity();
-
+		LoadTextures();
 		while (!Display.isCloseRequested()) {
-
+			GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
 			Update();
 			if (Display.isVisible()) {
 				Draw();
@@ -95,6 +102,14 @@ public class DemoDisplay2 {
 		this.scale = f;
 	}
 
+	public float getZscale() {
+		return zscale;
+	}
+
+	public void setZscale(float zscale) {
+		this.zscale = zscale;
+	}
+
 	private void Draw() {
 
 		// Clear
@@ -124,7 +139,7 @@ public class DemoDisplay2 {
 						DrawTheLinkSE(demoMap.getTile(i, j), demoMap.getTile(i + 1, j));
 					}
 				} else {
-					DrawTheLinkSE(demoMap.getTile(i, j),new Tile(i+1,j,0));
+					DrawTheLinkSE(demoMap.getTile(i, j), new Tile(i + 1, j, 0));
 				}
 				if (j + 1 < demoMap.getWidth()) {
 					if (demoMap.getTile(i, j).getHeight() > demoMap.getTile(i, j + 1).getHeight()) {
@@ -139,44 +154,49 @@ public class DemoDisplay2 {
 
 	private void DrawATile(Tile t) {
 		SelectColor(t);
-		GL11.glBegin(GL11.GL_QUADS);
 
-		GL11.glVertex3d(t.getPosY() * scale, t.getHeight() * scale / 5, t.getPosX() * scale);
-		GL11.glVertex3d(t.getPosY() * scale, t.getHeight() * scale / 5, (t.getPosX() + 1) * scale);
-		GL11.glVertex3d((t.getPosY() + 1) * scale, t.getHeight() * scale / 5, (t.getPosX() + 1) * scale);
-		GL11.glVertex3d((t.getPosY() + 1) * scale, t.getHeight() * scale / 5, t.getPosX() * scale);
+		GL11.glBegin(GL11.GL_QUADS);
+		GL11.glTexCoord2d(0, 0);
+		GL11.glVertex3d(t.getPosY() * scale, t.getHeight() * getZscale(), t.getPosX() * scale);
+		GL11.glTexCoord2d(1, 0);
+		GL11.glVertex3d(t.getPosY() * scale, t.getHeight() * getZscale(), (t.getPosX() + 1) * scale);
+		GL11.glTexCoord2d(1, 1);
+		GL11.glVertex3d((t.getPosY() + 1) * scale, t.getHeight() * getZscale(), (t.getPosX() + 1) * scale);
+		GL11.glTexCoord2d(0, 1);
+		GL11.glVertex3d((t.getPosY() + 1) * scale, t.getHeight() * getZscale(), t.getPosX() * scale);
 
 		GL11.glEnd();
 
 		GL11.glColor3f(0f, 0f, 0f);
 		GL11.glBegin(GL11.GL_LINE_LOOP);
 
-		GL11.glVertex3d(t.getPosY() * scale, t.getHeight() * scale / 5, t.getPosX() * scale);
-		GL11.glVertex3d(t.getPosY() * scale, t.getHeight() * scale / 5, (t.getPosX() + 1) * scale);
-		GL11.glVertex3d((t.getPosY() + 1) * scale, t.getHeight() * scale / 5, (t.getPosX() + 1) * scale);
-		GL11.glVertex3d((t.getPosY() + 1) * scale, t.getHeight() * scale / 5, t.getPosX() * scale);
+		GL11.glVertex3d(t.getPosY() * scale, t.getHeight() * getZscale(), t.getPosX() * scale);
+		GL11.glVertex3d(t.getPosY() * scale, t.getHeight() * getZscale(), (t.getPosX() + 1) * scale);
+		GL11.glVertex3d((t.getPosY() + 1) * scale, t.getHeight() * getZscale(), (t.getPosX() + 1) * scale);
+		GL11.glVertex3d((t.getPosY() + 1) * scale, t.getHeight() * getZscale(), t.getPosX() * scale);
 
 		GL11.glEnd();
 	}
 
 	private void DrawTheLinkSE(Tile t1, Tile t2) {
 		SelectColor(t1);
+
 		GL11.glBegin(GL11.GL_QUADS);
 
-		GL11.glVertex3d(t1.getPosY() * scale, t1.getHeight() * scale / 5, (t1.getPosX() + 1) * scale);
-		GL11.glVertex3d(t2.getPosY() * scale, t2.getHeight() * scale / 5, t2.getPosX() * scale);
-		GL11.glVertex3d((t2.getPosY() + 1) * scale, t2.getHeight() * scale / 5, t2.getPosX() * scale);
-		GL11.glVertex3d((t1.getPosY() + 1) * scale, t1.getHeight() * scale / 5, (t1.getPosX() + 1) * scale);
+		GL11.glVertex3d(t1.getPosY() * scale, t1.getHeight() * getZscale(), (t1.getPosX() + 1) * scale);
+		GL11.glVertex3d(t2.getPosY() * scale, t2.getHeight() * getZscale(), t2.getPosX() * scale);
+		GL11.glVertex3d((t2.getPosY() + 1) * scale, t2.getHeight() * getZscale(), t2.getPosX() * scale);
+		GL11.glVertex3d((t1.getPosY() + 1) * scale, t1.getHeight() * getZscale(), (t1.getPosX() + 1) * scale);
 
 		GL11.glEnd();
 
 		GL11.glColor3f(0f, 0f, 0f);
 		GL11.glBegin(GL11.GL_LINE_LOOP);
 
-		GL11.glVertex3d(t1.getPosY() * scale, t1.getHeight() * scale / 5, (t1.getPosX() + 1) * scale);
-		GL11.glVertex3d(t2.getPosY() * scale, t2.getHeight() * scale / 5, t2.getPosX() * scale);
-		GL11.glVertex3d((t2.getPosY() + 1) * scale, t2.getHeight() * scale / 5, t2.getPosX() * scale);
-		GL11.glVertex3d((t1.getPosY() + 1) * scale, t1.getHeight() * scale / 5, (t1.getPosX() + 1) * scale);
+		GL11.glVertex3d(t1.getPosY() * scale, t1.getHeight() * getZscale(), (t1.getPosX() + 1) * scale);
+		GL11.glVertex3d(t2.getPosY() * scale, t2.getHeight() * getZscale(), t2.getPosX() * scale);
+		GL11.glVertex3d((t2.getPosY() + 1) * scale, t2.getHeight() * getZscale(), t2.getPosX() * scale);
+		GL11.glVertex3d((t1.getPosY() + 1) * scale, t1.getHeight() * getZscale(), (t1.getPosX() + 1) * scale);
 
 		GL11.glEnd();
 	}
@@ -185,20 +205,20 @@ public class DemoDisplay2 {
 		SelectColor(t1);
 		GL11.glBegin(GL11.GL_QUADS);
 
-		GL11.glVertex3d((t1.getPosY() + 1) * scale, t1.getHeight() * scale / 5, (t1.getPosX() + 1) * scale);
-		GL11.glVertex3d(t2.getPosY() * scale, t2.getHeight() * scale / 5, (t2.getPosX() + 1) * scale);
-		GL11.glVertex3d(t2.getPosY() * scale, t2.getHeight() * scale / 5, t2.getPosX() * scale);
-		GL11.glVertex3d((t1.getPosY() + 1) * scale, t1.getHeight() * scale / 5, t1.getPosX() * scale);
+		GL11.glVertex3d((t1.getPosY() + 1) * scale, t1.getHeight() * getZscale(), (t1.getPosX() + 1) * scale);
+		GL11.glVertex3d(t2.getPosY() * scale, t2.getHeight() * getZscale(), (t2.getPosX() + 1) * scale);
+		GL11.glVertex3d(t2.getPosY() * scale, t2.getHeight() * getZscale(), t2.getPosX() * scale);
+		GL11.glVertex3d((t1.getPosY() + 1) * scale, t1.getHeight() * getZscale(), t1.getPosX() * scale);
 
 		GL11.glEnd();
 
 		GL11.glColor3f(0f, 0f, 0f);
 		GL11.glBegin(GL11.GL_LINE_LOOP);
 
-		GL11.glVertex3d((t1.getPosY() + 1) * scale, t1.getHeight() * scale / 5, (t1.getPosX() + 1) * scale);
-		GL11.glVertex3d(t2.getPosY() * scale, t2.getHeight() * scale / 5, (t2.getPosX() + 1) * scale);
-		GL11.glVertex3d(t2.getPosY() * scale, t2.getHeight() * scale / 5, t2.getPosX() * scale);
-		GL11.glVertex3d((t1.getPosY() + 1) * scale, t1.getHeight() * scale / 5, t1.getPosX() * scale);
+		GL11.glVertex3d((t1.getPosY() + 1) * scale, t1.getHeight() * getZscale(), (t1.getPosX() + 1) * scale);
+		GL11.glVertex3d(t2.getPosY() * scale, t2.getHeight() * getZscale(), (t2.getPosX() + 1) * scale);
+		GL11.glVertex3d(t2.getPosY() * scale, t2.getHeight() * getZscale(), t2.getPosX() * scale);
+		GL11.glVertex3d((t1.getPosY() + 1) * scale, t1.getHeight() * getZscale(), t1.getPosX() * scale);
 
 		GL11.glEnd();
 	}
@@ -206,18 +226,22 @@ public class DemoDisplay2 {
 	private void SelectColor(Tile tile) {
 		switch (tile.getTexture()) {
 		case Grass:
+			textureGrass.bind();
 			GL11.glColor3f(0.18f, 0.5f, 0.17f);
 			break;
 
 		case Earth:
+			textureEarth.bind();
 			GL11.glColor3f(0.5f, 0.25f, 0f);
 			break;
 
 		case Sand:
+			textureSand.bind();
 			GL11.glColor3f(1f, 1f, 0.5f);
 			break;
 
 		case Stone:
+			textureStone.bind();
 			GL11.glColor3f(0.5f, 0.5f, 0.5f);
 			break;
 
@@ -234,7 +258,17 @@ public class DemoDisplay2 {
 		if (Keyboard.isKeyDown(Keyboard.KEY_D)) {
 			size -= 0.01f;
 		}
+	}
 
+	private void LoadTextures() {
+		try {
+			textureGrass = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("images/Grass2.PNG"));
+			textureSand = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("images/Sand2.PNG"));
+			textureStone = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("images/Stone2.PNG"));
+			textureEarth = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("images/Earth2.PNG"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 }
