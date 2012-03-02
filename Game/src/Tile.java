@@ -31,6 +31,16 @@ public class Tile {
 		this.setType(tileType.Walkable);
 		this.setDecoration(decorationType.None);
 	}
+	
+	public Tile(int posX, int posY, int height) {
+		this.setPosX(posX);
+		this.setPosY(posY);
+		this.setHeight(height);
+		this.setHeightToDraw(0);
+		this.setTexture(textureType.Grass);
+		this.setType(tileType.Walkable);
+		this.setDecoration(decorationType.None);
+	}
 
 	public Tile(int posX, int posY, int height,int heightTotal, textureType texture,
 			tileType type, decorationType decoration) {

@@ -53,10 +53,9 @@ public class DemoDisplay2 {
 		GL11.glMatrixMode(GL11.GL_PROJECTION);
 		GL11.glLoadIdentity();
 
-		
 		GL11.glRotatef(angleX, 1, 0, 0); // 26,565
 		GL11.glRotatef(angleY, 0, 1, 0); // -45
-		
+
 		GL11.glTranslated(-0.6f, -0.6f, -0.6f);
 
 		//
@@ -120,6 +119,20 @@ public class DemoDisplay2 {
 		for (int i = 0; i < demoMap.getLength(); i++) {
 			for (int j = 0; j < demoMap.getWidth(); j++) {
 				DrawATile(demoMap.getTile(i, j));
+				if (i + 1 < demoMap.getLength()) {
+					if (demoMap.getTile(i, j).getHeight() > demoMap.getTile(i + 1, j).getHeight()) {
+						DrawTheLinkSE(demoMap.getTile(i, j), demoMap.getTile(i + 1, j));
+					}
+				} else {
+					DrawTheLinkSE(demoMap.getTile(i, j),new Tile(i+1,j,0));
+				}
+				if (j + 1 < demoMap.getWidth()) {
+					if (demoMap.getTile(i, j).getHeight() > demoMap.getTile(i, j + 1).getHeight()) {
+						DrawTheLinkSO(demoMap.getTile(i, j), demoMap.getTile(i, j + 1));
+					}
+				} else {
+					DrawTheLinkSO(demoMap.getTile(i, j), new Tile(i, j + 1, 0));
+				}
 			}
 		}
 	}
@@ -127,21 +140,65 @@ public class DemoDisplay2 {
 	private void DrawATile(Tile t) {
 		SelectColor(t);
 		GL11.glBegin(GL11.GL_QUADS);
-		
-		GL11.glVertex3d(t.getPosY() * scale, t.getHeight() * scale/5, t.getPosX()* scale);
-		GL11.glVertex3d(t.getPosY() * scale, t.getHeight() * scale/5,(t.getPosX() + 1) * scale);
-		GL11.glVertex3d((t.getPosY() + 1) * scale, t.getHeight() * scale/5,(t.getPosX() + 1) * scale);
-		GL11.glVertex3d((t.getPosY() + 1) * scale, t.getHeight() * scale/5,t.getPosX() * scale);
+
+		GL11.glVertex3d(t.getPosY() * scale, t.getHeight() * scale / 5, t.getPosX() * scale);
+		GL11.glVertex3d(t.getPosY() * scale, t.getHeight() * scale / 5, (t.getPosX() + 1) * scale);
+		GL11.glVertex3d((t.getPosY() + 1) * scale, t.getHeight() * scale / 5, (t.getPosX() + 1) * scale);
+		GL11.glVertex3d((t.getPosY() + 1) * scale, t.getHeight() * scale / 5, t.getPosX() * scale);
 
 		GL11.glEnd();
-		
+
 		GL11.glColor3f(0f, 0f, 0f);
 		GL11.glBegin(GL11.GL_LINE_LOOP);
-		
-		GL11.glVertex3d(t.getPosY() * scale, t.getHeight() * scale/5, t.getPosX()* scale);
-		GL11.glVertex3d(t.getPosY() * scale, t.getHeight() * scale/5,(t.getPosX() + 1) * scale);
-		GL11.glVertex3d((t.getPosY() + 1) * scale, t.getHeight() * scale/5,(t.getPosX() + 1) * scale);
-		GL11.glVertex3d((t.getPosY() + 1) * scale, t.getHeight() * scale/5,t.getPosX() * scale);
+
+		GL11.glVertex3d(t.getPosY() * scale, t.getHeight() * scale / 5, t.getPosX() * scale);
+		GL11.glVertex3d(t.getPosY() * scale, t.getHeight() * scale / 5, (t.getPosX() + 1) * scale);
+		GL11.glVertex3d((t.getPosY() + 1) * scale, t.getHeight() * scale / 5, (t.getPosX() + 1) * scale);
+		GL11.glVertex3d((t.getPosY() + 1) * scale, t.getHeight() * scale / 5, t.getPosX() * scale);
+
+		GL11.glEnd();
+	}
+
+	private void DrawTheLinkSE(Tile t1, Tile t2) {
+		SelectColor(t1);
+		GL11.glBegin(GL11.GL_QUADS);
+
+		GL11.glVertex3d(t1.getPosY() * scale, t1.getHeight() * scale / 5, (t1.getPosX() + 1) * scale);
+		GL11.glVertex3d(t2.getPosY() * scale, t2.getHeight() * scale / 5, t2.getPosX() * scale);
+		GL11.glVertex3d((t2.getPosY() + 1) * scale, t2.getHeight() * scale / 5, t2.getPosX() * scale);
+		GL11.glVertex3d((t1.getPosY() + 1) * scale, t1.getHeight() * scale / 5, (t1.getPosX() + 1) * scale);
+
+		GL11.glEnd();
+
+		GL11.glColor3f(0f, 0f, 0f);
+		GL11.glBegin(GL11.GL_LINE_LOOP);
+
+		GL11.glVertex3d(t1.getPosY() * scale, t1.getHeight() * scale / 5, (t1.getPosX() + 1) * scale);
+		GL11.glVertex3d(t2.getPosY() * scale, t2.getHeight() * scale / 5, t2.getPosX() * scale);
+		GL11.glVertex3d((t2.getPosY() + 1) * scale, t2.getHeight() * scale / 5, t2.getPosX() * scale);
+		GL11.glVertex3d((t1.getPosY() + 1) * scale, t1.getHeight() * scale / 5, (t1.getPosX() + 1) * scale);
+
+		GL11.glEnd();
+	}
+
+	private void DrawTheLinkSO(Tile t1, Tile t2) {
+		SelectColor(t1);
+		GL11.glBegin(GL11.GL_QUADS);
+
+		GL11.glVertex3d((t1.getPosY() + 1) * scale, t1.getHeight() * scale / 5, (t1.getPosX() + 1) * scale);
+		GL11.glVertex3d(t2.getPosY() * scale, t2.getHeight() * scale / 5, (t2.getPosX() + 1) * scale);
+		GL11.glVertex3d(t2.getPosY() * scale, t2.getHeight() * scale / 5, t2.getPosX() * scale);
+		GL11.glVertex3d((t1.getPosY() + 1) * scale, t1.getHeight() * scale / 5, t1.getPosX() * scale);
+
+		GL11.glEnd();
+
+		GL11.glColor3f(0f, 0f, 0f);
+		GL11.glBegin(GL11.GL_LINE_LOOP);
+
+		GL11.glVertex3d((t1.getPosY() + 1) * scale, t1.getHeight() * scale / 5, (t1.getPosX() + 1) * scale);
+		GL11.glVertex3d(t2.getPosY() * scale, t2.getHeight() * scale / 5, (t2.getPosX() + 1) * scale);
+		GL11.glVertex3d(t2.getPosY() * scale, t2.getHeight() * scale / 5, t2.getPosX() * scale);
+		GL11.glVertex3d((t1.getPosY() + 1) * scale, t1.getHeight() * scale / 5, t1.getPosX() * scale);
 
 		GL11.glEnd();
 	}
