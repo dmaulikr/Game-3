@@ -27,8 +27,11 @@ public class DemoDisplay2 {
 	float angleX = (float) Math.toDegrees(Math.atan(0.5)); // 26,565
 	float angleY = -45.0f;
 
-	float size = 0.2f;
-
+	private float focusXToGo;
+	private float focusYToGo;
+	private float focusZToGo;
+	private float scaleToGo;
+	
 	Texture tex;
 
 	public DemoDisplay2(Map demoMap) {
@@ -36,14 +39,14 @@ public class DemoDisplay2 {
 		float a = 1f / (float) demoMap.getLength();
 		float b = 1f / (float) demoMap.getWidth();
 		setScale(Math.min(a, b));
-
+		setScale(scale*1.5f);
 		float c = 1f / (float) 50;
 		setZscale(c);
 	}
 
 	public void start() {
 		try {
-			Display.setDisplayMode(new DisplayMode(1000, 900));
+			Display.setDisplayMode(new DisplayMode(800, 600));
 			Display.setSwapInterval(1);
 			Display.sync(60);
 			Display.create();
@@ -51,19 +54,19 @@ public class DemoDisplay2 {
 			e.printStackTrace();
 			System.exit(0);
 		}
-
+		//scaleToGo=0.1f;
+		//focusZToGo=-0.4f;
 		// init OpenGL here
-		GL11.glViewport(0, 0, 1000, 900);
+		GL11.glViewport(0, 0, 800, 600);
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
 		GL11.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-
 		GL11.glMatrixMode(GL11.GL_PROJECTION);
 		GL11.glLoadIdentity();
 
 		GL11.glRotatef(angleX, 1, 0, 0); // 26,565
 		GL11.glRotatef(angleY, 0, 1, 0); // -45
 
-		GL11.glTranslated(-0.6f, -0.6f, -0.6f);
+		GL11.glTranslated(-0.5,-0.8, -0.5);
 
 		//
 		GL11.glMatrixMode(GL11.GL_MODELVIEW);
@@ -130,7 +133,7 @@ public class DemoDisplay2 {
 		GL11.glVertex3d(0.0, 0.0, 1.0);
 
 		GL11.glEnd();
-
+		
 		for (int i = 0; i < demoMap.getLength(); i++) {
 			for (int j = 0; j < demoMap.getWidth(); j++) {
 				DrawATile(demoMap.getTile(i, j));
@@ -251,14 +254,6 @@ public class DemoDisplay2 {
 		}
 	}
 
-	private void Update() {
-		if (Keyboard.isKeyDown(Keyboard.KEY_A)) {
-			size += 0.01f;
-		}
-		if (Keyboard.isKeyDown(Keyboard.KEY_D)) {
-			size -= 0.01f;
-		}
-	}
 
 	private void LoadTextures() {
 		try {
@@ -271,4 +266,44 @@ public class DemoDisplay2 {
 		}
 	}
 
+	private void Update(){
+		if(focusXToGo!=0){
+			if(focusXToGo<0){
+				GL11.glTranslated(0.01,0,0);
+				focusXToGo+=0.01;
+			}
+			if(focusXToGo>0){
+				GL11.glTranslated(-0.01,0,0);
+				focusXToGo-=0.01;
+			}
+		}
+		if(focusYToGo!=0){
+			if(focusYToGo<0){
+				GL11.glTranslated(0,0,0.01);
+				focusYToGo+=0.01;
+			}
+			if(focusYToGo>0){
+				GL11.glTranslated(0,0,-0.01);
+				focusYToGo-=0.01;
+			}
+		}
+		if(focusZToGo!=0){
+			if(focusZToGo<0){
+				GL11.glTranslated(0,0.01,0);
+				focusZToGo+=0.01;
+			}
+			if(focusZToGo>0){
+				GL11.glTranslated(0,-0.01,0);
+				focusZToGo-=0.01;
+			}
+		}
+		if(scaleToGo!=0){
+			if(scaleToGo<scale){
+				scale-=0.001;
+			}
+			if(scaleToGo>scale){
+				scale+=0.001;
+			}
+		}
+	}
 }

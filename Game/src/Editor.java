@@ -44,6 +44,7 @@ public class Editor extends JFrame {
 
 	private String currentPath = "";
 
+	
 	public Editor() {
 		this.setSize(1000, 800);
 		this.setTitle("Map Editor");
