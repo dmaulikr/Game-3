@@ -188,10 +188,13 @@ public class DemoDisplay2 {
 		SelectColor(t1);
 
 		GL11.glBegin(GL11.GL_QUADS);
-
+		GL11.glTexCoord2d(0, 0);
 		GL11.glVertex3d(t1.getPosY() * scale, t1.getHeight() * getZscale(), (t1.getPosX() + 1) * scale);
+		GL11.glTexCoord2d(1, 0);
 		GL11.glVertex3d(t2.getPosY() * scale, t2.getHeight() * getZscale(), t2.getPosX() * scale);
+		GL11.glTexCoord2d(1, 1);
 		GL11.glVertex3d((t2.getPosY() + 1) * scale, t2.getHeight() * getZscale(), t2.getPosX() * scale);
+		GL11.glTexCoord2d(0, 1);
 		GL11.glVertex3d((t1.getPosY() + 1) * scale, t1.getHeight() * getZscale(), (t1.getPosX() + 1) * scale);
 
 		GL11.glEnd();
@@ -210,10 +213,13 @@ public class DemoDisplay2 {
 	private void DrawTheLinkSO(Tile t1, Tile t2) {
 		SelectColor(t1);
 		GL11.glBegin(GL11.GL_QUADS);
-
+		GL11.glTexCoord2d(0, 0);
 		GL11.glVertex3d((t1.getPosY() + 1) * scale, t1.getHeight() * getZscale(), (t1.getPosX() + 1) * scale);
+		GL11.glTexCoord2d(1, 0);
 		GL11.glVertex3d(t2.getPosY() * scale, t2.getHeight() * getZscale(), (t2.getPosX() + 1) * scale);
+		GL11.glTexCoord2d(1, 1);
 		GL11.glVertex3d(t2.getPosY() * scale, t2.getHeight() * getZscale(), t2.getPosX() * scale);
+		GL11.glTexCoord2d(0, 1);
 		GL11.glVertex3d((t1.getPosY() + 1) * scale, t1.getHeight() * getZscale(), t1.getPosX() * scale);
 
 		GL11.glEnd();
@@ -259,10 +265,10 @@ public class DemoDisplay2 {
 
 	private void LoadTextures() {
 		try {
-			textureGrass = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("images/Grass2.PNG"));
-			textureSand = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("images/Sand2.PNG"));
-			textureStone = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("images/Stone2.PNG"));
-			textureEarth = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("images/Earth2.PNG"));
+			textureGrass = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("images/Grass.PNG"));
+			textureSand = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("images/Sand.PNG"));
+			textureStone = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("images/Stone.PNG"));
+			textureEarth = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("images/Earth.PNG"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -322,7 +328,7 @@ public class DemoDisplay2 {
 			}
 		}
 		if (focusXToGo == 0 && focusYToGo == 0 && focusZToGo == 0) {
-			test();
+			//test();
 		}
 	}
 
