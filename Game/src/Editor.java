@@ -236,6 +236,8 @@ public class Editor extends JFrame {
 			}
 		}
 	}
+	
+	
 
 	public static void main(String[] argv) {
 		Editor e = new Editor();

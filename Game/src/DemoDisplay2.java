@@ -24,6 +24,7 @@ public class DemoDisplay2 {
 	private Texture textureStone;
 	private Texture textureSand;
 	private Texture textureEarth;
+	private Texture imageHerbe;
 	float angleX = (float) Math.toDegrees(Math.atan(0.5)); // 26,565
 	float angleY = -45.0f;
 
@@ -43,7 +44,7 @@ public class DemoDisplay2 {
 		float a = 1f / (float) demoMap.getLength();
 		float b = 1f / (float) demoMap.getWidth();
 		setScale(Math.min(a, b));
-		setScale(scale * 1.5f);
+		setScale(scale * 2f);
 		float c = 1f / (float) 50;
 		setZscale(c);
 	}
@@ -62,15 +63,18 @@ public class DemoDisplay2 {
 		currentTileOnFocusY = 0;
 		currentTileOnFocusZ = 0;
 		GL11.glViewport(0, 0, 800, 600);
-		GL11.glDepthRange(1,1000);
+		GL11.glDepthRange(1, 1000);
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
+		GL11.glEnable (GL11.GL_BLEND);
+		
+		GL11.glBlendFunc (GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 		GL11.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 		GL11.glMatrixMode(GL11.GL_PROJECTION);
 		GL11.glLoadIdentity();
+
 		
 		GL11.glRotatef(angleX, 1, 0, 0); // 26,565
 		GL11.glRotatef(angleY, 0, 1, 0); // -45
-
 
 		GL11.glMatrixMode(GL11.GL_MODELVIEW);
 		GL11.glLoadIdentity();
@@ -138,8 +142,9 @@ public class DemoDisplay2 {
 		GL11.glEnd();
 
 		for (int i = 0; i < demoMap.getLength(); i++) {
-			for (int j = 0; j < demoMap.getWidth(); j++) {
+			for (int j = 0; j < demoMap.getWidth(); j++) {				
 				DrawATile(demoMap.getTile(i, j));
+				DrawGrass(demoMap.getTile(i, j), 5);
 				if (i + 1 < demoMap.getLength()) {
 					if (demoMap.getTile(i, j).getHeight() > demoMap.getTile(i + 1, j).getHeight()) {
 						DrawTheLinkSE(demoMap.getTile(i, j), demoMap.getTile(i + 1, j));
@@ -156,6 +161,7 @@ public class DemoDisplay2 {
 				}
 			}
 		}
+
 	}
 
 	private void DrawATile(Tile t) {
@@ -235,30 +241,57 @@ public class DemoDisplay2 {
 		GL11.glEnd();
 	}
 
+	public void DrawGrass(Tile t, int density) {
+
+		GL11.glColor4f(1f, 1f, 1f, 1f);
+		imageHerbe.bind();
+
+		float y1 = ((float)t.getPosX() * scale) + (0.1f)* scale;
+		float y2 = ((float)t.getPosX() * scale) + (0.3f)* scale;
+		float x1 = ((float)t.getPosY() * scale) + (0.3f)* scale;
+		float x2 = ((float)t.getPosY() * scale) + (0.1f)* scale;
+		float z1 = ((float)t.getHeight() * zscale) + (0.1f);
+		float z2 = t.getHeight() * zscale;
+
+		GL11.glBegin(GL11.GL_QUADS);
+		GL11.glTexCoord2d(0, 0);
+		GL11.glVertex3d(x1, z1, y1);
+		GL11.glTexCoord2d(1, 0);
+		GL11.glVertex3d(x2, z1, y2);
+		GL11.glTexCoord2d(1, 1);
+		GL11.glVertex3d(x2, z2, y2);
+		GL11.glTexCoord2d(0, 1);
+		GL11.glVertex3d(x1, z2, y1);
+		GL11.glEnd();
+		
+
+	}
+
 	private void SelectColor(Tile tile) {
+		GL11.glColor4f(1f, 1f, 1f, 1f);
 		switch (tile.getTexture()) {
 		case Grass:
 			textureGrass.bind();
-			GL11.glColor3f(0.18f, 0.5f, 0.17f);
+			//GL11.glColor3f(0.18f, 0.5f, 0.17f);
 			break;
 
 		case Earth:
 			textureEarth.bind();
-			GL11.glColor3f(0.5f, 0.25f, 0f);
+			//GL11.glColor3f(0.5f, 0.25f, 0f);
 			break;
 
 		case Sand:
 			textureSand.bind();
-			GL11.glColor3f(1f, 1f, 0.5f);
+			//GL11.glColor3f(1f, 1f, 0.5f);
 			break;
 
 		case Stone:
 			textureStone.bind();
-			GL11.glColor3f(0.5f, 0.5f, 0.5f);
+			//GL11.glColor3f(0.5f, 0.5f, 0.5f);
 			break;
 
 		default:
-			GL11.glColor3f(0.5f, 0.5f, 1.0f);
+			//GL11.glColor3f(0.5f, 0.5f, 1.0f);
 			break;
 		}
 	}
@@ -269,32 +302,31 @@ public class DemoDisplay2 {
 			textureSand = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("images/Sand.PNG"));
 			textureStone = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("images/Stone.PNG"));
 			textureEarth = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("images/Earth.PNG"));
+			imageHerbe = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("images/fleur1.png"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 
 	private void SetFocusOn(int X, int Y, int Z) {
-		focusXToGo = (float)Math.round((X - currentTileOnFocusX) * scale* 100)/100;
-		focusYToGo = (float)Math.round((Y - currentTileOnFocusY) * scale* 100)/100;
-		focusZToGo = (float)Math.round((Z - currentTileOnFocusZ) * zscale* 100)/100;
+		focusXToGo = (float) Math.round((X - currentTileOnFocusX) * scale * 100) / 100;
+		focusYToGo = (float) Math.round((Y - currentTileOnFocusY) * scale * 100) / 100;
+		focusZToGo = (float) Math.round((Z - currentTileOnFocusZ) * zscale * 100) / 100;
 		currentTileOnFocusX = X;
 		currentTileOnFocusY = Y;
 		currentTileOnFocusZ = Z;
 	}
 
 	private void Update() {
-		focusXToGo= (float)Math.round(focusXToGo * 100)/100;
-		focusYToGo= (float)Math.round(focusYToGo * 100)/100;
-		focusZToGo= (float)Math.round(focusZToGo * 100)/100;
-		
-		
+		focusXToGo = (float) Math.round(focusXToGo * 100) / 100;
+		focusYToGo = (float) Math.round(focusYToGo * 100) / 100;
+		focusZToGo = (float) Math.round(focusZToGo * 100) / 100;
+
 		if (focusXToGo != 0) {
 			if (focusXToGo < 0) {
 				GL11.glTranslated(0.01, 0, 0);
 				focusXToGo += 0.01;
-			}
-			else if (focusXToGo > 0) {
+			} else if (focusXToGo > 0) {
 				GL11.glTranslated(-0.01, 0, 0);
 				focusXToGo -= 0.01;
 			}
@@ -303,8 +335,7 @@ public class DemoDisplay2 {
 			if (focusYToGo < 0) {
 				GL11.glTranslated(0, 0, 0.01);
 				focusYToGo += 0.01;
-			}
-			else if (focusYToGo > 0) {
+			} else if (focusYToGo > 0) {
 				GL11.glTranslated(0, 0, -0.01);
 				focusYToGo -= 0.01;
 			}
@@ -313,8 +344,7 @@ public class DemoDisplay2 {
 			if (focusZToGo < 0) {
 				GL11.glTranslated(0, 0.01, 0);
 				focusZToGo += 0.01;
-			}
-			else if (focusZToGo > 0) {
+			} else if (focusZToGo > 0) {
 				GL11.glTranslated(0, -0.01, 0);
 				focusZToGo -= 0.01;
 			}
@@ -328,7 +358,7 @@ public class DemoDisplay2 {
 			}
 		}
 		if (focusXToGo == 0 && focusYToGo == 0 && focusZToGo == 0) {
-			//test();
+			// test();
 		}
 	}
 
