@@ -27,19 +27,23 @@ public class DemoDisplay2 {
 	float angleX = (float) Math.toDegrees(Math.atan(0.5)); // 26,565
 	float angleY = -45.0f;
 
+	int state;
+
+	private int currentTileOnFocusX;
+	private int currentTileOnFocusY;
+	private int currentTileOnFocusZ;
+
 	private float focusXToGo;
 	private float focusYToGo;
 	private float focusZToGo;
 	private float scaleToGo;
-	
-	Texture tex;
 
 	public DemoDisplay2(Map demoMap) {
 		setDemoMap(demoMap);
 		float a = 1f / (float) demoMap.getLength();
 		float b = 1f / (float) demoMap.getWidth();
 		setScale(Math.min(a, b));
-		setScale(scale*1.5f);
+		setScale(scale * 1.5f);
 		float c = 1f / (float) 50;
 		setZscale(c);
 	}
@@ -54,21 +58,20 @@ public class DemoDisplay2 {
 			e.printStackTrace();
 			System.exit(0);
 		}
-		//scaleToGo=0.1f;
-		//focusZToGo=-0.4f;
-		// init OpenGL here
+		currentTileOnFocusX = 0;
+		currentTileOnFocusY = 0;
+		currentTileOnFocusZ = 0;
 		GL11.glViewport(0, 0, 800, 600);
+		GL11.glDepthRange(1,1000);
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
 		GL11.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 		GL11.glMatrixMode(GL11.GL_PROJECTION);
 		GL11.glLoadIdentity();
-
+		
 		GL11.glRotatef(angleX, 1, 0, 0); // 26,565
 		GL11.glRotatef(angleY, 0, 1, 0); // -45
 
-		GL11.glTranslated(-0.5,-0.8, -0.5);
 
-		//
 		GL11.glMatrixMode(GL11.GL_MODELVIEW);
 		GL11.glLoadIdentity();
 		LoadTextures();
@@ -133,7 +136,7 @@ public class DemoDisplay2 {
 		GL11.glVertex3d(0.0, 0.0, 1.0);
 
 		GL11.glEnd();
-		
+
 		for (int i = 0; i < demoMap.getLength(); i++) {
 			for (int j = 0; j < demoMap.getWidth(); j++) {
 				DrawATile(demoMap.getTile(i, j));
@@ -254,7 +257,6 @@ public class DemoDisplay2 {
 		}
 	}
 
-
 	private void LoadTextures() {
 		try {
 			textureGrass = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("images/Grass2.PNG"));
@@ -266,44 +268,88 @@ public class DemoDisplay2 {
 		}
 	}
 
-	private void Update(){
-		if(focusXToGo!=0){
-			if(focusXToGo<0){
-				GL11.glTranslated(0.01,0,0);
-				focusXToGo+=0.01;
+	private void SetFocusOn(int X, int Y, int Z) {
+		focusXToGo = (float)Math.round((X - currentTileOnFocusX) * scale* 100)/100;
+		focusYToGo = (float)Math.round((Y - currentTileOnFocusY) * scale* 100)/100;
+		focusZToGo = (float)Math.round((Z - currentTileOnFocusZ) * zscale* 100)/100;
+		currentTileOnFocusX = X;
+		currentTileOnFocusY = Y;
+		currentTileOnFocusZ = Z;
+	}
+
+	private void Update() {
+		focusXToGo= (float)Math.round(focusXToGo * 100)/100;
+		focusYToGo= (float)Math.round(focusYToGo * 100)/100;
+		focusZToGo= (float)Math.round(focusZToGo * 100)/100;
+		
+		
+		if (focusXToGo != 0) {
+			if (focusXToGo < 0) {
+				GL11.glTranslated(0.01, 0, 0);
+				focusXToGo += 0.01;
 			}
-			if(focusXToGo>0){
-				GL11.glTranslated(-0.01,0,0);
-				focusXToGo-=0.01;
-			}
-		}
-		if(focusYToGo!=0){
-			if(focusYToGo<0){
-				GL11.glTranslated(0,0,0.01);
-				focusYToGo+=0.01;
-			}
-			if(focusYToGo>0){
-				GL11.glTranslated(0,0,-0.01);
-				focusYToGo-=0.01;
-			}
-		}
-		if(focusZToGo!=0){
-			if(focusZToGo<0){
-				GL11.glTranslated(0,0.01,0);
-				focusZToGo+=0.01;
-			}
-			if(focusZToGo>0){
-				GL11.glTranslated(0,-0.01,0);
-				focusZToGo-=0.01;
+			else if (focusXToGo > 0) {
+				GL11.glTranslated(-0.01, 0, 0);
+				focusXToGo -= 0.01;
 			}
 		}
-		if(scaleToGo!=0){
-			if(scaleToGo<scale){
-				scale-=0.001;
+		if (focusYToGo != 0) {
+			if (focusYToGo < 0) {
+				GL11.glTranslated(0, 0, 0.01);
+				focusYToGo += 0.01;
 			}
-			if(scaleToGo>scale){
-				scale+=0.001;
+			else if (focusYToGo > 0) {
+				GL11.glTranslated(0, 0, -0.01);
+				focusYToGo -= 0.01;
 			}
 		}
+		if (focusZToGo != 0) {
+			if (focusZToGo < 0) {
+				GL11.glTranslated(0, 0.01, 0);
+				focusZToGo += 0.01;
+			}
+			else if (focusZToGo > 0) {
+				GL11.glTranslated(0, -0.01, 0);
+				focusZToGo -= 0.01;
+			}
+		}
+		if (scaleToGo != 0) {
+			if (scaleToGo < scale) {
+				scale -= 0.001;
+			}
+			if (scaleToGo > scale) {
+				scale += 0.001;
+			}
+		}
+		if (focusXToGo == 0 && focusYToGo == 0 && focusZToGo == 0) {
+			test();
+		}
+	}
+
+	private void test() {
+		Tile tile;
+		switch (state) {
+		case 0:
+			tile = demoMap.getTile(2, 3);
+			SetFocusOn(tile.getPosX(), tile.getPosY(), tile.getHeight());
+			break;
+		case 1:
+			tile = demoMap.getTile(0, 0);
+			SetFocusOn(tile.getPosX(), tile.getPosY(), tile.getHeight());
+			break;
+		case 2:
+			tile = demoMap.getTile(4, 4);
+			SetFocusOn(tile.getPosX(), tile.getPosY(), tile.getHeight());
+			break;
+		case 3:
+			tile = demoMap.getTile(1, 4);
+			SetFocusOn(tile.getPosX(), tile.getPosY(), tile.getHeight());
+			break;
+
+		default:
+			break;
+		}
+
+		state++;
 	}
 }
