@@ -188,5 +188,4 @@ public class Tile {
 		String s2 = t2.toXMLString();
 		System.out.println(s2);
 	}
-
 }
