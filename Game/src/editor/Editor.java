@@ -14,6 +14,8 @@ import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import javax.swing.JOptionPane;
 import javax.swing.JFileChooser;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.filechooser.FileFilter;
 
 import displaymanager.DisplayManager;
@@ -235,6 +237,19 @@ public class Editor extends JFrame {
 	}
 
 	public static void main(String[] argv) {
+		try {
+			// Set cross-platform Java L&F (also called "Metal")
+			UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+		} catch (UnsupportedLookAndFeelException e) {
+			// handle exception
+		} catch (ClassNotFoundException e) {
+			// handle exception
+		} catch (InstantiationException e) {
+			// handle exception
+		} catch (IllegalAccessException e) {
+			// handle exception
+		}
+
 		Editor e = new Editor();
 	}
 
