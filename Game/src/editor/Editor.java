@@ -16,7 +16,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
 
-import displaymanager.DemoDisplay2;
+import displaymanager.DisplayManager;
 
 import entity.Map;
 
@@ -228,7 +228,7 @@ public class Editor extends JFrame {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			if (currentMap != null) {
-				DemoDisplay2 display = new DemoDisplay2(currentMap);
+				DisplayManager display = new DisplayManager(currentMap);
 				display.start();
 			}
 		}
