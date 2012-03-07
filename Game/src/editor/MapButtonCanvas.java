@@ -27,21 +27,29 @@ public class MapButtonCanvas extends JPanel {
 	private TileEditionPan tep;
 
 	public MapButtonCanvas(Map map, TileEditionPan tep) {
-		GridLayout gl = new GridLayout(map.getLength(), map.getWidth());
+		int dim = Math.max(map.getLength(), map.getWidth());
+		GridLayout gl = new GridLayout(dim, dim);
 		this.setLayout(gl);
 		setMap(map);
 		setTep(tep);
-		buttonCanvas = new JButton[map.getLength()][map.getWidth()];
+		buttonCanvas = new JButton[dim][dim];
 
-		for (int i = 0; i < map.getLength(); i++) {
-			for (int j = 0; j < map.getWidth(); j++) {
-				buttonCanvas[i][j] = new JButton();
-				SelectionAction al = new SelectionAction(i, j);
-				buttonCanvas[i][j].addActionListener(al);
-				buttonCanvas[i][j].setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));
-				this.add(buttonCanvas[i][j]);
+		for (int i = 0; i < dim; i++) {
+			for (int j = 0; j < dim; j++) {
+				if (i < map.getLength() && j < map.getWidth()) {
+					buttonCanvas[i][j] = new JButton();
+					SelectionAction al = new SelectionAction(i, j);
+					buttonCanvas[i][j].addActionListener(al);
+					buttonCanvas[i][j].setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));
+					this.add(buttonCanvas[i][j]);
+				} else {
+					buttonCanvas[i][j] = new JButton();
+					buttonCanvas[i][j].setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));
+					this.add(buttonCanvas[i][j]);
+				}
 			}
 		}
+
 		UpdateCanvas();
 	}
 
