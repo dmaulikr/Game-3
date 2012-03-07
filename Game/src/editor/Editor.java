@@ -143,7 +143,8 @@ public class Editor extends JFrame {
 			if (newMapDialogInfo.isValid()) {
 				currentPath = "";
 				Map newMap = new Map(newMapDialogInfo.getLength(), newMapDialogInfo.getWidth(), newMapDialogInfo.getName());
-				ChangeMap(newMap);				
+				ChangeMap(newMap);
+				UpdateSaveButton();
 			}
 		}
 	}
