@@ -33,6 +33,9 @@ public class DisplayManager {
 	float angleX = (float) Math.toDegrees(Math.atan(0.5)); // 26,565
 	float angleY = -45.0f;
 
+	//pour les rotations utiliser GL11.glRotatef(90f, 0, 1, 0);
+	//et ne pas oublier de gere l'affichage des cotes des tiles en fonction.
+		
 	int state;
 
 	private int currentTileOnFocusX;

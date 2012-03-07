@@ -1,5 +1,6 @@
 package entity;
 
+
 public class Skill {
 
 	public enum skillType {
@@ -12,126 +13,18 @@ public class Skill {
 	private boolean isBought; // is bought, must be applied.
 	private int expPrice;
 	private skillType type;
-	private Skill child;
+	private boolean[] dependance;
 
-	public Skill(String name, String desc, int expPrice, boolean bought, skillType type) {
+	
+	public Skill(String name, String desc, int expPrice, skillType type) {
 		setName(name);
 		setDesc(desc);
 		setExpPrice(expPrice);
-		setActive(true);
-		setBought(bought);
+		setActive(false);
+		setBought(false);
 		setType(type);
-		setChild(null);
-	}
-
-	public Skill(String name, String desc, int expPrice, boolean bought, boolean active, skillType type) {
-		setName(name);
-		setDesc(desc);
-		setExpPrice(expPrice);
-		setActive(active);
-		setBought(bought);
-		setType(type);
-		setChild(null);
-	}
-
-	public Skill(String name, String desc, int expPrice, boolean bought, skillType type, Skill child) {
-		setName(name);
-		setDesc(desc);
-		setExpPrice(expPrice);
-		setActive(true);
-		setBought(bought);
-		setType(type);
-		setChild(child);
-	}
-
-	public Skill(String name, String desc, int expPrice, boolean bought, boolean active, skillType type, Skill child) {
-		setName(name);
-		setDesc(desc);
-		setExpPrice(expPrice);
-		setActive(active);
-		setBought(bought);
-		setType(type);
-		setChild(child);
-	}
-
-	public Skill(String XMLString) {
-		String XMLname = GetXMLElement(XMLString, "Name");
-		String XMLdesc = GetXMLElement(XMLString, "Desc");
-		boolean XMLactive;
-		boolean XMLbought;
-		
-		if (GetXMLElement(XMLString, "Active").equals("true")) {
-			XMLactive = true;
-		} else {
-			XMLactive = false;
-		}
-		if (GetXMLElement(XMLString, "Bought").equals("true")) {
-			XMLbought = true;
-		} else {
-			XMLbought = false;
-		}
-		
-		int XMLexpPrice = Integer.parseInt(GetXMLElement(XMLString, "Price"));
-		skillType XMLtype = skillType.valueOf(GetXMLElement(XMLString, "Type"));
-		
-		Skill XMLchild;
-		if (!GetXMLElement(XMLString, "Child").equals("")) {
-			XMLchild = new Skill(GetXMLElement(XMLString, "Child"));
-		} else {
-			XMLchild = null;
-		}
-
-		setName(XMLname);
-		setDesc(XMLdesc);
-		setExpPrice(XMLexpPrice);
-		setActive(XMLactive);
-		setBought(XMLbought);
-		setType(XMLtype);
-		setChild(XMLchild);		
-	}
-
-	public String toXMLString() {
-		String s = new String();
-		s = "";
-
-		s += "<Name>";
-		s += getName();
-		s += "</Name>";
-
-		s += "<Desc>";
-		s += getDesc();
-		s += "</Desc>";
-
-		s += "<Active>";
-		s += isActive();
-		s += "</Active>";
-
-		s += "<Bought>";
-		s += isBought();
-		s += "</Bought>";
-
-		s += "<Price>";
-		s += getExpPrice();
-		s += "</Price>";
-
-		s += "<Type>";
-		s += getType();
-		s += "</Type>";
-
-		s += "<Child>";
-		if (child != null) {
-			s += getChild().toXMLString();
-		}
-		s += "</Child>";
-		return s;
-	}
-
-	private String GetXMLElement(String XMLString, String balise) {
-		int len = ("<" + balise + ">").length();
-		int posDeb = XMLString.indexOf("<" + balise + ">");
-		int posFin = XMLString.indexOf("</" + balise + ">");
-
-		return XMLString.substring(posDeb + len, posFin);
+		setDependance(new boolean[0]);
+		RefreshDependencies();
 	}
 
 	public void process(Character character) {
@@ -141,19 +34,34 @@ public class Skill {
 	}
 
 	public int BuySkill(int expPoint) {
-		if (!isActive()) {
-			if (expPrice <= expPoint) {
-				expPoint -= expPoint;
-				setActive(true);
-				// Action OK
-				return 0;
-			} else {
-				// YOU'VE NOT ENOUGH MINERALS
-				return 1;
+		if (isActive()) {
+			// Skill is visible in the tree
+			if (!isBought()) {
+				if (expPrice <= expPoint) {
+					expPoint -= expPoint;
+					setActive(true);
+					// Action OK
+					return 0;
+				} else {
+					// YOU'VE NOT ENOUGH MINERALS
+					return 1;
+				}
+			}else{
+				return 2;
+			// Already bougth
+			}
+		}		
+		return 3;
+	}
+	
+	public void RefreshDependencies(){
+		boolean result=true;
+		for (int i = 0; i < dependance.length; i++) {
+			if(dependance[i]==false){
+				result=false;
 			}
 		}
-		// Already bougth
-		return 2;
+		setActive(result);
 	}
 
 	public String getName() {
@@ -204,11 +112,102 @@ public class Skill {
 		this.type = type;
 	}
 
-	public Skill getChild() {
-		return child;
+	public boolean[] getDependance() {
+		return dependance;
 	}
 
-	public void setChild(Skill child) {
-		this.child = child;
+	public void setDependance(boolean[] dependance) {
+		this.dependance = dependance;
+		RefreshDependencies();
 	}
+
+/*
+ DEPRECATED
+
+	public Skill(String name, String desc, int expPrice, skillType type, boolean[] dependance) {
+		setName(name);
+		setDesc(desc);
+		setExpPrice(expPrice);
+		setActive(false);
+		setBought(false);
+		setType(type);
+		setDependance(dependance);
+		RefreshDependencies();
+	}	
+ 
+	public Skill(String XMLString) {
+		String XMLname = GetXMLElement(XMLString, "Name");
+		String XMLdesc = GetXMLElement(XMLString, "Desc");
+
+		int XMLexpPrice = Integer.parseInt(GetXMLElement(XMLString, "Price"));
+		skillType XMLtype = skillType.valueOf(GetXMLElement(XMLString, "Type"));
+
+		int XMLnbDep = Integer.parseInt(GetXMLElement(XMLString, "DependanceNb"));
+		boolean[] XMLdep = new boolean[XMLnbDep];
+		for (int i = 0; i < XMLnbDep; i++) {
+			XMLdep[i] = false;
+		}
+
+		setName(XMLname);
+		setDesc(XMLdesc);
+		setExpPrice(XMLexpPrice);
+		setActive(false);
+		setBought(false);
+		setType(XMLtype);
+		setDependance(XMLdep);
+		RefreshDependencies();
+	}
+
+	public String toXMLString() {
+		String s = new String();
+		s = "";
+
+		s += "<Name>";
+		s += getName();
+		s += "</Name>";
+
+		s += "<Desc>";
+		s += getDesc();
+		s += "</Desc>";
+
+		s += "<Price>";
+		s += getExpPrice();
+		s += "</Price>";
+
+		s += "<Type>";
+		s += getType();
+		s += "</Type>";
+
+		s += "<DependanceNb>";
+		s += getDependance().length;
+		s += "</DependanceNb>";		
+
+		return s;
+	}
+
+	private String GetXMLElement(String XMLString, String balise) {
+		int len = ("<" + balise + ">").length();
+		int posDeb = XMLString.indexOf("<" + balise + ">");
+		int posFin = XMLString.indexOf("</" + balise + ">");
+
+		return XMLString.substring(posDeb + len, posFin);
+	}
+	
+	public static void main(String[] argv) {
+		Skill s1= new Skill("taper", "taper tel le bonhomme", 100, skillType.capacity);
+		String test=s1.toXMLString();
+		System.out.println(test);
+		System.out.println(s1.isActive());
+		Skill s2= new Skill(test);
+		test=s1.toXMLString();
+		System.out.println(test);
+		System.out.println(s2.isActive());
+		boolean[] dep= new boolean[1] ;
+		dep[0]=s2.isBought;
+		Skill s3= new Skill("taper2", "taper tel le bonhomme mais plus fort", 100, skillType.capacity,dep);
+		test=s3.toXMLString();
+		System.out.println(test);
+		System.out.println(s3.isActive());
+	}	
+*/
 }

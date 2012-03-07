@@ -325,7 +325,7 @@ public class TileEditionPan extends JPanel {
 	}
 
 	public class OnSlideEvent implements ChangeListener {
-
+		
 		@Override
 		public void stateChanged(ChangeEvent e) {
 			SaveTile();
@@ -334,7 +334,7 @@ public class TileEditionPan extends JPanel {
 	}
 
 	public class ComboSelectEvent implements ActionListener {
-
+		
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			SaveTile();
