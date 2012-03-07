@@ -141,8 +141,9 @@ public class Editor extends JFrame {
 			NewMapDialog newMapDialog = new NewMapDialog(null, "Create new Map", true);
 			NewMapDialogInfo newMapDialogInfo = newMapDialog.showDialog();
 			if (newMapDialogInfo.isValid()) {
+				currentPath = "";
 				Map newMap = new Map(newMapDialogInfo.getLength(), newMapDialogInfo.getWidth(), newMapDialogInfo.getName());
-				ChangeMap(newMap);
+				ChangeMap(newMap);				
 			}
 		}
 	}

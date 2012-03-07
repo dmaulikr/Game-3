@@ -1,6 +1,5 @@
 package entity;
 
-
 public class Job {
 	private String name;
 	private String description;
@@ -157,7 +156,7 @@ public class Job {
 		
 		public class LifeAmelio1 extends Skill {
 			public LifeAmelio1(){
-				super("Force +12 ", "augmente la force de 12", 100, skillType.amelioration);
+				super("HP +30", "augmente la vie de 30", 100, skillType.amelioration);
 			}
 			@Override
 			public void process(Character character) {
@@ -166,7 +165,7 @@ public class Job {
 		}
 		public class LifeAmelio2 extends Skill {
 			public LifeAmelio2(){
-				super("Force +12 ", "augmente la force de 12", 100, skillType.amelioration);
+				super("HP +70", "augmente la vie de 70", 100, skillType.amelioration);
 			}
 			@Override
 			public void process(Character character) {
@@ -175,7 +174,7 @@ public class Job {
 		}
 		public class LifeAmelio3 extends Skill {
 			public LifeAmelio3(){
-				super("Force +12 ", "augmente la force de 12", 100, skillType.amelioration);
+				super("HP +200", "augmente la vie de 200", 100, skillType.amelioration);
 			}
 			@Override
 			public void process(Character character) {
@@ -184,7 +183,7 @@ public class Job {
 		}
 		public class LifeAmelio4 extends Skill {
 			public LifeAmelio4(){
-				super("Force +12 ", "augmente la force de 12", 100, skillType.amelioration);
+				super("HP +300", "augmente la vie de 300", 100, skillType.amelioration);
 			}
 			@Override
 			public void process(Character character) {
@@ -194,7 +193,7 @@ public class Job {
 		
 		public class Dash extends Skill {
 			public Dash(){
-				super("Force +12 ", "augmente la force de 12", 100, skillType.amelioration);
+				super("Dash", "permet de Dash et de pousser son adversaire", 200, skillType.capacity);
 			}
 			@Override
 			public void process(Character character) {
@@ -203,14 +202,13 @@ public class Job {
 		}
 		public class CriticalStrike extends Skill {
 			public CriticalStrike(){
-				super("Force +12 ", "augmente la force de 12", 100, skillType.amelioration);
+				super("Critical Strike", "10% de chance de coup critique", 250, skillType.capacity);
 			}
 			@Override
 			public void process(Character character) {
 				//set CriticalStrike available a true
 			}
-		}
-		
+		}		
 	}
 
 	public class Rogue extends Job {

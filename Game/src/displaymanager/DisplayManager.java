@@ -147,7 +147,7 @@ public class DisplayManager {
 		for (int i = 0; i < demoMap.getLength(); i++) {
 			for (int j = 0; j < demoMap.getWidth(); j++) {
 				DrawATile(demoMap.getTile(i, j));
-				DrawGrass(demoMap.getTile(i, j), 5);
+				//DrawGrass(demoMap.getTile(i, j), 5);
 				if (i + 1 < demoMap.getLength()) {
 					if (demoMap.getTile(i, j).getHeight() > demoMap.getTile(i + 1, j).getHeight()) {
 						DrawTheLinkSE(demoMap.getTile(i, j), demoMap.getTile(i + 1, j));
