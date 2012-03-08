@@ -25,17 +25,20 @@ public class DisplayManager {
 	private Map demoMap;
 	private float scale;
 	private float zscale;
+
 	private Texture textureGrass;
 	private Texture textureStone;
 	private Texture textureSand;
 	private Texture textureEarth;
 	private Texture imageHerbe;
+	private Texture highlight;
+
 	float angleX = (float) Math.toDegrees(Math.atan(0.5)); // 26,565
 	float angleY = -45.0f;
 
-	//pour les rotations utiliser GL11.glRotatef(90f, 0, 1, 0);
-	//et ne pas oublier de gere l'affichage des cotes des tiles en fonction.
-		
+	// pour les rotations utiliser GL11.glRotatef(90f, 0, 1, 0);
+	// et ne pas oublier de gere l'affichage des cotes des tiles en fonction.
+
 	int state;
 
 	private int currentTileOnFocusX;
@@ -98,7 +101,6 @@ public class DisplayManager {
 		Display.destroy();
 	}
 
-	
 	public Map getDemoMap() {
 		return demoMap;
 	}
@@ -147,7 +149,7 @@ public class DisplayManager {
 		for (int i = 0; i < demoMap.getLength(); i++) {
 			for (int j = 0; j < demoMap.getWidth(); j++) {
 				DrawATile(demoMap.getTile(i, j));
-				//DrawGrass(demoMap.getTile(i, j), 5);
+				// DrawGrass(demoMap.getTile(i, j), 5);
 				if (i + 1 < demoMap.getLength()) {
 					if (demoMap.getTile(i, j).getHeight() > demoMap.getTile(i + 1, j).getHeight()) {
 						DrawTheLinkSE(demoMap.getTile(i, j), demoMap.getTile(i + 1, j));
@@ -162,9 +164,10 @@ public class DisplayManager {
 				} else {
 					DrawTheLinkSO(demoMap.getTile(i, j), new Tile(i, j + 1, 0));
 				}
+				
 			}
 		}
-
+		DrawHighlight(demoMap.getTile(0, 0));
 	}
 
 	private void DrawATile(Tile t) {
@@ -269,6 +272,32 @@ public class DisplayManager {
 
 	}
 
+	public void DrawHighlight(Tile t) {
+
+		GL11.glColor4f(1f, 1f, 1f, 0.4f);
+		highlight.bind();
+
+		float x1 = ((float) t.getPosY() * scale);
+		float x2 = (((float) t.getPosY()+1) * scale);
+		
+		float y1 = ((float) t.getPosX() * scale);
+		float y2 = (((float) t.getPosX()+1) * scale);
+		
+		float z1 = ((float) t.getHeight() * zscale) + (3f * zscale);
+
+		GL11.glBegin(GL11.GL_QUADS);
+		GL11.glTexCoord2d(0, 0);
+		GL11.glVertex3d(x1, z1, y1);
+		GL11.glTexCoord2d(1, 0);
+		GL11.glVertex3d(x2, z1, y1);
+		GL11.glTexCoord2d(1, 1);
+		GL11.glVertex3d(x2, z1, y2);
+		GL11.glTexCoord2d(0, 1);
+		GL11.glVertex3d(x1, z1, y2);
+		GL11.glEnd();
+
+	}
+
 	private void SelectColor(Tile tile) {
 		GL11.glColor4f(1f, 1f, 1f, 1f);
 		switch (tile.getTexture()) {
@@ -305,6 +334,7 @@ public class DisplayManager {
 			textureStone = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("images/Stone.PNG"));
 			textureEarth = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("images/Earth.PNG"));
 			imageHerbe = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("images/fleur1.png"));
+			highlight = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("images/highlightblue.PNG"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -390,7 +420,7 @@ public class DisplayManager {
 
 		state++;
 	}
-	
+
 	public static void main(String[] argv) {
 		DisplayManager display = new DisplayManager(new Map(5, 5, "lolilol"));
 		display.start();
