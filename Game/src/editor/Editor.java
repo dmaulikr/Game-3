@@ -233,7 +233,8 @@ public class Editor extends JFrame {
 		public void actionPerformed(ActionEvent e) {
 			if (currentMap != null) {
 				DisplayManager display = new DisplayManager(currentMap);
-				display.start();
+				display.init();
+				display.run();
 			}
 		}
 	}
