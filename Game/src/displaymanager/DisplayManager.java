@@ -56,6 +56,8 @@ public class DisplayManager {
 	private float focusZToGo;
 	private float scaleToGo;
 
+	private boolean isBusy;
+
 	public DisplayManager(Map demoMap) {
 		setDemoMap(demoMap);
 		float a = 1f / (float) demoMap.getLength();
@@ -91,11 +93,14 @@ public class DisplayManager {
 
 		GL11.glRotatef(angleX, 1, 0, 0); // 26,565
 		GL11.glRotatef(angleY, 0, 1, 0); // -45
-		angleY = -360f;
+		angleY = 0f;
+		isBusy = true;
 		currentView = view.South;
 		GL11.glMatrixMode(GL11.GL_MODELVIEW);
 		GL11.glLoadIdentity();
 		LoadTextures();
+
+		//RequestView(view.North);
 		while (!Display.isCloseRequested()) {
 			GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
 			Update();
@@ -219,27 +224,32 @@ public class DisplayManager {
 
 	private void DrawATile(Tile t) {
 		SelectColor(t);
+		// SouthEast means X is constant.
+		float x1 = t.getPosY() * scale;
+		float x2 = (t.getPosY() + 1) * scale;
+
+		float y = t.getHeight() * getZscale();
+
+		float z1 = t.getPosX() * scale;
+		float z2 = (t.getPosX() + 1) * scale;
 
 		GL11.glBegin(GL11.GL_QUADS);
 		GL11.glTexCoord2d(0, 0);
-		GL11.glVertex3d(t.getPosY() * scale, t.getHeight() * getZscale(), t.getPosX() * scale);
+		GL11.glVertex3d(x1, y, z1);
 		GL11.glTexCoord2d(1, 0);
-		GL11.glVertex3d(t.getPosY() * scale, t.getHeight() * getZscale(), (t.getPosX() + 1) * scale);
+		GL11.glVertex3d(x2, y, z1);
 		GL11.glTexCoord2d(1, 1);
-		GL11.glVertex3d((t.getPosY() + 1) * scale, t.getHeight() * getZscale(), (t.getPosX() + 1) * scale);
+		GL11.glVertex3d(x2, y, z2);
 		GL11.glTexCoord2d(0, 1);
-		GL11.glVertex3d((t.getPosY() + 1) * scale, t.getHeight() * getZscale(), t.getPosX() * scale);
-
+		GL11.glVertex3d(x1, y, z2);
 		GL11.glEnd();
 
 		GL11.glColor3f(0f, 0f, 0f);
 		GL11.glBegin(GL11.GL_LINE_LOOP);
-
-		GL11.glVertex3d(t.getPosY() * scale, t.getHeight() * getZscale(), t.getPosX() * scale);
-		GL11.glVertex3d(t.getPosY() * scale, t.getHeight() * getZscale(), (t.getPosX() + 1) * scale);
-		GL11.glVertex3d((t.getPosY() + 1) * scale, t.getHeight() * getZscale(), (t.getPosX() + 1) * scale);
-		GL11.glVertex3d((t.getPosY() + 1) * scale, t.getHeight() * getZscale(), t.getPosX() * scale);
-
+		GL11.glVertex3d(x1, y, z1);
+		GL11.glVertex3d(x2, y, z1);
+		GL11.glVertex3d(x2, y, z2);
+		GL11.glVertex3d(x1, y, z2);
 		GL11.glEnd();
 	}
 
@@ -488,197 +498,189 @@ public class DisplayManager {
 		}
 	}
 
-	private void SetFocusOn(int X, int Y, int Z) {
-		focusXToGo = (float) Math.round((X - currentTileOnFocusX) * scale * 100) / 100;
-		focusYToGo = (float) Math.round((Y - currentTileOnFocusY) * scale * 100) / 100;
-		focusZToGo = (float) Math.round((Z - currentTileOnFocusZ) * zscale * 100) / 100;
-		currentTileOnFocusX = X;
-		currentTileOnFocusY = Y;
-		currentTileOnFocusZ = Z;
+	private boolean RequestFocusOn(int X, int Y, int Z) {
+		if (isBusy) {
+			return false;
+		} else {
+			focusXToGo = (float) Math.round((X - currentTileOnFocusX) * (scale * 100)) / 100;
+			focusYToGo = (float) Math.round((Y - currentTileOnFocusY) * (scale * 100)) / 100;
+			focusZToGo = (float) Math.round((Z - currentTileOnFocusZ) * (zscale * 100)) / 100;
+			currentTileOnFocusX = X;
+			currentTileOnFocusY = Y;
+			currentTileOnFocusZ = Z;
+			setBusy(true);
+			return true;
+		}
 	}
 
 	private void SetFocusOnNoWait(int X, int Y, int Z) {
-		float x = (float) Math.round((X - currentTileOnFocusX) * scale * 100) / 100;
-		float y = (float) Math.round((Y - currentTileOnFocusY) * scale * 100) / 100;
-		float z = (float) Math.round((Z - currentTileOnFocusZ) * zscale * 100) / 100;
+		float x = (float) Math.round((X - currentTileOnFocusX) * (scale * 100)) / 100;
+		float y = (float) Math.round((Y - currentTileOnFocusY) * (scale * 100)) / 100;
+		float z = (float) Math.round((Z - currentTileOnFocusZ) * (zscale * 100)) / 100;
 		GL11.glTranslatef(x, z, y);
 		currentTileOnFocusX = X;
 		currentTileOnFocusY = Y;
 		currentTileOnFocusZ = Z;
 	}
 
-	private void SetView(view v) {
-		if (!v.equals(currentView)) {
-			switch (currentView) {
-			case South:
-				switch (v) {
-				case West:
-					angleY = -90f;
-					break;
-				case North:
-					angleY = -180f;
-					break;
-				case East:
-					angleY = 90f;
-					break;
-				}
-				break;
-			case West:
-				switch (v) {
+	public boolean RequestView(view v) {
+		if (isBusy) {
+			return false;
+		} else {			
+			if (!v.equals(currentView)) {
+				setBusy(true);
+				switch (currentView) {
 				case South:
-					angleY = 90f;
-					break;
-				case North:
-					angleY = -90f;
-					break;
-				case East:
-					angleY = -180f;
-					break;
-				}
-				break;
-			case North:
-				switch (v) {
-				case South:
-					angleY = -180f;
+					switch (v) {
+					case West:
+						angleY = -90f;
+						break;
+					case North:
+						angleY = -180f;
+						break;
+					case East:
+						angleY = 90f;
+						break;
+					}
 					break;
 				case West:
-					angleY = 90f;
-					break;
-				case East:
-					angleY = -90f;
-					break;
-				}
-				break;
-			case East:
-				switch (v) {
-				case South:
-					angleY = -90f;
-					break;
-				case West:
-					angleY = -180f;
+					switch (v) {
+					case South:
+						angleY = 90f;
+						break;
+					case North:
+						angleY = -90f;
+						break;
+					case East:
+						angleY = -180f;
+						break;
+					}
 					break;
 				case North:
-					angleY = 90f;
+					switch (v) {
+					case South:
+						angleY = -180f;
+						break;
+					case West:
+						angleY = 90f;
+						break;
+					case East:
+						angleY = -90f;
+						break;
+					}
+					break;
+				case East:
+					switch (v) {
+					case South:
+						angleY = -90f;
+						break;
+					case West:
+						angleY = -180f;
+						break;
+					case North:
+						angleY = 90f;
+						break;
+					}
+					break;
+				default:
 					break;
 				}
-				break;
-			default:
-				break;
 			}
+			return true;
 		}
 	}
 
-	private void Update() {
-		focusXToGo = (float) Math.round(focusXToGo * 100) / 100;
-		focusYToGo = (float) Math.round(focusYToGo * 100) / 100;
-		focusZToGo = (float) Math.round(focusZToGo * 100) / 100;
-		angleY = (float) Math.round(angleY * 100) / 100;
-
-		if (focusXToGo != 0) {
-			if (focusXToGo < 0) {
-				GL11.glTranslated(0.01f, 0, 0);
-				focusXToGo += 0.01f;
-			} else if (focusXToGo > 0) {
-				GL11.glTranslated(-0.01f, 0, 0);
-				focusXToGo -= 0.01f;
-			}
-		}
-		if (focusYToGo != 0) {
-			if (focusYToGo < 0) {
-				GL11.glTranslated(0, 0, 0.01f);
-				focusYToGo += 0.01f;
-			} else if (focusYToGo > 0) {
-				GL11.glTranslated(0, 0, -0.01f);
-				focusYToGo -= 0.01f;
-			}
-		}
-		if (focusZToGo != 0) {
-			if (focusZToGo < 0) {
-				GL11.glTranslated(0, 0.01f, 0);
-				focusZToGo += 0.01f;
-			} else if (focusZToGo > 0) {
-				GL11.glTranslated(0, -0.01f, 0);
-				focusZToGo -= 0.01f;
-			}
-		}
-		/*
-		 * if (scaleToGo != 0) { if (scaleToGo < scale) { scale -= 0.001f; } if
-		 * (scaleToGo > scale) { scale += 0.001f; } }
-		 */
-		if (angleY != 0) {
-			if (angleY < 0) {
-				GL11.glRotatef(1f, 0, 1, 0);
-				angleY += 1f;
-			}
-			if (angleY > 0) {
-				GL11.glRotatef(-1f, 0, 1, 0);
-				angleY -= 1f;
-			}
-			if (angleY == -45f || angleY == -135f || angleY == -225f || angleY == -315f) {
-				switch (currentView) {
-				case South:
-					currentView = view.West;
-					break;
-				case West:
-					currentView = view.North;
-					break;
-				case North:
-					currentView = view.East;
-					break;
-				case East:
-					currentView = view.South;
-					break;
+	private void Update() {		
+		if (isBusy) {
+			focusXToGo = (float) Math.round(focusXToGo * 100) / 100;
+			focusYToGo = (float) Math.round(focusYToGo * 100) / 100;
+			focusZToGo = (float) Math.round(focusZToGo * 100) / 100;
+			angleY = (float) Math.round(angleY * 100) / 100;
+			if (focusXToGo != 0) {
+				if (focusXToGo < 0) {
+					GL11.glTranslated(0.01f, 0, 0);
+					focusXToGo += 0.01f;
+				} else if (focusXToGo > 0) {
+					GL11.glTranslated(-0.01f, 0, 0);
+					focusXToGo -= 0.01f;
 				}
 			}
-			if (angleY == 45f || angleY == 135f || angleY == 225f || angleY == 315f) {
-				switch (currentView) {
-				case South:
-					currentView = view.East;
-					break;
-				case West:
-					currentView = view.South;
-					break;
-				case North:
-					currentView = view.West;
-					break;
-				case East:
-					currentView = view.North;
-					break;
+			if (focusYToGo != 0) {
+				if (focusYToGo < 0) {
+					GL11.glTranslated(0, 0, 0.01f);
+					focusYToGo += 0.01f;
+				} else if (focusYToGo > 0) {
+					GL11.glTranslated(0, 0, -0.01f);
+					focusYToGo -= 0.01f;
 				}
+			}
+			if (focusZToGo != 0) {
+				if (focusZToGo < 0) {
+					GL11.glTranslated(0, 0.01f, 0);
+					focusZToGo += 0.01f;
+				} else if (focusZToGo > 0) {
+					GL11.glTranslated(0, -0.01f, 0);
+					focusZToGo -= 0.01f;
+				}
+			}
+			/*
+			 * if (scaleToGo != 0) { if (scaleToGo < scale) { scale -= 0.001f; }
+			 * if (scaleToGo > scale) { scale += 0.001f; } }
+			 */
+			if (angleY != 0) {
+				if (angleY < 0) {
+					GL11.glRotatef(1f, 0, 1, 0);	
+					double a=Math.sin(Math.PI/180);
+					double b=Math.sin(Math.PI/180);
+					GL11.glTranslated(-a/2, 0, b/2);
+					angleY += 1f;
+				}
+				if (angleY > 0) {					
+					GL11.glRotatef(-1f, 0, 1, 0);
+					double a=Math.sin(Math.PI/180);
+					double b=Math.sin(Math.PI/180);
+					GL11.glTranslated(a/2, 0, -b/2);
+					angleY -= 1f;
+				}
+				if (angleY == -45f || angleY == -135f || angleY == -225f || angleY == -315f ) {
+					switch (currentView) {
+					case South:
+						currentView = view.West;
+						break;
+					case West:
+						currentView = view.North;
+						break;
+					case North:
+						currentView = view.East;
+						break;
+					case East:
+						currentView = view.South;
+						break;
+					}
+				}
+				if (angleY == 45f || angleY == 135f || angleY == 225f || angleY == 315f) {
+					switch (currentView) {
+					case South:
+						currentView = view.East;
+						break;
+					case West:
+						currentView = view.South;
+						break;
+					case North:
+						currentView = view.West;
+						break;
+					case East:
+						currentView = view.North;
+						break;
+					}
+				}
+			}
+
+			if (focusXToGo == 0 && focusYToGo == 0 && focusZToGo == 0 && angleY == 0) {
+				setBusy(false);
 			}
 		}
 
-		if (focusXToGo == 0 && focusYToGo == 0 && focusZToGo == 0) {
-			// test();
-		}
-
-	}
-
-	private void test() {
-		Tile tile;
-		switch (state) {
-		case 0:
-			tile = demoMap.getTile(2, 3);
-			SetFocusOn(tile.getPosX(), tile.getPosY(), tile.getHeight());
-			break;
-		case 1:
-			tile = demoMap.getTile(0, 0);
-			SetFocusOn(tile.getPosX(), tile.getPosY(), tile.getHeight());
-			break;
-		case 2:
-			tile = demoMap.getTile(4, 4);
-			SetFocusOn(tile.getPosX(), tile.getPosY(), tile.getHeight());
-			break;
-		case 3:
-			tile = demoMap.getTile(1, 4);
-			SetFocusOn(tile.getPosX(), tile.getPosY(), tile.getHeight());
-			break;
-
-		default:
-			break;
-		}
-
-		state++;
 	}
 
 	public Map getDemoMap() {
@@ -710,6 +712,14 @@ public class DisplayManager {
 		map.getTile(2, 2).setHeight(25);
 		DisplayManager display = new DisplayManager(map);
 		display.start();
+	}
+
+	public boolean isBusy() {
+		return isBusy;
+	}
+
+	public void setBusy(boolean isBusy) {
+		this.isBusy = isBusy;
 	}
 
 }
