@@ -36,8 +36,14 @@ public class DisplayManager {
 	float angleX = (float) Math.toDegrees(Math.atan(0.5)); // 26,565
 	float angleY = -45.0f;
 
-	// pour les rotations utiliser GL11.glRotatef(90f, 0, 1, 0);
-	// et ne pas oublier de gere l'affichage des cotes des tiles en fonction.
+	enum view {
+		South, // base
+		West, // -90°
+		North, // -/+180°
+		East // -270°/+90°
+	}
+
+	private view currentView;
 
 	int state;
 
@@ -55,7 +61,7 @@ public class DisplayManager {
 		float a = 1f / (float) demoMap.getLength();
 		float b = 1f / (float) demoMap.getWidth();
 		setScale(Math.min(a, b));
-		setScale(scale * 2f);
+		// setScale(scale * 2f);
 		float c = 1f / (float) 50;
 		setZscale(c);
 	}
@@ -85,7 +91,8 @@ public class DisplayManager {
 
 		GL11.glRotatef(angleX, 1, 0, 0); // 26,565
 		GL11.glRotatef(angleY, 0, 1, 0); // -45
-
+		angleY = -360f;
+		currentView = view.South;
 		GL11.glMatrixMode(GL11.GL_MODELVIEW);
 		GL11.glLoadIdentity();
 		LoadTextures();
@@ -99,30 +106,6 @@ public class DisplayManager {
 		}
 
 		Display.destroy();
-	}
-
-	public Map getDemoMap() {
-		return demoMap;
-	}
-
-	public void setDemoMap(Map demoMap) {
-		this.demoMap = demoMap;
-	}
-
-	public float getScale() {
-		return scale;
-	}
-
-	public void setScale(float f) {
-		this.scale = f;
-	}
-
-	public float getZscale() {
-		return zscale;
-	}
-
-	public void setZscale(float zscale) {
-		this.zscale = zscale;
 	}
 
 	private void Draw() {
@@ -146,28 +129,92 @@ public class DisplayManager {
 
 		GL11.glEnd();
 
-		for (int i = 0; i < demoMap.getLength(); i++) {
-			for (int j = 0; j < demoMap.getWidth(); j++) {
-				DrawATile(demoMap.getTile(i, j));
-				// DrawGrass(demoMap.getTile(i, j), 5);
-				if (i + 1 < demoMap.getLength()) {
-					if (demoMap.getTile(i, j).getHeight() > demoMap.getTile(i + 1, j).getHeight()) {
-						DrawTheLinkSE(demoMap.getTile(i, j), demoMap.getTile(i + 1, j));
+		switch (currentView) {
+		case South:
+			for (int i = 0; i < demoMap.getLength(); i++) {
+				for (int j = 0; j < demoMap.getWidth(); j++) {
+					DrawATile(demoMap.getTile(i, j));
+					if (i + 1 < demoMap.getLength()) {
+						if (demoMap.getTile(i, j).getHeight() > demoMap.getTile(i + 1, j).getHeight()) {
+							DrawTheLinkSO(demoMap.getTile(i, j), demoMap.getTile(i + 1, j));
+						}
+					} else {
+						DrawTheLinkSO(demoMap.getTile(i, j), new Tile(i + 1, j, 0));
 					}
-				} else {
-					DrawTheLinkSE(demoMap.getTile(i, j), new Tile(i + 1, j, 0));
-				}
-				if (j + 1 < demoMap.getWidth()) {
-					if (demoMap.getTile(i, j).getHeight() > demoMap.getTile(i, j + 1).getHeight()) {
-						DrawTheLinkSO(demoMap.getTile(i, j), demoMap.getTile(i, j + 1));
+					if (j + 1 < demoMap.getWidth()) {
+						if (demoMap.getTile(i, j).getHeight() > demoMap.getTile(i, j + 1).getHeight()) {
+							DrawTheLinkSE(demoMap.getTile(i, j), demoMap.getTile(i, j + 1));
+						}
+					} else {
+						DrawTheLinkSE(demoMap.getTile(i, j), new Tile(i, j + 1, 0));
 					}
-				} else {
-					DrawTheLinkSO(demoMap.getTile(i, j), new Tile(i, j + 1, 0));
 				}
-				
 			}
+			break;
+		case West:
+			for (int i = 0; i < demoMap.getLength(); i++) {
+				for (int j = demoMap.getWidth() - 1; j >= 0; j--) {
+					DrawATile(demoMap.getTile(i, j));
+					if (i + 1 < demoMap.getLength()) {
+						if (demoMap.getTile(i, j).getHeight() > demoMap.getTile(i + 1, j).getHeight()) {
+							DrawTheLinkSO(demoMap.getTile(i, j), demoMap.getTile(i + 1, j));
+						}
+					} else {
+						DrawTheLinkSO(demoMap.getTile(i, j), new Tile(i + 1, j, 0));
+					}
+					if (j > 0) {
+						if (demoMap.getTile(i, j).getHeight() > demoMap.getTile(i, j - 1).getHeight()) {
+							DrawTheLinkNO(demoMap.getTile(i, j), demoMap.getTile(i, j - 1));
+						}
+					} else {
+						DrawTheLinkNO(demoMap.getTile(i, j), new Tile(i, j - 1, 0));
+					}
+				}
+			}
+			break;
+		case North:
+			for (int i = demoMap.getLength() - 1; i >= 0; i--) {
+				for (int j = demoMap.getWidth() - 1; j >= 0; j--) {
+					DrawATile(demoMap.getTile(i, j));
+					if (i > 0) {
+						if (demoMap.getTile(i, j).getHeight() > demoMap.getTile(i - 1, j).getHeight()) {
+							DrawTheLinkNE(demoMap.getTile(i, j), demoMap.getTile(i - 1, j));
+						}
+					} else {
+						DrawTheLinkNE(demoMap.getTile(i, j), new Tile(i + 1, j, 0));
+					}
+					if (j > 0) {
+						if (demoMap.getTile(i, j).getHeight() > demoMap.getTile(i, j - 1).getHeight()) {
+							DrawTheLinkNO(demoMap.getTile(i, j), demoMap.getTile(i, j - 1));
+						}
+					} else {
+						DrawTheLinkNO(demoMap.getTile(i, j), new Tile(i, j - 1, 0));
+					}
+				}
+			}
+			break;
+		case East:
+			for (int j = 0; j < demoMap.getWidth(); j++) {
+				for (int i = demoMap.getLength() - 1; i >= 0; i -= 1) {
+					DrawATile(demoMap.getTile(i, j));
+					if (i > 0) {
+						if (demoMap.getTile(i, j).getHeight() > demoMap.getTile(i - 1, j).getHeight()) {
+							DrawTheLinkNE(demoMap.getTile(i, j), demoMap.getTile(i - 1, j));
+						}
+					} else {
+						DrawTheLinkNE(demoMap.getTile(i, j), new Tile(i - 1, j, 0));
+					}
+					if (j + 1 < demoMap.getWidth()) {
+						if (demoMap.getTile(i, j).getHeight() > demoMap.getTile(i, j + 1).getHeight()) {
+							DrawTheLinkSE(demoMap.getTile(i, j), demoMap.getTile(i, j + 1));
+						}
+					} else {
+						DrawTheLinkSE(demoMap.getTile(i, j), new Tile(i, j + 1, 0));
+					}
+				}
+			}
+			break;
 		}
-		DrawHighlight(demoMap.getTile(0, 0));
 	}
 
 	private void DrawATile(Tile t) {
@@ -198,52 +245,153 @@ public class DisplayManager {
 
 	private void DrawTheLinkSE(Tile t1, Tile t2) {
 		SelectColor(t1);
+		// SouthEast means X is constant.
+		float x1 = t2.getPosY() * scale;
+		float x2 = x1;
+		float x3 = x1;
+		float x4 = x1;
+
+		float y1 = t1.getHeight() * zscale;
+		float y2 = y1;
+		float y3 = t2.getHeight() * zscale;
+		float y4 = y3;
+
+		float z1 = (t1.getPosX() + 1) * scale;
+		float z2 = t1.getPosX() * scale;
+		float z3 = z2;
+		float z4 = z1;
 
 		GL11.glBegin(GL11.GL_QUADS);
 		GL11.glTexCoord2d(0, 0);
-		GL11.glVertex3d(t1.getPosY() * scale, t1.getHeight() * getZscale(), (t1.getPosX() + 1) * scale);
+		GL11.glVertex3d(x1, y1, z1);
 		GL11.glTexCoord2d(1, 0);
-		GL11.glVertex3d(t2.getPosY() * scale, t2.getHeight() * getZscale(), t2.getPosX() * scale);
+		GL11.glVertex3d(x2, y2, z2);
 		GL11.glTexCoord2d(1, 1);
-		GL11.glVertex3d((t2.getPosY() + 1) * scale, t2.getHeight() * getZscale(), t2.getPosX() * scale);
+		GL11.glVertex3d(x3, y3, z3);
 		GL11.glTexCoord2d(0, 1);
-		GL11.glVertex3d((t1.getPosY() + 1) * scale, t1.getHeight() * getZscale(), (t1.getPosX() + 1) * scale);
-
+		GL11.glVertex3d(x4, y4, z4);
 		GL11.glEnd();
 
 		GL11.glColor3f(0f, 0f, 0f);
 		GL11.glBegin(GL11.GL_LINE_LOOP);
-
-		GL11.glVertex3d(t1.getPosY() * scale, t1.getHeight() * getZscale(), (t1.getPosX() + 1) * scale);
-		GL11.glVertex3d(t2.getPosY() * scale, t2.getHeight() * getZscale(), t2.getPosX() * scale);
-		GL11.glVertex3d((t2.getPosY() + 1) * scale, t2.getHeight() * getZscale(), t2.getPosX() * scale);
-		GL11.glVertex3d((t1.getPosY() + 1) * scale, t1.getHeight() * getZscale(), (t1.getPosX() + 1) * scale);
-
+		GL11.glVertex3d(x1, y1, z1);
+		GL11.glVertex3d(x2, y2, z2);
+		GL11.glVertex3d(x3, y3, z3);
+		GL11.glVertex3d(x4, y4, z4);
 		GL11.glEnd();
 	}
 
 	private void DrawTheLinkSO(Tile t1, Tile t2) {
 		SelectColor(t1);
+		// SouthWest means Z is constant.
+		float x1 = t1.getPosY() * scale;
+		float x2 = (t1.getPosY() + 1) * scale;
+		float x3 = x2;
+		float x4 = x1;
+
+		float y1 = t1.getHeight() * zscale;
+		float y2 = y1;
+		float y3 = t2.getHeight() * zscale;
+		float y4 = y3;
+
+		float z1 = t2.getPosX() * scale;
+		float z2 = z1;
+		float z3 = z1;
+		float z4 = z1;
+
 		GL11.glBegin(GL11.GL_QUADS);
 		GL11.glTexCoord2d(0, 0);
-		GL11.glVertex3d((t1.getPosY() + 1) * scale, t1.getHeight() * getZscale(), (t1.getPosX() + 1) * scale);
+		GL11.glVertex3d(x1, y1, z1);
 		GL11.glTexCoord2d(1, 0);
-		GL11.glVertex3d(t2.getPosY() * scale, t2.getHeight() * getZscale(), (t2.getPosX() + 1) * scale);
+		GL11.glVertex3d(x2, y2, z2);
 		GL11.glTexCoord2d(1, 1);
-		GL11.glVertex3d(t2.getPosY() * scale, t2.getHeight() * getZscale(), t2.getPosX() * scale);
+		GL11.glVertex3d(x3, y3, z3);
 		GL11.glTexCoord2d(0, 1);
-		GL11.glVertex3d((t1.getPosY() + 1) * scale, t1.getHeight() * getZscale(), t1.getPosX() * scale);
-
+		GL11.glVertex3d(x4, y4, z4);
 		GL11.glEnd();
 
 		GL11.glColor3f(0f, 0f, 0f);
 		GL11.glBegin(GL11.GL_LINE_LOOP);
+		GL11.glVertex3d(x1, y1, z1);
+		GL11.glVertex3d(x2, y2, z2);
+		GL11.glVertex3d(x3, y3, z3);
+		GL11.glVertex3d(x4, y4, z4);
+		GL11.glEnd();
+	}
 
-		GL11.glVertex3d((t1.getPosY() + 1) * scale, t1.getHeight() * getZscale(), (t1.getPosX() + 1) * scale);
-		GL11.glVertex3d(t2.getPosY() * scale, t2.getHeight() * getZscale(), (t2.getPosX() + 1) * scale);
-		GL11.glVertex3d(t2.getPosY() * scale, t2.getHeight() * getZscale(), t2.getPosX() * scale);
-		GL11.glVertex3d((t1.getPosY() + 1) * scale, t1.getHeight() * getZscale(), t1.getPosX() * scale);
+	private void DrawTheLinkNE(Tile t1, Tile t2) {
+		SelectColor(t1);
+		// NorthEast means Z is constant.
+		float x1 = t1.getPosY() * scale;
+		float x2 = (t1.getPosY() + 1) * scale;
+		float x3 = x2;
+		float x4 = x1;
 
+		float y1 = t1.getHeight() * zscale;
+		float y2 = y1;
+		float y3 = t2.getHeight() * zscale;
+		float y4 = y3;
+
+		float z1 = t1.getPosX() * scale;
+		float z2 = z1;
+		float z3 = z1;
+		float z4 = z1;
+
+		GL11.glBegin(GL11.GL_QUADS);
+		GL11.glTexCoord2d(0, 0);
+		GL11.glVertex3d(x1, y1, z1);
+		GL11.glTexCoord2d(1, 0);
+		GL11.glVertex3d(x2, y2, z2);
+		GL11.glTexCoord2d(1, 1);
+		GL11.glVertex3d(x3, y3, z3);
+		GL11.glTexCoord2d(0, 1);
+		GL11.glVertex3d(x4, y4, z4);
+		GL11.glEnd();
+
+		GL11.glColor3f(0f, 0f, 0f);
+		GL11.glBegin(GL11.GL_LINE_LOOP);
+		GL11.glVertex3d(x1, y1, z1);
+		GL11.glVertex3d(x2, y2, z2);
+		GL11.glVertex3d(x3, y3, z3);
+		GL11.glVertex3d(x4, y4, z4);
+		GL11.glEnd();
+	}
+
+	private void DrawTheLinkNO(Tile t1, Tile t2) {
+		SelectColor(t1);
+		// NorthWest means X is constant.
+		float x1 = t1.getPosY() * scale;
+		float x2 = x1;
+		float x3 = x1;
+		float x4 = x1;
+
+		float y1 = t1.getHeight() * zscale;
+		float y2 = y1;
+		float y3 = t2.getHeight() * zscale;
+		float y4 = y3;
+
+		float z1 = (t1.getPosX() + 1) * scale;
+		float z2 = t1.getPosX() * scale;
+		float z3 = z2;
+		float z4 = z1;
+
+		GL11.glBegin(GL11.GL_QUADS);
+		GL11.glTexCoord2d(0, 0);
+		GL11.glVertex3d(x1, y1, z1);
+		GL11.glTexCoord2d(1, 0);
+		GL11.glVertex3d(x2, y2, z2);
+		GL11.glTexCoord2d(1, 1);
+		GL11.glVertex3d(x3, y3, z3);
+		GL11.glTexCoord2d(0, 1);
+		GL11.glVertex3d(x4, y4, z4);
+		GL11.glEnd();
+
+		GL11.glColor3f(0f, 0f, 0f);
+		GL11.glBegin(GL11.GL_LINE_LOOP);
+		GL11.glVertex3d(x1, y1, z1);
+		GL11.glVertex3d(x2, y2, z2);
+		GL11.glVertex3d(x3, y3, z3);
+		GL11.glVertex3d(x4, y4, z4);
 		GL11.glEnd();
 	}
 
@@ -278,11 +426,11 @@ public class DisplayManager {
 		highlight.bind();
 
 		float x1 = ((float) t.getPosY() * scale);
-		float x2 = (((float) t.getPosY()+1) * scale);
-		
+		float x2 = (((float) t.getPosY() + 1) * scale);
+
 		float y1 = ((float) t.getPosX() * scale);
-		float y2 = (((float) t.getPosX()+1) * scale);
-		
+		float y2 = (((float) t.getPosX() + 1) * scale);
+
 		float z1 = ((float) t.getHeight() * zscale) + (3f * zscale);
 
 		GL11.glBegin(GL11.GL_QUADS);
@@ -349,49 +497,161 @@ public class DisplayManager {
 		currentTileOnFocusZ = Z;
 	}
 
+	private void SetFocusOnNoWait(int X, int Y, int Z) {
+		float x = (float) Math.round((X - currentTileOnFocusX) * scale * 100) / 100;
+		float y = (float) Math.round((Y - currentTileOnFocusY) * scale * 100) / 100;
+		float z = (float) Math.round((Z - currentTileOnFocusZ) * zscale * 100) / 100;
+		GL11.glTranslatef(x, z, y);
+		currentTileOnFocusX = X;
+		currentTileOnFocusY = Y;
+		currentTileOnFocusZ = Z;
+	}
+
+	private void SetView(view v) {
+		if (!v.equals(currentView)) {
+			switch (currentView) {
+			case South:
+				switch (v) {
+				case West:
+					angleY = -90f;
+					break;
+				case North:
+					angleY = -180f;
+					break;
+				case East:
+					angleY = 90f;
+					break;
+				}
+				break;
+			case West:
+				switch (v) {
+				case South:
+					angleY = 90f;
+					break;
+				case North:
+					angleY = -90f;
+					break;
+				case East:
+					angleY = -180f;
+					break;
+				}
+				break;
+			case North:
+				switch (v) {
+				case South:
+					angleY = -180f;
+					break;
+				case West:
+					angleY = 90f;
+					break;
+				case East:
+					angleY = -90f;
+					break;
+				}
+				break;
+			case East:
+				switch (v) {
+				case South:
+					angleY = -90f;
+					break;
+				case West:
+					angleY = -180f;
+					break;
+				case North:
+					angleY = 90f;
+					break;
+				}
+				break;
+			default:
+				break;
+			}
+		}
+	}
+
 	private void Update() {
 		focusXToGo = (float) Math.round(focusXToGo * 100) / 100;
 		focusYToGo = (float) Math.round(focusYToGo * 100) / 100;
 		focusZToGo = (float) Math.round(focusZToGo * 100) / 100;
+		angleY = (float) Math.round(angleY * 100) / 100;
 
 		if (focusXToGo != 0) {
 			if (focusXToGo < 0) {
-				GL11.glTranslated(0.01, 0, 0);
-				focusXToGo += 0.01;
+				GL11.glTranslated(0.01f, 0, 0);
+				focusXToGo += 0.01f;
 			} else if (focusXToGo > 0) {
-				GL11.glTranslated(-0.01, 0, 0);
-				focusXToGo -= 0.01;
+				GL11.glTranslated(-0.01f, 0, 0);
+				focusXToGo -= 0.01f;
 			}
 		}
 		if (focusYToGo != 0) {
 			if (focusYToGo < 0) {
-				GL11.glTranslated(0, 0, 0.01);
-				focusYToGo += 0.01;
+				GL11.glTranslated(0, 0, 0.01f);
+				focusYToGo += 0.01f;
 			} else if (focusYToGo > 0) {
-				GL11.glTranslated(0, 0, -0.01);
-				focusYToGo -= 0.01;
+				GL11.glTranslated(0, 0, -0.01f);
+				focusYToGo -= 0.01f;
 			}
 		}
 		if (focusZToGo != 0) {
 			if (focusZToGo < 0) {
-				GL11.glTranslated(0, 0.01, 0);
-				focusZToGo += 0.01;
+				GL11.glTranslated(0, 0.01f, 0);
+				focusZToGo += 0.01f;
 			} else if (focusZToGo > 0) {
-				GL11.glTranslated(0, -0.01, 0);
-				focusZToGo -= 0.01;
+				GL11.glTranslated(0, -0.01f, 0);
+				focusZToGo -= 0.01f;
 			}
 		}
-		if (scaleToGo != 0) {
-			if (scaleToGo < scale) {
-				scale -= 0.001;
+		/*
+		 * if (scaleToGo != 0) { if (scaleToGo < scale) { scale -= 0.001f; } if
+		 * (scaleToGo > scale) { scale += 0.001f; } }
+		 */
+		if (angleY != 0) {
+			if (angleY < 0) {
+				GL11.glRotatef(1f, 0, 1, 0);
+				angleY += 1f;
 			}
-			if (scaleToGo > scale) {
-				scale += 0.001;
+			if (angleY > 0) {
+				GL11.glRotatef(-1f, 0, 1, 0);
+				angleY -= 1f;
+			}
+			if (angleY == -45f || angleY == -135f || angleY == -225f || angleY == -315f) {
+				switch (currentView) {
+				case South:
+					currentView = view.West;
+					break;
+				case West:
+					currentView = view.North;
+					break;
+				case North:
+					currentView = view.East;
+					break;
+				case East:
+					currentView = view.South;
+					break;
+				}
+			}
+			if (angleY == 45f || angleY == 135f || angleY == 225f || angleY == 315f) {
+				switch (currentView) {
+				case South:
+					currentView = view.East;
+					break;
+				case West:
+					currentView = view.South;
+					break;
+				case North:
+					currentView = view.West;
+					break;
+				case East:
+					currentView = view.North;
+					break;
+				}
 			}
 		}
+
 		if (focusXToGo == 0 && focusYToGo == 0 && focusZToGo == 0) {
 			// test();
 		}
+
 	}
 
 	private void test() {
@@ -421,8 +681,34 @@ public class DisplayManager {
 		state++;
 	}
 
+	public Map getDemoMap() {
+		return demoMap;
+	}
+
+	public void setDemoMap(Map demoMap) {
+		this.demoMap = demoMap;
+	}
+
+	public float getScale() {
+		return scale;
+	}
+
+	public void setScale(float f) {
+		this.scale = f;
+	}
+
+	public float getZscale() {
+		return zscale;
+	}
+
+	public void setZscale(float zscale) {
+		this.zscale = zscale;
+	}
+
 	public static void main(String[] argv) {
-		DisplayManager display = new DisplayManager(new Map(5, 5, "lolilol"));
+		Map map = new Map(5, 5, "lolilol");
+		map.getTile(2, 2).setHeight(25);
+		DisplayManager display = new DisplayManager(map);
 		display.start();
 	}
 
