@@ -31,9 +31,9 @@ public class Map {
 		int width;
 		String name;
 
-		length = Integer.parseInt(GetXMLElement(XMLString, "Length"));
-		width = Integer.parseInt(GetXMLElement(XMLString, "Width"));
-		name = GetXMLElement(XMLString, "Name");
+		length = Integer.parseInt(GetXMLElement(XMLString, "L"));
+		width = Integer.parseInt(GetXMLElement(XMLString, "W"));
+		name = GetXMLElement(XMLString, "N");
 
 		this.setLength(length);
 		this.setWidth(width);
@@ -92,26 +92,28 @@ public class Map {
 		String s = new String();
 		s = "";
 		s += "<Map>";
-
-		s += "<Length>";
+		s += "\n";
+		s += "<L>";
 		s += this.getLength();
-		s += "</Length>";
+		s += "</L>";
 
-		s += "<Width>";
+		s += "<W>";
 		s += this.getWidth();
-		s += "</Width>";
+		s += "</W>";
 
-		s += "<Name>";
+		s += "<N>";
 		s += this.getName();
-		s += "</Name>";
-
+		s += "</N>";
+		s += "\n";
 		for (int i = 0; i < length; i++) {
 			for (int j = 0; j < width; j++) {
-				s += "<Tile" + i + j + ">";
+				s += "<Tile" + i + "/" + j + ">";
 				s += map[i][j].toXMLString();
-				s += "</Tile" + i + j + ">";
+				s += "</Tile" + i + "/" + j + ">";
+				s += "\n";
 			}
 		}
+
 		s += "</Map>";
 
 		return s;

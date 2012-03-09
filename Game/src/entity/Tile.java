@@ -22,6 +22,7 @@ public class Tile {
 	private int heightToDraw;
 
 	private boolean isHighlighted;
+
 	private textureType texture;
 	private tileType type;
 	private decorationType decoration;
@@ -75,13 +76,13 @@ public class Tile {
 		tileType type;
 		decorationType decoration;
 
-		posX = Integer.parseInt(GetXMLElement(XMLString, "PosX"));
-		posY = Integer.parseInt(GetXMLElement(XMLString, "PosY"));
-		height = Integer.parseInt(GetXMLElement(XMLString, "Height"));
-		heightTotal = Integer.parseInt(GetXMLElement(XMLString, "HeightTotal"));
-		texture = textureType.valueOf((GetXMLElement(XMLString, "Texture")));
-		type = tileType.valueOf((GetXMLElement(XMLString, "Type")));
-		decoration = decorationType.valueOf((GetXMLElement(XMLString, "Decoration")));
+		posX = Integer.parseInt(GetXMLElement(XMLString, "X"));
+		posY = Integer.parseInt(GetXMLElement(XMLString, "Y"));
+		height = Integer.parseInt(GetXMLElement(XMLString, "Z"));
+		heightTotal = Integer.parseInt(GetXMLElement(XMLString, "Z2"));
+		texture = textureType.valueOf((GetXMLElement(XMLString, "Tx")));
+		type = tileType.valueOf((GetXMLElement(XMLString, "Ty")));
+		decoration = decorationType.valueOf((GetXMLElement(XMLString, "Dc")));
 
 		this.setPosX(posX);
 		this.setPosY(posY);
@@ -100,7 +101,6 @@ public class Tile {
 		this.setTextureSO(textures[2]);
 		this.setTextureNO(textures[3]);
 		this.setTextureNE(textures[4]);
-
 	}
 
 	private String GetXMLElement(String XMLString, String balise) {
@@ -115,33 +115,33 @@ public class Tile {
 		String s = new String();
 		s = "";
 
-		s += "<PosX>";
+		s += "<X>";
 		s += this.getPosX();
-		s += "</PosX>";
+		s += "</X>";
 
-		s += "<PosY>";
+		s += "<Y>";
 		s += this.getPosY();
-		s += "</PosY>";
+		s += "</Y>";
 
-		s += "<Height>";
+		s += "<Z>";
 		s += this.getHeight();
-		s += "</Height>";
+		s += "</Z>";
 
-		s += "<HeightTotal>";
+		s += "<Z2>";
 		s += this.getHeightToDraw();
-		s += "</HeightTotal>";
+		s += "</Z2>";
 
-		s += "<Texture>";
+		s += "<Tx>";
 		s += this.getTexture();
-		s += "</Texture>";
+		s += "</Tx>";
 
-		s += "<Type>";
+		s += "<Ty>";
 		s += this.getType();
-		s += "</Type>";
+		s += "</Ty>";
 
-		s += "<Decoration>";
+		s += "<Dc>";
 		s += this.getDecoration();
-		s += "</Decoration>";
+		s += "</Dc>";
 
 		return s;
 	}

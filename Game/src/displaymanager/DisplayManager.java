@@ -28,21 +28,19 @@ public class DisplayManager {
 	private float scale;
 	private float zscale;
 
-	private Texture textureGrass;
-	private Texture textureStone;
-	private Texture textureSand;
-	private Texture textureEarth;
+	private boolean requestClose = false;
+
 	private Texture imageHerbe;
 	private Texture highlight;
 
-	enum view {
+	public enum viewPoint {
 		South, // base
 		West, // -90°
 		North, // -/+180°
 		East // -270°/+90°
 	}
 
-	private view currentView;
+	private viewPoint currentView;
 
 	private int currentTileOnFocusX;
 	private int currentTileOnFocusY;
@@ -67,11 +65,8 @@ public class DisplayManager {
 		scaleToGo = 0;
 		rotationToGo = 0f;
 		isBusy = false;
-		currentView = view.South;
+		currentView = viewPoint.South;
 
-	}
-
-	public void init() {
 		try {
 			Display.setDisplayMode(new DisplayMode(800, 600));
 			Display.setSwapInterval(1);
@@ -81,6 +76,9 @@ public class DisplayManager {
 			e.printStackTrace();
 			System.exit(0);
 		}
+	}
+
+	public void init() {
 
 		GL11.glViewport(0, 0, 800, 600);
 		GL11.glDepthRange(0, 1000);
@@ -102,20 +100,26 @@ public class DisplayManager {
 		GL11.glLoadIdentity();
 
 		// LoadTextures();
-		TileTexture ttx=new TileTexture();
+		TileTexture ttx = new TileTexture();
 		ttx.LoadBundles(demoMap.getAllTextureTypes());
 		demoMap.BindTextures(ttx);
+		LoadTextures();
 	}
 
 	public void run() {
 		while (!Display.isCloseRequested()) {
 			Update();
-			if (Display.isVisible()) {
-				Draw();
-			}
-			Display.update();
 		}
 		Display.destroy();
+	}
+
+	public void Update() {
+		requestClose = Display.isCloseRequested();
+		CheckLogic();
+		if (Display.isVisible()) {
+			Draw();
+		}
+		Display.update();
 	}
 
 	private void Draw() {
@@ -157,6 +161,9 @@ public class DisplayManager {
 					} else {
 						DrawTheLinkSE(demoMap.getTile(i, j), new Tile(i, j + 1, 0));
 					}
+					if((demoMap.getTile(i, j).isHighlighted())){
+						DrawHighlight(demoMap.getTile(i, j));
+					}
 				}
 			}
 			break;
@@ -177,6 +184,9 @@ public class DisplayManager {
 						}
 					} else {
 						DrawTheLinkNO(demoMap.getTile(i, j), new Tile(i, j - 1, 0));
+					}
+					if((demoMap.getTile(i, j).isHighlighted())){
+						DrawHighlight(demoMap.getTile(i, j));
 					}
 				}
 			}
@@ -199,6 +209,9 @@ public class DisplayManager {
 					} else {
 						DrawTheLinkNO(demoMap.getTile(i, j), new Tile(i, j - 1, 0));
 					}
+					if((demoMap.getTile(i, j).isHighlighted())){
+						DrawHighlight(demoMap.getTile(i, j));
+					}
 				}
 			}
 			break;
@@ -219,6 +232,9 @@ public class DisplayManager {
 						}
 					} else {
 						DrawTheLinkSE(demoMap.getTile(i, j), new Tile(i, j + 1, 0));
+					}
+					if((demoMap.getTile(i, j).isHighlighted())){
+						DrawHighlight(demoMap.getTile(i, j));
 					}
 				}
 			}
@@ -463,7 +479,7 @@ public class DisplayManager {
 	private void SelectColor(Tile tile) {
 		GL11.glColor4f(1f, 1f, 1f, 1f);
 		tile.getTextureTop().bind();
-		
+
 		/*
 		 * switch (tile.getTexture()) { case Grass: textureGrass.bind(); //
 		 * GL11.glColor3f(0.18f, 0.5f, 0.17f); break;
@@ -483,10 +499,6 @@ public class DisplayManager {
 
 	private void LoadTextures() {
 		try {
-			textureGrass = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("images/Grass.PNG"));
-			textureSand = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("images/Sand.PNG"));
-			textureStone = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("images/Stone.PNG"));
-			textureEarth = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("images/Earth.PNG"));
 			imageHerbe = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("images/fleur1.png"));
 			highlight = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("images/highlightblue.PNG"));
 		} catch (IOException e) {
@@ -494,7 +506,7 @@ public class DisplayManager {
 		}
 	}
 
-	private boolean RequestFocusOn(int X, int Y, int Z) {
+	public boolean RequestFocusOn(int X, int Y, int Z) {
 		if (isBusy) {
 			return false;
 		} else {
@@ -504,12 +516,12 @@ public class DisplayManager {
 			currentTileOnFocusX = X;
 			currentTileOnFocusY = Y;
 			currentTileOnFocusZ = Z;
-			setBusy(true);
+			this.isBusy = true;
 			return true;
 		}
 	}
 
-	private void SetFocusOnNoWait(int X, int Y, int Z) {
+	public void SetFocusOnNoWait(int X, int Y, int Z) {
 		float x = (float) Math.round((X - currentTileOnFocusX) * (scale * 100)) / 100;
 		float y = (float) Math.round((Y - currentTileOnFocusY) * (scale * 100)) / 100;
 		float z = (float) Math.round((Z - currentTileOnFocusZ) * (zscale * 100)) / 100;
@@ -519,12 +531,12 @@ public class DisplayManager {
 		currentTileOnFocusZ = Z;
 	}
 
-	public boolean RequestView(view v) {
+	public boolean RequestView(viewPoint v) {
 		if (isBusy) {
 			return false;
 		} else {
 			if (!v.equals(currentView)) {
-				setBusy(true);
+				this.isBusy = true;
 				switch (currentView) {
 				case South:
 					switch (v) {
@@ -586,7 +598,7 @@ public class DisplayManager {
 		}
 	}
 
-	private void Update() {
+	private void CheckLogic() {
 		if (isBusy) {
 			focusXToGo = (float) Math.round(focusXToGo * 100) / 100;
 			focusYToGo = (float) Math.round(focusYToGo * 100) / 100;
@@ -642,39 +654,39 @@ public class DisplayManager {
 				if (rotationToGo == -45f || rotationToGo == -135f || rotationToGo == -225f || rotationToGo == -315f) {
 					switch (currentView) {
 					case South:
-						currentView = view.West;
+						currentView = viewPoint.West;
 						break;
 					case West:
-						currentView = view.North;
+						currentView = viewPoint.North;
 						break;
 					case North:
-						currentView = view.East;
+						currentView = viewPoint.East;
 						break;
 					case East:
-						currentView = view.South;
+						currentView = viewPoint.South;
 						break;
 					}
 				}
 				if (rotationToGo == 45f || rotationToGo == 135f || rotationToGo == 225f || rotationToGo == 315f) {
 					switch (currentView) {
 					case South:
-						currentView = view.East;
+						currentView = viewPoint.East;
 						break;
 					case West:
-						currentView = view.South;
+						currentView = viewPoint.South;
 						break;
 					case North:
-						currentView = view.West;
+						currentView = viewPoint.West;
 						break;
 					case East:
-						currentView = view.North;
+						currentView = viewPoint.North;
 						break;
 					}
 				}
 			}
 
 			if (focusXToGo == 0 && focusYToGo == 0 && focusZToGo == 0 && rotationToGo == 0) {
-				setBusy(false);
+				this.isBusy = false;
 			}
 		}
 
@@ -704,21 +716,24 @@ public class DisplayManager {
 		this.zscale = zscale;
 	}
 
+	public boolean isBusy() {
+		return isBusy;
+	}
+
+	public boolean isRequestClose() {
+		return requestClose;
+	}
+	
+	public viewPoint getCurrentView() {
+		return currentView;
+	}
+
 	public static void main(String[] argv) {
 		Map map = new Map(20, 25, "lolilol");
 		map.getTile(2, 2).setHeight(25);
 		DisplayManager display = new DisplayManager(map);
 		display.init();
-		
+
 		display.run();
 	}
-
-	public boolean isBusy() {
-		return isBusy;
-	}
-
-	public void setBusy(boolean isBusy) {
-		this.isBusy = isBusy;
-	}
-
 }

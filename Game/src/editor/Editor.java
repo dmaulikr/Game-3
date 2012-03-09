@@ -160,7 +160,14 @@ public class Editor extends JFrame {
 				currentPath = fc.getSelectedFile().getPath();
 				try {
 					BufferedReader in = new BufferedReader(new FileReader(currentPath));
-					Map newMap = new Map(in.readLine());
+					String save="";
+					String buff=in.readLine();
+					while(buff!=null){
+						save+=buff;
+						buff=in.readLine();
+					}
+					
+					Map newMap = new Map(save);
 					in.close();
 
 					UpdateSaveButton();
