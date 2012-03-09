@@ -1,5 +1,9 @@
 package entity;
 
+import java.util.ArrayList;
+
+import entity.Tile.textureType;
+
 public class Map {
 
 	private Tile[][] map;
@@ -42,6 +46,28 @@ public class Map {
 				map[i][j] = new Tile(GetXMLElement(XMLString, "Tile" + i + j));
 			}
 		}
+	}
+
+	public void BindTextures(TileTexture tileTexture) {
+		for (int i = 0; i < length; i++) {
+			for (int j = 0; j < width; j++) {
+				map[i][j].BindTextures(tileTexture);
+			}
+		}
+	}
+
+	public ArrayList<textureType> getAllTextureTypes() {
+		ArrayList<textureType> result = new ArrayList<textureType>();
+		for (int i = 0; i < length; i++) {
+			for (int j = 0; j < width; j++) {
+				if (result.contains(map[i][j].getTexture())) {
+					// do nothing
+				} else {
+					result.add(map[i][j].getTexture());
+				}
+			}
+		}
+		return result;
 	}
 
 	public void EditTile(int i, int j, Tile tile) {

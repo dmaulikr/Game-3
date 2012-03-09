@@ -1,5 +1,7 @@
 package entity;
 
+import org.newdawn.slick.opengl.Texture;
+
 public class Tile {
 
 	public enum textureType {
@@ -19,9 +21,16 @@ public class Tile {
 	private int height;
 	private int heightToDraw;
 
+	private boolean isHighlighted;
 	private textureType texture;
 	private tileType type;
 	private decorationType decoration;
+
+	private Texture textureTop;
+	private Texture textureSO;
+	private Texture textureNO;
+	private Texture textureNE;
+	private Texture textureSE;
 
 	// CREATORS
 	public Tile() {
@@ -32,6 +41,7 @@ public class Tile {
 		this.setTexture(textureType.Grass);
 		this.setType(tileType.Walkable);
 		this.setDecoration(decorationType.None);
+		this.setHighlighted(false);
 	}
 
 	public Tile(int posX, int posY, int height) {
@@ -42,6 +52,7 @@ public class Tile {
 		this.setTexture(textureType.Grass);
 		this.setType(tileType.Walkable);
 		this.setDecoration(decorationType.None);
+		this.setHighlighted(false);
 	}
 
 	public Tile(int posX, int posY, int height, int heightTotal, textureType texture, tileType type, decorationType decoration) {
@@ -52,6 +63,7 @@ public class Tile {
 		this.setTexture(texture);
 		this.setType(type);
 		this.setDecoration(decoration);
+		this.setHighlighted(false);
 	}
 
 	public Tile(String XMLString) {
@@ -78,6 +90,17 @@ public class Tile {
 		this.setTexture(texture);
 		this.setType(type);
 		this.setDecoration(decoration);
+		this.setHighlighted(false);
+	}
+
+	public void BindTextures(TileTexture tileTexture) {
+		Texture[] textures = tileTexture.getBundle(this.getTexture());
+		this.setTextureTop(textures[0]);
+		this.setTextureSE(textures[1]);
+		this.setTextureSO(textures[2]);
+		this.setTextureNO(textures[3]);
+		this.setTextureNE(textures[4]);
+
 	}
 
 	private String GetXMLElement(String XMLString, String balise) {
@@ -178,6 +201,54 @@ public class Tile {
 
 	public void setDecoration(decorationType decoration) {
 		this.decoration = decoration;
+	}
+
+	public boolean isHighlighted() {
+		return isHighlighted;
+	}
+
+	public void setHighlighted(boolean isHighlighted) {
+		this.isHighlighted = isHighlighted;
+	}
+
+	public Texture getTextureTop() {
+		return textureTop;
+	}
+
+	public void setTextureTop(Texture textureTop) {
+		this.textureTop = textureTop;
+	}
+
+	public Texture getTextureSO() {
+		return textureSO;
+	}
+
+	public void setTextureSO(Texture textureSO) {
+		this.textureSO = textureSO;
+	}
+
+	public Texture getTextureNO() {
+		return textureNO;
+	}
+
+	public void setTextureNO(Texture textureNO) {
+		this.textureNO = textureNO;
+	}
+
+	public Texture getTextureNE() {
+		return textureNE;
+	}
+
+	public void setTextureNE(Texture textureNE) {
+		this.textureNE = textureNE;
+	}
+
+	public Texture getTextureSE() {
+		return textureSE;
+	}
+
+	public void setTextureSE(Texture textureSE) {
+		this.textureSE = textureSE;
 	}
 
 	public static void main(String[] argv) {

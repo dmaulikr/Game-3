@@ -20,6 +20,8 @@ import org.newdawn.slick.util.ResourceLoader;
 
 import entity.Map;
 import entity.Tile;
+import entity.Tile.textureType;
+import entity.TileTexture;
 
 public class DisplayManager {
 	private Map demoMap;
@@ -62,8 +64,9 @@ public class DisplayManager {
 		currentTileOnFocusX = 0;
 		currentTileOnFocusY = 0;
 		currentTileOnFocusZ = 0;
-		rotationToGo = -360f;
-		isBusy = true;
+		scaleToGo = 0;
+		rotationToGo = 0f;
+		isBusy = false;
 		currentView = view.South;
 
 	}
@@ -90,7 +93,6 @@ public class DisplayManager {
 		GL11.glMatrixMode(GL11.GL_PROJECTION);
 		GL11.glLoadIdentity();
 
-		
 		GL11.glOrtho(-1, 1, -1, 1, -10, 1000);
 
 		GL11.glRotatef((float) Math.toDegrees(Math.atan(0.5)), 1, 0, 0); // 26,565
@@ -99,7 +101,10 @@ public class DisplayManager {
 		GL11.glMatrixMode(GL11.GL_MODELVIEW);
 		GL11.glLoadIdentity();
 
-		LoadTextures();
+		// LoadTextures();
+		TileTexture ttx=new TileTexture();
+		ttx.LoadBundles(demoMap.getAllTextureTypes());
+		demoMap.BindTextures(ttx);
 	}
 
 	public void run() {
@@ -139,24 +144,18 @@ public class DisplayManager {
 				for (int j = 0; j < demoMap.getWidth(); j++) {
 					DrawATile(demoMap.getTile(i, j));
 					if (i + 1 < demoMap.getLength()) {
-						if (demoMap.getTile(i, j).getHeight() > demoMap
-								.getTile(i + 1, j).getHeight()) {
-							DrawTheLinkSO(demoMap.getTile(i, j),
-									demoMap.getTile(i + 1, j));
+						if (demoMap.getTile(i, j).getHeight() > demoMap.getTile(i + 1, j).getHeight()) {
+							DrawTheLinkSO(demoMap.getTile(i, j), demoMap.getTile(i + 1, j));
 						}
 					} else {
-						DrawTheLinkSO(demoMap.getTile(i, j), new Tile(i + 1, j,
-								0));
+						DrawTheLinkSO(demoMap.getTile(i, j), new Tile(i + 1, j, 0));
 					}
 					if (j + 1 < demoMap.getWidth()) {
-						if (demoMap.getTile(i, j).getHeight() > demoMap
-								.getTile(i, j + 1).getHeight()) {
-							DrawTheLinkSE(demoMap.getTile(i, j),
-									demoMap.getTile(i, j + 1));
+						if (demoMap.getTile(i, j).getHeight() > demoMap.getTile(i, j + 1).getHeight()) {
+							DrawTheLinkSE(demoMap.getTile(i, j), demoMap.getTile(i, j + 1));
 						}
 					} else {
-						DrawTheLinkSE(demoMap.getTile(i, j), new Tile(i, j + 1,
-								0));
+						DrawTheLinkSE(demoMap.getTile(i, j), new Tile(i, j + 1, 0));
 					}
 				}
 			}
@@ -166,24 +165,18 @@ public class DisplayManager {
 				for (int j = demoMap.getWidth() - 1; j >= 0; j--) {
 					DrawATile(demoMap.getTile(i, j));
 					if (i + 1 < demoMap.getLength()) {
-						if (demoMap.getTile(i, j).getHeight() > demoMap
-								.getTile(i + 1, j).getHeight()) {
-							DrawTheLinkSO(demoMap.getTile(i, j),
-									demoMap.getTile(i + 1, j));
+						if (demoMap.getTile(i, j).getHeight() > demoMap.getTile(i + 1, j).getHeight()) {
+							DrawTheLinkSO(demoMap.getTile(i, j), demoMap.getTile(i + 1, j));
 						}
 					} else {
-						DrawTheLinkSO(demoMap.getTile(i, j), new Tile(i + 1, j,
-								0));
+						DrawTheLinkSO(demoMap.getTile(i, j), new Tile(i + 1, j, 0));
 					}
 					if (j > 0) {
-						if (demoMap.getTile(i, j).getHeight() > demoMap
-								.getTile(i, j - 1).getHeight()) {
-							DrawTheLinkNO(demoMap.getTile(i, j),
-									demoMap.getTile(i, j - 1));
+						if (demoMap.getTile(i, j).getHeight() > demoMap.getTile(i, j - 1).getHeight()) {
+							DrawTheLinkNO(demoMap.getTile(i, j), demoMap.getTile(i, j - 1));
 						}
 					} else {
-						DrawTheLinkNO(demoMap.getTile(i, j), new Tile(i, j - 1,
-								0));
+						DrawTheLinkNO(demoMap.getTile(i, j), new Tile(i, j - 1, 0));
 					}
 				}
 			}
@@ -193,24 +186,18 @@ public class DisplayManager {
 				for (int j = demoMap.getWidth() - 1; j >= 0; j--) {
 					DrawATile(demoMap.getTile(i, j));
 					if (i > 0) {
-						if (demoMap.getTile(i, j).getHeight() > demoMap
-								.getTile(i - 1, j).getHeight()) {
-							DrawTheLinkNE(demoMap.getTile(i, j),
-									demoMap.getTile(i - 1, j));
+						if (demoMap.getTile(i, j).getHeight() > demoMap.getTile(i - 1, j).getHeight()) {
+							DrawTheLinkNE(demoMap.getTile(i, j), demoMap.getTile(i - 1, j));
 						}
 					} else {
-						DrawTheLinkNE(demoMap.getTile(i, j), new Tile(i + 1, j,
-								0));
+						DrawTheLinkNE(demoMap.getTile(i, j), new Tile(i + 1, j, 0));
 					}
 					if (j > 0) {
-						if (demoMap.getTile(i, j).getHeight() > demoMap
-								.getTile(i, j - 1).getHeight()) {
-							DrawTheLinkNO(demoMap.getTile(i, j),
-									demoMap.getTile(i, j - 1));
+						if (demoMap.getTile(i, j).getHeight() > demoMap.getTile(i, j - 1).getHeight()) {
+							DrawTheLinkNO(demoMap.getTile(i, j), demoMap.getTile(i, j - 1));
 						}
 					} else {
-						DrawTheLinkNO(demoMap.getTile(i, j), new Tile(i, j - 1,
-								0));
+						DrawTheLinkNO(demoMap.getTile(i, j), new Tile(i, j - 1, 0));
 					}
 				}
 			}
@@ -220,24 +207,18 @@ public class DisplayManager {
 				for (int i = demoMap.getLength() - 1; i >= 0; i -= 1) {
 					DrawATile(demoMap.getTile(i, j));
 					if (i > 0) {
-						if (demoMap.getTile(i, j).getHeight() > demoMap
-								.getTile(i - 1, j).getHeight()) {
-							DrawTheLinkNE(demoMap.getTile(i, j),
-									demoMap.getTile(i - 1, j));
+						if (demoMap.getTile(i, j).getHeight() > demoMap.getTile(i - 1, j).getHeight()) {
+							DrawTheLinkNE(demoMap.getTile(i, j), demoMap.getTile(i - 1, j));
 						}
 					} else {
-						DrawTheLinkNE(demoMap.getTile(i, j), new Tile(i - 1, j,
-								0));
+						DrawTheLinkNE(demoMap.getTile(i, j), new Tile(i - 1, j, 0));
 					}
 					if (j + 1 < demoMap.getWidth()) {
-						if (demoMap.getTile(i, j).getHeight() > demoMap
-								.getTile(i, j + 1).getHeight()) {
-							DrawTheLinkSE(demoMap.getTile(i, j),
-									demoMap.getTile(i, j + 1));
+						if (demoMap.getTile(i, j).getHeight() > demoMap.getTile(i, j + 1).getHeight()) {
+							DrawTheLinkSE(demoMap.getTile(i, j), demoMap.getTile(i, j + 1));
 						}
 					} else {
-						DrawTheLinkSE(demoMap.getTile(i, j), new Tile(i, j + 1,
-								0));
+						DrawTheLinkSE(demoMap.getTile(i, j), new Tile(i, j + 1, 0));
 					}
 				}
 			}
@@ -481,47 +462,33 @@ public class DisplayManager {
 
 	private void SelectColor(Tile tile) {
 		GL11.glColor4f(1f, 1f, 1f, 1f);
-		switch (tile.getTexture()) {
-		case Grass:
-			textureGrass.bind();
-			// GL11.glColor3f(0.18f, 0.5f, 0.17f);
-			break;
-
-		case Earth:
-			textureEarth.bind();
-			// GL11.glColor3f(0.5f, 0.25f, 0f);
-			break;
-
-		case Sand:
-			textureSand.bind();
-			// GL11.glColor3f(1f, 1f, 0.5f);
-			break;
-
-		case Stone:
-			textureStone.bind();
-			// GL11.glColor3f(0.5f, 0.5f, 0.5f);
-			break;
-
-		default:
-			// GL11.glColor3f(0.5f, 0.5f, 1.0f);
-			break;
-		}
+		tile.getTextureTop().bind();
+		
+		/*
+		 * switch (tile.getTexture()) { case Grass: textureGrass.bind(); //
+		 * GL11.glColor3f(0.18f, 0.5f, 0.17f); break;
+		 * 
+		 * case Earth: textureEarth.bind(); // GL11.glColor3f(0.5f, 0.25f, 0f);
+		 * break;
+		 * 
+		 * case Sand: textureSand.bind(); // GL11.glColor3f(1f, 1f, 0.5f);
+		 * break;
+		 * 
+		 * case Stone: textureStone.bind(); // GL11.glColor3f(0.5f, 0.5f, 0.5f);
+		 * break;
+		 * 
+		 * default: // GL11.glColor3f(0.5f, 0.5f, 1.0f); break; }
+		 */
 	}
 
 	private void LoadTextures() {
 		try {
-			textureGrass = TextureLoader.getTexture("PNG",
-					ResourceLoader.getResourceAsStream("images/Grass.PNG"));
-			textureSand = TextureLoader.getTexture("PNG",
-					ResourceLoader.getResourceAsStream("images/Sand.PNG"));
-			textureStone = TextureLoader.getTexture("PNG",
-					ResourceLoader.getResourceAsStream("images/Stone.PNG"));
-			textureEarth = TextureLoader.getTexture("PNG",
-					ResourceLoader.getResourceAsStream("images/Earth.PNG"));
-			imageHerbe = TextureLoader.getTexture("PNG",
-					ResourceLoader.getResourceAsStream("images/fleur1.png"));
-			highlight = TextureLoader.getTexture("PNG", ResourceLoader
-					.getResourceAsStream("images/highlightblue.PNG"));
+			textureGrass = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("images/Grass.PNG"));
+			textureSand = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("images/Sand.PNG"));
+			textureStone = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("images/Stone.PNG"));
+			textureEarth = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("images/Earth.PNG"));
+			imageHerbe = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("images/fleur1.png"));
+			highlight = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("images/highlightblue.PNG"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -531,12 +498,9 @@ public class DisplayManager {
 		if (isBusy) {
 			return false;
 		} else {
-			focusXToGo = (float) Math.round((X - currentTileOnFocusX)
-					* (scale * 100)) / 100;
-			focusYToGo = (float) Math.round((Y - currentTileOnFocusY)
-					* (scale * 100)) / 100;
-			focusZToGo = (float) Math.round((Z - currentTileOnFocusZ)
-					* (zscale * 100)) / 100;
+			focusXToGo = (float) Math.round((X - currentTileOnFocusX) * (scale * 100)) / 100;
+			focusYToGo = (float) Math.round((Y - currentTileOnFocusY) * (scale * 100)) / 100;
+			focusZToGo = (float) Math.round((Z - currentTileOnFocusZ) * (zscale * 100)) / 100;
 			currentTileOnFocusX = X;
 			currentTileOnFocusY = Y;
 			currentTileOnFocusZ = Z;
@@ -548,8 +512,7 @@ public class DisplayManager {
 	private void SetFocusOnNoWait(int X, int Y, int Z) {
 		float x = (float) Math.round((X - currentTileOnFocusX) * (scale * 100)) / 100;
 		float y = (float) Math.round((Y - currentTileOnFocusY) * (scale * 100)) / 100;
-		float z = (float) Math
-				.round((Z - currentTileOnFocusZ) * (zscale * 100)) / 100;
+		float z = (float) Math.round((Z - currentTileOnFocusZ) * (zscale * 100)) / 100;
 		GL11.glTranslatef(x, z, y);
 		currentTileOnFocusX = X;
 		currentTileOnFocusY = Y;
@@ -676,8 +639,7 @@ public class DisplayManager {
 					GL11.glTranslated(a / 2, 0, -b / 2);
 					rotationToGo -= 1f;
 				}
-				if (rotationToGo == -45f || rotationToGo == -135f
-						|| rotationToGo == -225f || rotationToGo == -315f) {
+				if (rotationToGo == -45f || rotationToGo == -135f || rotationToGo == -225f || rotationToGo == -315f) {
 					switch (currentView) {
 					case South:
 						currentView = view.West;
@@ -693,8 +655,7 @@ public class DisplayManager {
 						break;
 					}
 				}
-				if (rotationToGo == 45f || rotationToGo == 135f
-						|| rotationToGo == 225f || rotationToGo == 315f) {
+				if (rotationToGo == 45f || rotationToGo == 135f || rotationToGo == 225f || rotationToGo == 315f) {
 					switch (currentView) {
 					case South:
 						currentView = view.East;
@@ -712,8 +673,7 @@ public class DisplayManager {
 				}
 			}
 
-			if (focusXToGo == 0 && focusYToGo == 0 && focusZToGo == 0
-					&& rotationToGo == 0) {
+			if (focusXToGo == 0 && focusYToGo == 0 && focusZToGo == 0 && rotationToGo == 0) {
 				setBusy(false);
 			}
 		}
@@ -749,6 +709,7 @@ public class DisplayManager {
 		map.getTile(2, 2).setHeight(25);
 		DisplayManager display = new DisplayManager(map);
 		display.init();
+		
 		display.run();
 	}
 
