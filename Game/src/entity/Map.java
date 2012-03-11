@@ -57,6 +57,49 @@ public class Map {
 		}
 	}
 
+	public void LightUpStartZone(int playerNum) {
+		for (int i = 0; i < length; i++) {
+			for (int j = 0; j < width; j++) {
+				if (getTile(i, j).isInDeploymentZone() == playerNum) {
+					getTile(i, j).setHighlightedGreen(true);
+				} else {
+					getTile(i, j).setHighlightedGreen(false);
+				}
+			}
+		}
+	}
+
+	public void LightUpPossibleMovement(int X, int Y, int movement) {
+		for (int i = 0; i < length; i++) {
+			for (int j = 0; j < width; j++) {
+				if (i >= (X - movement) && i <= (X + movement)) {
+					if (i < X) {
+						if (j >= ((Y - movement) + (X - i))
+								&& j <= ((Y + movement) - (X - i))) {
+							getTile(i, j).setHighlightedGreen(true);
+						} else {
+							getTile(i, j).setHighlightedGreen(false);
+						}
+					} else if (i > X) {
+						if (j >= ((Y - movement) + (i - X))
+								&& j <= ((Y + movement) - (i - X))) {
+							getTile(i, j).setHighlightedGreen(true);
+						} else {
+							getTile(i, j).setHighlightedGreen(false);
+						}
+					} else {
+						if (j >= (Y - movement) && j <= (Y + movement)) {
+							getTile(i, j).setHighlightedGreen(true);
+						} else {
+							getTile(i, j).setHighlightedGreen(false);
+						}
+					}
+
+				}
+			}
+		}
+	}
+
 	public ArrayList<textureType> getAllTextureTypes() {
 		ArrayList<textureType> result = new ArrayList<textureType>();
 		for (int i = 0; i < length; i++) {

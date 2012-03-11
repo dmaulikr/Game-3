@@ -32,6 +32,7 @@ public class DisplayManager {
 
 	private Texture imageHerbe;
 	private Texture highlight;
+	private Texture highlightG;
 
 	public enum viewPoint {
 		South, // base
@@ -181,6 +182,9 @@ public class DisplayManager {
 					if ((demoMap.getTile(i, j).isHighlighted())) {
 						DrawHighlight(demoMap.getTile(i, j));
 					}
+					if ((demoMap.getTile(i, j).isHighlightedGreen())) {
+						DrawHighlightG(demoMap.getTile(i, j));
+					}
 				}
 			}
 			break;
@@ -210,6 +214,9 @@ public class DisplayManager {
 					}
 					if ((demoMap.getTile(i, j).isHighlighted())) {
 						DrawHighlight(demoMap.getTile(i, j));
+					}
+					if ((demoMap.getTile(i, j).isHighlightedGreen())) {
+						DrawHighlightG(demoMap.getTile(i, j));
 					}
 				}
 			}
@@ -241,6 +248,9 @@ public class DisplayManager {
 					if ((demoMap.getTile(i, j).isHighlighted())) {
 						DrawHighlight(demoMap.getTile(i, j));
 					}
+					if ((demoMap.getTile(i, j).isHighlightedGreen())) {
+						DrawHighlightG(demoMap.getTile(i, j));
+					}
 				}
 			}
 			break;
@@ -270,6 +280,9 @@ public class DisplayManager {
 					}
 					if ((demoMap.getTile(i, j).isHighlighted())) {
 						DrawHighlight(demoMap.getTile(i, j));
+					}
+					if ((demoMap.getTile(i, j).isHighlightedGreen())) {
+						DrawHighlightG(demoMap.getTile(i, j));
 					}
 				}
 			}
@@ -510,12 +523,40 @@ public class DisplayManager {
 
 	}
 
+	public void DrawHighlightG(Tile t) {
+
+		GL11.glColor4f(1f, 1f, 1f, 0.4f);
+		highlightG.bind();
+
+		float x1 = ((float) t.getPosY() * scale) - originY;
+		float x2 = (((float) t.getPosY() + 1) * scale) - originY;
+
+		float y1 = ((float) t.getPosX() * scale) - originX;
+		float y2 = (((float) t.getPosX() + 1) * scale) - originX;
+
+		float z1 = (((float) t.getHeight() * zscale) + (3f * zscale));
+
+		GL11.glBegin(GL11.GL_QUADS);
+		GL11.glTexCoord2d(0, 0);
+		GL11.glVertex3d(x1, z1, y1);
+		GL11.glTexCoord2d(1, 0);
+		GL11.glVertex3d(x2, z1, y1);
+		GL11.glTexCoord2d(1, 1);
+		GL11.glVertex3d(x2, z1, y2);
+		GL11.glTexCoord2d(0, 1);
+		GL11.glVertex3d(x1, z1, y2);
+		GL11.glEnd();
+
+	}
+
 	private void LoadTextures() {
 		try {
 			imageHerbe = TextureLoader.getTexture("PNG",
 					ResourceLoader.getResourceAsStream("images/fleur1.png"));
 			highlight = TextureLoader.getTexture("PNG", ResourceLoader
 					.getResourceAsStream("images/highlightblue.PNG"));
+			highlightG = TextureLoader.getTexture("PNG", ResourceLoader
+					.getResourceAsStream("images/highlightgreen.PNG"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

@@ -166,6 +166,7 @@ public class Game {
 
 	public void run() {
 		while (!dm.isRequestClose() && !quit) {
+			map.LightUpPossibleMovement(9, 4, 2);
 			if (!dm.isBusy()) {
 				manageKeyInput(im.getInputs());
 			}
@@ -381,7 +382,7 @@ public class Game {
 		TileTexture tt = new TileTexture();
 		tt.LoadBundles(map.getAllTextureTypes());
 		map.BindTextures(tt);
-
+		
 		Game g = new Game(map, dm);
 		g.run();
 
