@@ -8,6 +8,7 @@ import displaymanager.DisplayManager.viewPoint;
 import entity.Map;
 import entity.Player;
 import entity.Tile;
+import entity.TileTexture;
 
 public class Game {
 
@@ -209,7 +210,10 @@ public class Game {
 
 		Map map = new Map(10, 10, "lolilol");
 		DisplayManager dm = new DisplayManager(map);
-
+		TileTexture tt=new TileTexture();
+		tt.LoadBundles(map.getAllTextureTypes());
+		map.BindTextures(tt);
+		
 		Game g = new Game(map, dm);
 		g.run();
 

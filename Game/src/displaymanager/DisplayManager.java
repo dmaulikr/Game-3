@@ -278,7 +278,8 @@ public class DisplayManager {
 	}
 
 	private void DrawATile(Tile t) {
-		SelectColor(t);
+		GL11.glColor4f(1f, 1f, 1f, 1f);
+		t.getTextureTop().bind();
 		// SouthEast means X is constant.
 		float x1 = (t.getPosY() * scale) - originY;
 		float x2 = ((t.getPosY() + 1) * scale) - originY;
@@ -309,7 +310,8 @@ public class DisplayManager {
 	}
 
 	private void DrawTheLinkSE(Tile t1, Tile t2) {
-		SelectColor(t1);
+		GL11.glColor4f(1f, 1f, 1f, 1f);
+		t1.getTextureSE().bind();
 		// SouthEast means X is constant.
 		float x1 = (t2.getPosY() * scale) - originY;
 		float x2 = x1;
@@ -347,7 +349,8 @@ public class DisplayManager {
 	}
 
 	private void DrawTheLinkSO(Tile t1, Tile t2) {
-		SelectColor(t1);
+		GL11.glColor4f(1f, 1f, 1f, 1f);
+		t1.getTextureSO().bind();
 		// SouthWest means Z is constant.
 		float x1 = (t1.getPosY() * scale) - originY;
 		float x2 = ((t1.getPosY() + 1) * scale) - originY;
@@ -385,7 +388,8 @@ public class DisplayManager {
 	}
 
 	private void DrawTheLinkNE(Tile t1, Tile t2) {
-		SelectColor(t1);
+		GL11.glColor4f(1f, 1f, 1f, 1f);
+		t1.getTextureNE().bind();
 		// NorthEast means Z is constant.
 		float x1 = (t1.getPosY() * scale) - originY;
 		float x2 = ((t1.getPosY() + 1) * scale) - originY;
@@ -423,7 +427,7 @@ public class DisplayManager {
 	}
 
 	private void DrawTheLinkNO(Tile t1, Tile t2) {
-		SelectColor(t1);
+		t1.getTextureNO().bind();
 		// NorthWest means X is constant.
 		float x1 = (t1.getPosY() * scale) - originY;
 		float x2 = x1;
@@ -460,30 +464,24 @@ public class DisplayManager {
 		GL11.glEnd();
 	}
 
-	public void DrawGrass(Tile t, int density) {
-
-		GL11.glColor4f(1f, 1f, 1f, 1f);
-		imageHerbe.bind();
-
-		float y1 = ((float) t.getPosX() * scale) + (0.1f) * scale;
-		float y2 = ((float) t.getPosX() * scale) + (0.3f) * scale;
-		float x1 = ((float) t.getPosY() * scale) + (0.3f) * scale;
-		float x2 = ((float) t.getPosY() * scale) + (0.1f) * scale;
-		float z1 = ((float) t.getHeight() * zscale) + (0.1f);
-		float z2 = t.getHeight() * zscale;
-
-		GL11.glBegin(GL11.GL_QUADS);
-		GL11.glTexCoord2d(0, 0);
-		GL11.glVertex3d(x1, z1, y1);
-		GL11.glTexCoord2d(1, 0);
-		GL11.glVertex3d(x2, z1, y2);
-		GL11.glTexCoord2d(1, 1);
-		GL11.glVertex3d(x2, z2, y2);
-		GL11.glTexCoord2d(0, 1);
-		GL11.glVertex3d(x1, z2, y1);
-		GL11.glEnd();
-
-	}
+	/*
+	 * public void DrawGrass(Tile t, int density) {
+	 * 
+	 * GL11.glColor4f(1f, 1f, 1f, 1f); imageHerbe.bind();
+	 * 
+	 * float y1 = ((float) t.getPosX() * scale) + (0.1f) * scale; float y2 =
+	 * ((float) t.getPosX() * scale) + (0.3f) * scale; float x1 = ((float)
+	 * t.getPosY() * scale) + (0.3f) * scale; float x2 = ((float) t.getPosY() *
+	 * scale) + (0.1f) * scale; float z1 = ((float) t.getHeight() * zscale) +
+	 * (0.1f); float z2 = t.getHeight() * zscale;
+	 * 
+	 * GL11.glBegin(GL11.GL_QUADS); GL11.glTexCoord2d(0, 0); GL11.glVertex3d(x1,
+	 * z1, y1); GL11.glTexCoord2d(1, 0); GL11.glVertex3d(x2, z1, y2);
+	 * GL11.glTexCoord2d(1, 1); GL11.glVertex3d(x2, z2, y2);
+	 * GL11.glTexCoord2d(0, 1); GL11.glVertex3d(x1, z2, y1); GL11.glEnd();
+	 * 
+	 * }
+	 */
 
 	public void DrawHighlight(Tile t) {
 
@@ -509,27 +507,6 @@ public class DisplayManager {
 		GL11.glVertex3d(x1, z1, y2);
 		GL11.glEnd();
 
-	}
-
-	private void SelectColor(Tile tile) {
-		GL11.glColor4f(1f, 1f, 1f, 1f);
-		tile.getTextureTop().bind();
-
-		/*
-		 * switch (tile.getTexture()) { case Grass: textureGrass.bind(); //
-		 * GL11.glColor3f(0.18f, 0.5f, 0.17f); break;
-		 * 
-		 * case Earth: textureEarth.bind(); // GL11.glColor3f(0.5f, 0.25f, 0f);
-		 * break;
-		 * 
-		 * case Sand: textureSand.bind(); // GL11.glColor3f(1f, 1f, 0.5f);
-		 * break;
-		 * 
-		 * case Stone: textureStone.bind(); // GL11.glColor3f(0.5f, 0.5f, 0.5f);
-		 * break;
-		 * 
-		 * default: // GL11.glColor3f(0.5f, 0.5f, 1.0f); break; }
-		 */
 	}
 
 	private void LoadTextures() {
@@ -649,31 +626,25 @@ public class DisplayManager {
 			if (focusXToGo != 0) {
 				if (focusXToGo < 0) {
 					originX -= step;
-					// GL11.glTranslated(0, 0, step);
 					focusXToGo += step;
 				} else if (focusXToGo > 0) {
 					originX += step;
-					// GL11.glTranslated(0, 0, -step);
 					focusXToGo -= step;
 				}
 			}
 			if (focusYToGo != 0) {
 				if (focusYToGo < 0) {
 					originY -= step;
-					// GL11.glTranslated(step, 0, 0);
 					focusYToGo += step;
 				} else if (focusYToGo > 0) {
 					originY += step;
-					// GL11.glTranslated(-step, 0, 0);
 					focusYToGo -= step;
 				}
 			}
 			if (focusZToGo != 0) {
 				if (focusZToGo < 0) {
-					// GL11.glTranslated(0, step, 0);
 					focusZToGo += step;
 				} else if (focusZToGo > 0) {
-					// GL11.glTranslated(0, -step, 0);
 					focusZToGo -= step;
 				}
 			}
