@@ -20,6 +20,8 @@ public class Game {
 
 	int cursorX;
 	int cursorY;
+	
+	boolean quit;
 
 	public Game(Map map, DisplayManager dm) {
 		this.map = map;
@@ -28,6 +30,7 @@ public class Game {
 		im = new InputManager();
 		cursorX = 0;
 		cursorY = 0;
+		quit = false;
 		map.getTile(0, 0).setHighlighted(true);
 	}
 
@@ -115,25 +118,25 @@ public class Game {
 			if (cursorY < map.getWidth() - 1) {
 				cursorY++;
 			}
-			
+
 			break;
 		case West:
 			if (cursorX < map.getLength() - 1) {
 				cursorX++;
 			}
-			
+
 			break;
 		case North:
 			if (cursorY > 0) {
 				cursorY--;
 			}
-			
+
 			break;
 		case East:
 			if (cursorX > 0) {
 				cursorX--;
 			}
-			
+
 			break;
 		}
 		UpdateCursor();
@@ -147,53 +150,58 @@ public class Game {
 				} else {
 					map.getTile(i, j).setHighlighted(false);
 				}
+				dm.RequestFocusOn(cursorX, cursorY, map.getTile(cursorX,cursorY).getHeight());
 			}
 		}
 	}
 
 	public void run() {
-
-		boolean quit = false;
 		while (!dm.isRequestClose() && !quit) {
-			actions act = im.getInputs();
-			if (!act.equals(actions.none)) {
-				switch (act) {
-				case VIEW_SOUTH:
-					dm.RequestView(viewPoint.South);
-					break;
-				case VIEW_NORTH:
-					dm.RequestView(viewPoint.North);
-					break;
-				case VIEW_EAST:
-					dm.RequestView(viewPoint.East);
-					break;
-				case VIEW_WEST:
-					dm.RequestView(viewPoint.West);
-					break;
-				case UP:
-					goUp();
-					break;
-				case DOWN:
-					goDown();
-					break;
-				case LEFT:
-					goLeft();
-					break;
-				case RIGHT:
-					goRigth();
-					break;
-				case QUIT:
-					quit = true;
-					break;
-				case ENTER:
-
-					break;
-
-				default:
-					break;
-				}
+			if(!dm.isBusy()){
+				manageKeyInput(im.getInputs());
 			}
 			dm.Update();
+		}
+		dm.Clean();
+	}
+
+	private void manageKeyInput(actions act) {
+		if (!act.equals(actions.none)) {
+			switch (act) {
+			case VIEW_SOUTH:
+				dm.RequestView(viewPoint.South);
+				break;
+			case VIEW_NORTH:
+				dm.RequestView(viewPoint.North);
+				break;
+			case VIEW_EAST:
+				dm.RequestView(viewPoint.East);
+				break;
+			case VIEW_WEST:
+				dm.RequestView(viewPoint.West);
+				break;
+			case UP:
+				goUp();
+				break;
+			case DOWN:
+				goDown();
+				break;
+			case LEFT:
+				goLeft();
+				break;
+			case RIGHT:
+				goRigth();
+				break;
+			case QUIT:
+				quit = true;
+				break;
+			case ENTER:
+				quit = true;
+				break;
+
+			default:
+				break;
+			}
 		}
 	}
 
