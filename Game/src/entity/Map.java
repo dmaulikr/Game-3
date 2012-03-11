@@ -43,7 +43,8 @@ public class Map {
 
 		for (int i = 0; i < length; i++) {
 			for (int j = 0; j < width; j++) {
-				map[i][j] = new Tile(GetXMLElement(XMLString, "Tile" + i + j));
+				map[i][j] = new Tile(GetXMLElement(XMLString, "Tile" + i + "/"
+						+ j));
 			}
 		}
 	}

@@ -643,11 +643,15 @@ public class DisplayManager {
 				}
 			}
 			if (focusZToGo != 0) {
-				if (focusZToGo < 0) {
-					focusZToGo += step;
-				} else if (focusZToGo > 0) {
-					focusZToGo -= step;
-				}
+				focusZToGo = 0;
+				/*
+				 * if (focusZToGo < 0) { if (-step < focusZToGo) {
+				 * GL11.glTranslated(0, -focusZToGo, 0); focusZToGo = 0; } else
+				 * { GL11.glTranslated(0, -step, 0); focusZToGo += step; } }
+				 * else if (focusZToGo > 0) { if (step > focusZToGo) {
+				 * GL11.glTranslated(0, focusZToGo, 0); focusZToGo = 0; } else {
+				 * GL11.glTranslated(0, step, 0); focusZToGo -= step; } }
+				 */
 			}
 			/*
 			 * if (scaleToGo != 0) { if (scaleToGo < scale) { scale -= 0.001f; }
