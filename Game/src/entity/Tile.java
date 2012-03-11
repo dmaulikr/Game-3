@@ -33,6 +33,8 @@ public class Tile {
 	private Texture textureNE;
 	private Texture textureSE;
 
+	private int isInDeploymentZone;
+
 	// CREATORS
 	public Tile() {
 		this.setPosX(0);
@@ -43,6 +45,7 @@ public class Tile {
 		this.setType(tileType.Walkable);
 		this.setDecoration(decorationType.None);
 		this.setHighlighted(false);
+		this.setInDeploymentZone(0);
 	}
 
 	public Tile(int posX, int posY, int height) {
@@ -54,9 +57,11 @@ public class Tile {
 		this.setType(tileType.Walkable);
 		this.setDecoration(decorationType.None);
 		this.setHighlighted(false);
+		this.setInDeploymentZone(0);
 	}
 
-	public Tile(int posX, int posY, int height, int heightTotal, textureType texture, tileType type, decorationType decoration) {
+	public Tile(int posX, int posY, int height, int heightTotal,
+			textureType texture, tileType type, decorationType decoration) {
 		this.setPosX(posX);
 		this.setPosY(posY);
 		this.setHeight(height);
@@ -65,6 +70,7 @@ public class Tile {
 		this.setType(type);
 		this.setDecoration(decoration);
 		this.setHighlighted(false);
+		this.setInDeploymentZone(0);
 	}
 
 	public Tile(String XMLString) {
@@ -75,6 +81,7 @@ public class Tile {
 		textureType texture;
 		tileType type;
 		decorationType decoration;
+		int inDeployementZone;
 
 		posX = Integer.parseInt(GetXMLElement(XMLString, "X"));
 		posY = Integer.parseInt(GetXMLElement(XMLString, "Y"));
@@ -83,6 +90,7 @@ public class Tile {
 		texture = textureType.valueOf((GetXMLElement(XMLString, "Tx")));
 		type = tileType.valueOf((GetXMLElement(XMLString, "Ty")));
 		decoration = decorationType.valueOf((GetXMLElement(XMLString, "Dc")));
+		inDeployementZone = Integer.parseInt(GetXMLElement(XMLString, "DZ"));
 
 		this.setPosX(posX);
 		this.setPosY(posY);
@@ -92,6 +100,7 @@ public class Tile {
 		this.setType(type);
 		this.setDecoration(decoration);
 		this.setHighlighted(false);
+		this.setInDeploymentZone(inDeployementZone);
 	}
 
 	public void BindTextures(TileTexture tileTexture) {
@@ -142,6 +151,10 @@ public class Tile {
 		s += "<Dc>";
 		s += this.getDecoration();
 		s += "</Dc>";
+
+		s += "<DZ>";
+		s += this.isInDeploymentZone();
+		s += "</DZ>";
 
 		return s;
 	}
@@ -251,8 +264,17 @@ public class Tile {
 		this.textureSE = textureSE;
 	}
 
+	public int isInDeploymentZone() {
+		return isInDeploymentZone;
+	}
+
+	public void setInDeploymentZone(int isInDeploymentZone) {
+		this.isInDeploymentZone = isInDeploymentZone;
+	}
+
 	public static void main(String[] argv) {
-		Tile t = new Tile(0, 5, 12, 12, textureType.Grass, tileType.DifficultGround, decorationType.Flowers3);
+		Tile t = new Tile(0, 5, 12, 12, textureType.Grass,
+				tileType.DifficultGround, decorationType.Flowers3);
 		String s = t.toXMLString();
 		System.out.println(s);
 		Tile t2 = new Tile(s);

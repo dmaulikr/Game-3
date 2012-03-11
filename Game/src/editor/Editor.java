@@ -21,6 +21,8 @@ import javax.swing.filechooser.FileFilter;
 import displaymanager.DisplayManager;
 
 import entity.Map;
+import entity.TileTexture;
+import gamemanager.Game;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -239,9 +241,13 @@ public class Editor extends JFrame {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			if (currentMap != null) {
+				
 				DisplayManager display = new DisplayManager(currentMap);
-				display.init();
-				display.run();
+				Game g=new Game(currentMap,display);
+				TileTexture tt = new TileTexture();
+				tt.LoadBundles(currentMap.getAllTextureTypes());
+				currentMap.BindTextures(tt);
+				g.run();
 			}
 		}
 	}

@@ -427,6 +427,7 @@ public class DisplayManager {
 	}
 
 	private void DrawTheLinkNO(Tile t1, Tile t2) {
+		GL11.glColor4f(1f, 1f, 1f, 1f);
 		t1.getTextureNO().bind();
 		// NorthWest means X is constant.
 		float x1 = (t1.getPosY() * scale) - originY;

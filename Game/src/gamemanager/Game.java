@@ -1,5 +1,7 @@
 package gamemanager;
 
+import javax.net.ssl.SSLEngineResult.Status;
+
 import inputmanager.InputManager;
 import inputmanager.InputManager.actions;
 
@@ -12,16 +14,20 @@ import entity.TileTexture;
 
 public class Game {
 
+	enum GameStatus {
+		PlacingBeforeBattle, InCharMenu, MoveSelection, TargetSelection, ExploringMap
+	}
+
 	Map map;
 	DisplayManager dm;
 	InputManager im;
-
+	GameStatus state;
 	Player Player1;
 	Player Player2;
 
 	int cursorX;
 	int cursorY;
-	
+
 	boolean quit;
 
 	public Game(Map map, DisplayManager dm) {
@@ -33,6 +39,7 @@ public class Game {
 		cursorY = 0;
 		quit = false;
 		map.getTile(0, 0).setHighlighted(true);
+		state=GameStatus.PlacingBeforeBattle;
 	}
 
 	private void goUp() {
@@ -151,14 +158,15 @@ public class Game {
 				} else {
 					map.getTile(i, j).setHighlighted(false);
 				}
-				dm.RequestFocusOn(cursorX, cursorY, map.getTile(cursorX,cursorY).getHeight());
+				dm.RequestFocusOn(cursorX, cursorY,
+						map.getTile(cursorX, cursorY).getHeight());
 			}
 		}
 	}
 
 	public void run() {
 		while (!dm.isRequestClose() && !quit) {
-			if(!dm.isBusy()){
+			if (!dm.isBusy()) {
 				manageKeyInput(im.getInputs());
 			}
 			dm.Update();
@@ -168,36 +176,196 @@ public class Game {
 
 	private void manageKeyInput(actions act) {
 		if (!act.equals(actions.none)) {
-			switch (act) {
-			case VIEW_SOUTH:
-				dm.RequestView(viewPoint.South);
+			switch (state) {
+
+			case PlacingBeforeBattle:
+				switch (act) {
+				case VIEW_SOUTH:
+					dm.RequestView(viewPoint.South);
+					break;
+				case VIEW_NORTH:
+					dm.RequestView(viewPoint.North);
+					break;
+				case VIEW_EAST:
+					dm.RequestView(viewPoint.East);
+					break;
+				case VIEW_WEST:
+					dm.RequestView(viewPoint.West);
+					break;
+				case UP:
+					goUp();
+					break;
+				case DOWN:
+					goDown();
+					break;
+				case LEFT:
+					goLeft();
+					break;
+				case RIGHT:
+					goRigth();
+					break;
+				case QUIT:
+					quit = true;
+					break;
+				case ENTER:
+					quit = true;
+					break;
+
+				default:
+					break;
+				}
 				break;
-			case VIEW_NORTH:
-				dm.RequestView(viewPoint.North);
+
+			case InCharMenu:
+				switch (act) {
+				case VIEW_SOUTH:
+					dm.RequestView(viewPoint.South);
+					break;
+				case VIEW_NORTH:
+					dm.RequestView(viewPoint.North);
+					break;
+				case VIEW_EAST:
+					dm.RequestView(viewPoint.East);
+					break;
+				case VIEW_WEST:
+					dm.RequestView(viewPoint.West);
+					break;
+				case UP:
+					goUp();
+					break;
+				case DOWN:
+					goDown();
+					break;
+				case LEFT:
+					goLeft();
+					break;
+				case RIGHT:
+					goRigth();
+					break;
+				case QUIT:
+					quit = true;
+					break;
+				case ENTER:
+					quit = true;
+					break;
+
+				default:
+					break;
+				}
 				break;
-			case VIEW_EAST:
-				dm.RequestView(viewPoint.East);
+
+			case MoveSelection:
+				switch (act) {
+				case VIEW_SOUTH:
+					dm.RequestView(viewPoint.South);
+					break;
+				case VIEW_NORTH:
+					dm.RequestView(viewPoint.North);
+					break;
+				case VIEW_EAST:
+					dm.RequestView(viewPoint.East);
+					break;
+				case VIEW_WEST:
+					dm.RequestView(viewPoint.West);
+					break;
+				case UP:
+					goUp();
+					break;
+				case DOWN:
+					goDown();
+					break;
+				case LEFT:
+					goLeft();
+					break;
+				case RIGHT:
+					goRigth();
+					break;
+				case QUIT:
+					quit = true;
+					break;
+				case ENTER:
+					quit = true;
+					break;
+
+				default:
+					break;
+				}
 				break;
-			case VIEW_WEST:
-				dm.RequestView(viewPoint.West);
+
+			case TargetSelection:
+				switch (act) {
+				case VIEW_SOUTH:
+					dm.RequestView(viewPoint.South);
+					break;
+				case VIEW_NORTH:
+					dm.RequestView(viewPoint.North);
+					break;
+				case VIEW_EAST:
+					dm.RequestView(viewPoint.East);
+					break;
+				case VIEW_WEST:
+					dm.RequestView(viewPoint.West);
+					break;
+				case UP:
+					goUp();
+					break;
+				case DOWN:
+					goDown();
+					break;
+				case LEFT:
+					goLeft();
+					break;
+				case RIGHT:
+					goRigth();
+					break;
+				case QUIT:
+					quit = true;
+					break;
+				case ENTER:
+					quit = true;
+					break;
+
+				default:
+					break;
+				}
 				break;
-			case UP:
-				goUp();
-				break;
-			case DOWN:
-				goDown();
-				break;
-			case LEFT:
-				goLeft();
-				break;
-			case RIGHT:
-				goRigth();
-				break;
-			case QUIT:
-				quit = true;
-				break;
-			case ENTER:
-				quit = true;
+
+			case ExploringMap:
+				switch (act) {
+				case VIEW_SOUTH:
+					dm.RequestView(viewPoint.South);
+					break;
+				case VIEW_NORTH:
+					dm.RequestView(viewPoint.North);
+					break;
+				case VIEW_EAST:
+					dm.RequestView(viewPoint.East);
+					break;
+				case VIEW_WEST:
+					dm.RequestView(viewPoint.West);
+					break;
+				case UP:
+					goUp();
+					break;
+				case DOWN:
+					goDown();
+					break;
+				case LEFT:
+					goLeft();
+					break;
+				case RIGHT:
+					goRigth();
+					break;
+				case QUIT:
+					quit = true;
+					break;
+				case ENTER:
+					quit = true;
+					break;
+
+				default:
+					break;
+				}
 				break;
 
 			default:
@@ -210,10 +378,10 @@ public class Game {
 
 		Map map = new Map(10, 10, "lolilol");
 		DisplayManager dm = new DisplayManager(map);
-		TileTexture tt=new TileTexture();
+		TileTexture tt = new TileTexture();
 		tt.LoadBundles(map.getAllTextureTypes());
 		map.BindTextures(tt);
-		
+
 		Game g = new Game(map, dm);
 		g.run();
 
