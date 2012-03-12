@@ -249,6 +249,8 @@ public class Editor extends JFrame {
 	}
 
 	public static void main(String[] argv) {
+		//String home = System.getProperty("user.dir");
+		//System.setProperty("org.lwjgl.librarypath", home + "/lwjgl");
 		try {
 			// Set cross-platform Java L&F (also called "Metal")
 			UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
