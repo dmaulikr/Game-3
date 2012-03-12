@@ -22,24 +22,36 @@ public class Game {
 	DisplayManager dm;
 	InputManager im;
 	GameStatus state;
-	Player Player1;
-	Player Player2;
+
+	Player[] players;
+	Player currentPlayer;
+	int nbPlayers;
 
 	int cursorX;
 	int cursorY;
 
 	boolean quit;
 
-	public Game(Map map, DisplayManager dm) {
+	public Game(Map map, int nbPlayers) {
 		this.map = map;
-		this.dm = dm;
-		dm.init();
-		im = new InputManager();
-		cursorX = 0;
-		cursorY = 0;
-		quit = false;
-		map.getTile(0, 0).setHighlighted(true);
-		state=GameStatus.PlacingBeforeBattle;
+		dm = new DisplayManager(map);
+		this.dm.init();
+		TileTexture tt = new TileTexture();
+		tt.LoadBundles(map.getAllTextureTypes());
+		this.map.BindTextures(tt);
+		this.im = new InputManager();
+		this.cursorX = 0;
+		this.cursorY = 0;
+		this.quit = false;
+		this.map.getTile(0, 0).setHighlighted(true);
+		this.state = GameStatus.PlacingBeforeBattle;
+		this.nbPlayers = nbPlayers;
+		this.players = new Player[this.nbPlayers];
+		this.currentPlayer = null;
+	}
+
+	public void setPlayer(int i, Player player) {
+		players[i] = player;
 	}
 
 	private void goUp() {
@@ -158,15 +170,13 @@ public class Game {
 				} else {
 					map.getTile(i, j).setHighlighted(false);
 				}
-				dm.RequestFocusOn(cursorX, cursorY,
-						map.getTile(cursorX, cursorY).getHeight());
+				dm.RequestFocusOn(cursorX, cursorY, map.getTile(cursorX, cursorY).getHeight());
 			}
 		}
 	}
 
 	public void run() {
 		while (!dm.isRequestClose() && !quit) {
-			map.LightUpPossibleMovement(5, 5, 3);
 			if (!dm.isBusy()) {
 				manageKeyInput(im.getInputs());
 			}
@@ -378,12 +388,8 @@ public class Game {
 	public static void main(String[] argv) {
 
 		Map map = new Map(10, 10, "lolilol");
-		DisplayManager dm = new DisplayManager(map);
-		TileTexture tt = new TileTexture();
-		tt.LoadBundles(map.getAllTextureTypes());
-		map.BindTextures(tt);
-		
-		Game g = new Game(map, dm);
+
+		Game g = new Game(map, 2);
 		g.run();
 
 	}

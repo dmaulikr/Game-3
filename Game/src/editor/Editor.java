@@ -162,13 +162,13 @@ public class Editor extends JFrame {
 				currentPath = fc.getSelectedFile().getPath();
 				try {
 					BufferedReader in = new BufferedReader(new FileReader(currentPath));
-					String save="";
-					String buff=in.readLine();
-					while(buff!=null){
-						save+=buff;
-						buff=in.readLine();
+					String save = "";
+					String buff = in.readLine();
+					while (buff != null) {
+						save += buff;
+						buff = in.readLine();
 					}
-					
+
 					Map newMap = new Map(save);
 					in.close();
 
@@ -241,12 +241,8 @@ public class Editor extends JFrame {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			if (currentMap != null) {
-				
-				DisplayManager display = new DisplayManager(currentMap);
-				Game g=new Game(currentMap,display);
-				TileTexture tt = new TileTexture();
-				tt.LoadBundles(currentMap.getAllTextureTypes());
-				currentMap.BindTextures(tt);
+
+				Game g = new Game(currentMap, 0);
 				g.run();
 			}
 		}

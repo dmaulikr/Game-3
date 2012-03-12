@@ -1,5 +1,7 @@
 package entity;
 
+import org.newdawn.slick.opengl.Texture;
+
 import jobs.Warrior;
 
 enum Race {
@@ -36,6 +38,13 @@ public class Character {
 
 	private String name;
 
+	private int numberOfAnimations;
+	private int[] numberOfSprites;
+
+	private Texture[][] sprites;
+
+	private int spriteSpeed;
+	
 	public Character(Race race, Job job) {
 		this.setRace(race);
 		this.level = 1;
@@ -371,6 +380,38 @@ public class Character {
 
 	public void setRace(Race race) {
 		this.race = race;
+	}
+
+	public int getNumberOfAnimations() {
+		return numberOfAnimations;
+	}
+
+	public void setNumberOfAnimations(int numberOfAnimations) {
+		this.numberOfAnimations = numberOfAnimations;
+	}
+
+	public int[] getNumberOfSprites() {
+		return numberOfSprites;
+	}
+
+	public void setNumberOfSprites(int[] numberOfSprites) {
+		this.numberOfSprites = numberOfSprites;
+	}
+
+	public Texture[][] getSprites() {
+		return sprites;
+	}
+
+	public void setSprites(Texture[][] sprites) {
+		this.sprites = sprites;
+	}
+
+	public int getSpriteSpeed() {
+		return spriteSpeed;
+	}
+
+	public void setSpriteSpeed(int spriteSpeed) {
+		this.spriteSpeed = spriteSpeed;
 	}
 
 	public static void main(String[] argv) {

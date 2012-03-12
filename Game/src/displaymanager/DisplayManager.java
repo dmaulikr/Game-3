@@ -160,24 +160,18 @@ public class DisplayManager {
 				for (int j = 0; j < demoMap.getWidth(); j++) {
 					DrawATile(demoMap.getTile(i, j));
 					if (i + 1 < demoMap.getLength()) {
-						if (demoMap.getTile(i, j).getHeight() > demoMap
-								.getTile(i + 1, j).getHeight()) {
-							DrawTheLinkSO(demoMap.getTile(i, j),
-									demoMap.getTile(i + 1, j));
+						if (demoMap.getTile(i, j).getHeight() > demoMap.getTile(i + 1, j).getHeight()) {
+							DrawTheLinkSO(demoMap.getTile(i, j), demoMap.getTile(i + 1, j));
 						}
 					} else {
-						DrawTheLinkSO(demoMap.getTile(i, j), new Tile(i + 1, j,
-								0));
+						DrawTheLinkSO(demoMap.getTile(i, j), new Tile(i + 1, j, 0));
 					}
 					if (j + 1 < demoMap.getWidth()) {
-						if (demoMap.getTile(i, j).getHeight() > demoMap
-								.getTile(i, j + 1).getHeight()) {
-							DrawTheLinkSE(demoMap.getTile(i, j),
-									demoMap.getTile(i, j + 1));
+						if (demoMap.getTile(i, j).getHeight() > demoMap.getTile(i, j + 1).getHeight()) {
+							DrawTheLinkSE(demoMap.getTile(i, j), demoMap.getTile(i, j + 1));
 						}
 					} else {
-						DrawTheLinkSE(demoMap.getTile(i, j), new Tile(i, j + 1,
-								0));
+						DrawTheLinkSE(demoMap.getTile(i, j), new Tile(i, j + 1, 0));
 					}
 					if ((demoMap.getTile(i, j).isHighlighted())) {
 						DrawHighlight(demoMap.getTile(i, j));
@@ -193,24 +187,18 @@ public class DisplayManager {
 				for (int j = demoMap.getWidth() - 1; j >= 0; j--) {
 					DrawATile(demoMap.getTile(i, j));
 					if (i + 1 < demoMap.getLength()) {
-						if (demoMap.getTile(i, j).getHeight() > demoMap
-								.getTile(i + 1, j).getHeight()) {
-							DrawTheLinkSO(demoMap.getTile(i, j),
-									demoMap.getTile(i + 1, j));
+						if (demoMap.getTile(i, j).getHeight() > demoMap.getTile(i + 1, j).getHeight()) {
+							DrawTheLinkSO(demoMap.getTile(i, j), demoMap.getTile(i + 1, j));
 						}
 					} else {
-						DrawTheLinkSO(demoMap.getTile(i, j), new Tile(i + 1, j,
-								0));
+						DrawTheLinkSO(demoMap.getTile(i, j), new Tile(i + 1, j, 0));
 					}
 					if (j > 0) {
-						if (demoMap.getTile(i, j).getHeight() > demoMap
-								.getTile(i, j - 1).getHeight()) {
-							DrawTheLinkNO(demoMap.getTile(i, j),
-									demoMap.getTile(i, j - 1));
+						if (demoMap.getTile(i, j).getHeight() > demoMap.getTile(i, j - 1).getHeight()) {
+							DrawTheLinkNO(demoMap.getTile(i, j), demoMap.getTile(i, j - 1));
 						}
 					} else {
-						DrawTheLinkNO(demoMap.getTile(i, j), new Tile(i, j - 1,
-								0));
+						DrawTheLinkNO(demoMap.getTile(i, j), new Tile(i, j - 1, 0));
 					}
 					if ((demoMap.getTile(i, j).isHighlighted())) {
 						DrawHighlight(demoMap.getTile(i, j));
@@ -226,24 +214,18 @@ public class DisplayManager {
 				for (int j = demoMap.getWidth() - 1; j >= 0; j--) {
 					DrawATile(demoMap.getTile(i, j));
 					if (i > 0) {
-						if (demoMap.getTile(i, j).getHeight() > demoMap
-								.getTile(i - 1, j).getHeight()) {
-							DrawTheLinkNE(demoMap.getTile(i, j),
-									demoMap.getTile(i - 1, j));
+						if (demoMap.getTile(i, j).getHeight() > demoMap.getTile(i - 1, j).getHeight()) {
+							DrawTheLinkNE(demoMap.getTile(i, j), demoMap.getTile(i - 1, j));
 						}
 					} else {
-						DrawTheLinkNE(demoMap.getTile(i, j), new Tile(i + 1, j,
-								0));
+						DrawTheLinkNE(demoMap.getTile(i, j), new Tile(i + 1, j, 0));
 					}
 					if (j > 0) {
-						if (demoMap.getTile(i, j).getHeight() > demoMap
-								.getTile(i, j - 1).getHeight()) {
-							DrawTheLinkNO(demoMap.getTile(i, j),
-									demoMap.getTile(i, j - 1));
+						if (demoMap.getTile(i, j).getHeight() > demoMap.getTile(i, j - 1).getHeight()) {
+							DrawTheLinkNO(demoMap.getTile(i, j), demoMap.getTile(i, j - 1));
 						}
 					} else {
-						DrawTheLinkNO(demoMap.getTile(i, j), new Tile(i, j - 1,
-								0));
+						DrawTheLinkNO(demoMap.getTile(i, j), new Tile(i, j - 1, 0));
 					}
 					if ((demoMap.getTile(i, j).isHighlighted())) {
 						DrawHighlight(demoMap.getTile(i, j));
@@ -259,24 +241,18 @@ public class DisplayManager {
 				for (int i = demoMap.getLength() - 1; i >= 0; i -= 1) {
 					DrawATile(demoMap.getTile(i, j));
 					if (i > 0) {
-						if (demoMap.getTile(i, j).getHeight() > demoMap
-								.getTile(i - 1, j).getHeight()) {
-							DrawTheLinkNE(demoMap.getTile(i, j),
-									demoMap.getTile(i - 1, j));
+						if (demoMap.getTile(i, j).getHeight() > demoMap.getTile(i - 1, j).getHeight()) {
+							DrawTheLinkNE(demoMap.getTile(i, j), demoMap.getTile(i - 1, j));
 						}
 					} else {
-						DrawTheLinkNE(demoMap.getTile(i, j), new Tile(i - 1, j,
-								0));
+						DrawTheLinkNE(demoMap.getTile(i, j), new Tile(i - 1, j, 0));
 					}
 					if (j + 1 < demoMap.getWidth()) {
-						if (demoMap.getTile(i, j).getHeight() > demoMap
-								.getTile(i, j + 1).getHeight()) {
-							DrawTheLinkSE(demoMap.getTile(i, j),
-									demoMap.getTile(i, j + 1));
+						if (demoMap.getTile(i, j).getHeight() > demoMap.getTile(i, j + 1).getHeight()) {
+							DrawTheLinkSE(demoMap.getTile(i, j), demoMap.getTile(i, j + 1));
 						}
 					} else {
-						DrawTheLinkSE(demoMap.getTile(i, j), new Tile(i, j + 1,
-								0));
+						DrawTheLinkSE(demoMap.getTile(i, j), new Tile(i, j + 1, 0));
 					}
 					if ((demoMap.getTile(i, j).isHighlighted())) {
 						DrawHighlight(demoMap.getTile(i, j));
@@ -508,7 +484,7 @@ public class DisplayManager {
 		float y1 = ((float) t.getPosX() * scale) - originX;
 		float y2 = (((float) t.getPosX() + 1) * scale) - originX;
 
-		float z1 = (((float) t.getHeight() * zscale) + (3f * zscale));
+		float z1 = (((float) t.getHeight() * zscale));
 
 		GL11.glBegin(GL11.GL_QUADS);
 		GL11.glTexCoord2d(0, 0);
@@ -534,7 +510,7 @@ public class DisplayManager {
 		float y1 = ((float) t.getPosX() * scale) - originX;
 		float y2 = (((float) t.getPosX() + 1) * scale) - originX;
 
-		float z1 = (((float) t.getHeight() * zscale) + (3f * zscale));
+		float z1 = (((float) t.getHeight() * zscale));
 
 		GL11.glBegin(GL11.GL_QUADS);
 		GL11.glTexCoord2d(0, 0);
@@ -551,12 +527,9 @@ public class DisplayManager {
 
 	private void LoadTextures() {
 		try {
-			imageHerbe = TextureLoader.getTexture("PNG",
-					ResourceLoader.getResourceAsStream("images/fleur1.png"));
-			highlight = TextureLoader.getTexture("PNG", ResourceLoader
-					.getResourceAsStream("images/highlightblue.PNG"));
-			highlightG = TextureLoader.getTexture("PNG", ResourceLoader
-					.getResourceAsStream("images/highlightgreen.PNG"));
+			imageHerbe = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("images/fleur1.png"));
+			highlight = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("images/highlightblue.PNG"));
+			highlightG = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("images/highlightgreen.PNG"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -566,12 +539,9 @@ public class DisplayManager {
 		if (isBusy) {
 			return false;
 		} else {
-			focusXToGo = (float) Math.round((X - currentTileOnFocusX)
-					* (scale * 100)) / 100;
-			focusYToGo = (float) Math.round((Y - currentTileOnFocusY)
-					* (scale * 100)) / 100;
-			focusZToGo = (float) Math.round((Z - currentTileOnFocusZ)
-					* (zscale * 100)) / 100;
+			focusXToGo = (float) Math.round((X - currentTileOnFocusX) * (scale * 100)) / 100;
+			focusYToGo = (float) Math.round((Y - currentTileOnFocusY) * (scale * 100)) / 100;
+			focusZToGo = (float) Math.round((Z - currentTileOnFocusZ) * (zscale * 100)) / 100;
 			currentTileOnFocusX = X;
 			currentTileOnFocusY = Y;
 			currentTileOnFocusZ = Z;
@@ -583,8 +553,7 @@ public class DisplayManager {
 	public void SetFocusOnNoWait(int X, int Y, int Z) {
 		float x = (float) Math.round((X - currentTileOnFocusX) * (scale * 100)) / 100;
 		float y = (float) Math.round((Y - currentTileOnFocusY) * (scale * 100)) / 100;
-		float z = (float) Math
-				.round((Z - currentTileOnFocusZ) * (zscale * 100)) / 100;
+		float z = (float) Math.round((Z - currentTileOnFocusZ) * (zscale * 100)) / 100;
 		GL11.glTranslatef(y, z, x);
 		currentTileOnFocusX = X;
 		currentTileOnFocusY = Y;
@@ -712,8 +681,7 @@ public class DisplayManager {
 					GL11.glTranslated(b, 0, -a);
 					rotationToGo -= 1f;
 				}
-				if (rotationToGo == -45f || rotationToGo == -135f
-						|| rotationToGo == -225f || rotationToGo == -315f) {
+				if (rotationToGo == -45f || rotationToGo == -135f || rotationToGo == -225f || rotationToGo == -315f) {
 					switch (currentView) {
 					case South:
 						currentView = viewPoint.West;
@@ -729,8 +697,7 @@ public class DisplayManager {
 						break;
 					}
 				}
-				if (rotationToGo == 45f || rotationToGo == 135f
-						|| rotationToGo == 225f || rotationToGo == 315f) {
+				if (rotationToGo == 45f || rotationToGo == 135f || rotationToGo == 225f || rotationToGo == 315f) {
 					switch (currentView) {
 					case South:
 						currentView = viewPoint.East;
@@ -748,8 +715,7 @@ public class DisplayManager {
 				}
 			}
 
-			if (focusXToGo == 0 && focusYToGo == 0 && focusZToGo == 0
-					&& rotationToGo == 0) {
+			if (focusXToGo == 0 && focusYToGo == 0 && focusZToGo == 0 && rotationToGo == 0) {
 				this.isBusy = false;
 			}
 		}

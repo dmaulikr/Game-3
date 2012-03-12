@@ -32,7 +32,9 @@ public class Tile {
 	private Texture textureNE;
 	private Texture textureSE;
 
-	private int isInDeploymentZone;
+	private Character character;
+
+	private int deploymentZone;
 
 	// CREATORS
 	public Tile() {
@@ -45,6 +47,7 @@ public class Tile {
 		this.setHighlighted(false);
 		this.setHighlightedGreen(false);
 		this.setInDeploymentZone(0);
+		this.setCharacter(null);
 	}
 
 	public Tile(int posX, int posY, int height) {
@@ -75,7 +78,6 @@ public class Tile {
 		int posX;
 		int posY;
 		int height;
-		int heightTotal;
 		textureType texture;
 		tileType type;
 		decorationType decoration;
@@ -84,7 +86,6 @@ public class Tile {
 		posX = Integer.parseInt(GetXMLElement(XMLString, "X"));
 		posY = Integer.parseInt(GetXMLElement(XMLString, "Y"));
 		height = Integer.parseInt(GetXMLElement(XMLString, "Z"));
-		heightTotal = Integer.parseInt(GetXMLElement(XMLString, "Z2"));
 		texture = textureType.valueOf((GetXMLElement(XMLString, "Tx")));
 		type = tileType.valueOf((GetXMLElement(XMLString, "Ty")));
 		decoration = decorationType.valueOf((GetXMLElement(XMLString, "Dc")));
@@ -259,11 +260,19 @@ public class Tile {
 	}
 
 	public int isInDeploymentZone() {
-		return isInDeploymentZone;
+		return deploymentZone;
 	}
 
 	public void setInDeploymentZone(int isInDeploymentZone) {
-		this.isInDeploymentZone = isInDeploymentZone;
+		this.deploymentZone = isInDeploymentZone;
+	}
+
+	public Character getCharacter() {
+		return character;
+	}
+
+	public void setCharacter(Character character) {
+		this.character = character;
 	}
 
 	public static void main(String[] argv) {
