@@ -7,31 +7,33 @@ import org.newdawn.slick.opengl.TextureLoader;
 import org.newdawn.slick.util.ResourceLoader;
 
 public class Animation {
-	private Texture[] sprites;
-	private float speed;
-	private float timer;
-	private int index;
-	private String path;
+	public String basicPath = "content/Sprites/";
 
-	public Animation(String path, float speed, int count) {
+	protected Texture sprites;
+	protected String path;
+	
+	protected float speed;
+	protected float timer;
+	protected int count;
+	protected int index;
+
+	/*public Animation(float speed, int count) {
 		this.speed = speed;
-		this.sprites = new Texture[count];
-		this.path = path;
-	}
+		this.count = count;
+		this.path = basicPath + path;
+	}*/
 
 	public void Load() {
-		for (int i = 0; i < sprites.length; i++) {
-			try {
-				this.sprites[i] = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream(this.path + i + ".png"));
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+		try {
+			this.sprites = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream(this.path + ".png"));
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 
 	private void IncIndex() {
 		this.index++;
-		if (this.index == this.sprites.length) {
+		if (this.index == this.count) {
 			this.index = 0;
 		}
 	}
@@ -45,6 +47,10 @@ public class Animation {
 	}
 
 	public Texture getTexture() {
-		return sprites[index];
+		return sprites;
+	}
+
+	public int getIndex() {
+		return index;
 	}
 }

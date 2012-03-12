@@ -1,6 +1,10 @@
 package entity;
 
+import java.util.ArrayList;
+
 import org.newdawn.slick.opengl.Texture;
+
+import displaymanager.DisplayManager.viewPoint;
 
 import jobs.Warrior;
 
@@ -8,9 +12,17 @@ enum Race {
 	Human, Dwarf, Elve
 }
 
+enum Gender {
+	Male, Female
+}
+
+enum CharState {
+	Walking, Standing, Hitting, Casting, TakingDmg, Wounded, Dead
+}
+
 public class Character {
 	private Race race;
-
+	private Gender gender;
 	private Job actualJob;
 	private Job[] jobs;
 	private int posX;
@@ -38,19 +50,24 @@ public class Character {
 
 	private String name;
 
-	private int numberOfAnimations;
-	private int[] numberOfSprites;
+	private CharState state;
+	private CharState lastState;
 
-	private Texture[][] sprites;
+	private Animation currentAnimation;
+
+	private CharAnimationBible animationBible;
 
 	private int spriteSpeed;
-	
-	public Character(Race race, Job job) {
+
+	public Character(Race race, Gender gender, Job job) {
 		this.setRace(race);
+		this.setGender(gender);
 		this.level = 1;
 		this.experience = 0;
 		this.setActualJob(job);
-
+		this.currentAnimation = null;
+		this.setState(CharState.Standing);
+		lastState = this.getState();
 		jobs = new Job[jobList.values().length];
 		jobs[0] = new Warrior();
 		actualJob = jobs[0];
@@ -112,8 +129,12 @@ public class Character {
 
 	public Character(String XMLString) {
 		this.setRace(Race.valueOf(GetXMLElement(XMLString, "RACE")));
+		this.setGender(Gender.valueOf(GetXMLElement(XMLString, "GEN")));
 		this.level = Integer.valueOf(GetXMLElement(XMLString, "LVL"));
 		this.experience = Integer.valueOf(GetXMLElement(XMLString, "XP"));
+		this.currentAnimation = null;
+		this.setState(CharState.Standing);
+		lastState = this.getState();
 
 		maxLifePoints = Integer.valueOf(GetXMLElement(XMLString, "HP"));
 		maxManaPoints = Integer.valueOf(GetXMLElement(XMLString, "MP"));
@@ -149,6 +170,22 @@ public class Character {
 		}
 	}
 
+	public void Update(float GameTime) {
+		this.currentAnimation.Update(GameTime);
+	}
+
+	public void linkAnimationBible(CharAnimationBible bible) {
+		this.animationBible = bible;
+	}
+
+	public void SetCurrentAnimationViewPoint(viewPoint vp) {
+		this.currentAnimation = animationBible.getAnimation(vp, jobList.valueOf(actualJob.getName()), this.race, this.gender, this.state);
+	}
+
+	public Texture getTexture() {
+		return this.currentAnimation.getTexture();
+	}
+
 	public String toXMLString() {
 		String s = new String();
 		s = "";
@@ -164,6 +201,10 @@ public class Character {
 		s += "<RACE>";
 		s += this.getRace();
 		s += "</RACE>";
+
+		s += "<GEN>";
+		s += this.getGender();
+		s += "</GEN>";
 
 		s += "<HP>";
 		s += this.getMaxLifePoints();
@@ -382,28 +423,12 @@ public class Character {
 		this.race = race;
 	}
 
-	public int getNumberOfAnimations() {
-		return numberOfAnimations;
+	public Gender getGender() {
+		return gender;
 	}
 
-	public void setNumberOfAnimations(int numberOfAnimations) {
-		this.numberOfAnimations = numberOfAnimations;
-	}
-
-	public int[] getNumberOfSprites() {
-		return numberOfSprites;
-	}
-
-	public void setNumberOfSprites(int[] numberOfSprites) {
-		this.numberOfSprites = numberOfSprites;
-	}
-
-	public Texture[][] getSprites() {
-		return sprites;
-	}
-
-	public void setSprites(Texture[][] sprites) {
-		this.sprites = sprites;
+	public void setGender(Gender gender) {
+		this.gender = gender;
 	}
 
 	public int getSpriteSpeed() {
@@ -414,8 +439,16 @@ public class Character {
 		this.spriteSpeed = spriteSpeed;
 	}
 
+	public CharState getState() {
+		return state;
+	}
+
+	public void setState(CharState state) {
+		this.state = state;
+	}
+
 	public static void main(String[] argv) {
-		Character c1 = new Character(Race.Human, new Warrior());
+		Character c1 = new Character(Race.Human, Gender.Female, new Warrior());
 		String save = c1.toXMLString();
 		System.out.println(save);
 		Character c2 = new Character(save);
