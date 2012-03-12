@@ -43,8 +43,7 @@ public class Map {
 
 		for (int i = 0; i < length; i++) {
 			for (int j = 0; j < width; j++) {
-				map[i][j] = new Tile(GetXMLElement(XMLString, "Tile" + i + "/"
-						+ j));
+				map[i][j] = new Tile(GetXMLElement(XMLString, "Tile" + i + "/" + j));
 			}
 		}
 	}
@@ -74,15 +73,13 @@ public class Map {
 			for (int j = 0; j < width; j++) {
 				if (i >= (X - movement) && i <= (X + movement)) {
 					if (i < X) {
-						if (j >= ((Y - movement) + (X - i))
-								&& j <= ((Y + movement) - (X - i))) {
+						if (j >= ((Y - movement) + (X - i)) && j <= ((Y + movement) - (X - i))) {
 							getTile(i, j).setHighlightedGreen(true);
 						} else {
 							getTile(i, j).setHighlightedGreen(false);
 						}
 					} else if (i > X) {
-						if (j >= ((Y - movement) + (i - X))
-								&& j <= ((Y + movement) - (i - X))) {
+						if (j >= ((Y - movement) + (i - X)) && j <= ((Y + movement) - (i - X))) {
 							getTile(i, j).setHighlightedGreen(true);
 						} else {
 							getTile(i, j).setHighlightedGreen(false);
@@ -118,7 +115,6 @@ public class Map {
 		map[i][j].setPosX(tile.getPosX());
 		map[i][j].setPosY(tile.getPosY());
 		map[i][j].setHeight(tile.getHeight());
-		map[i][j].setHeightToDraw(tile.getHeightToDraw());
 		map[i][j].setTexture(tile.getTexture());
 		map[i][j].setType(tile.getType());
 		map[i][j].setDecoration(tile.getDecoration());

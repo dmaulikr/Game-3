@@ -3,6 +3,7 @@ package editor;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -14,27 +15,32 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import entity.Tile;
+import entity.Tile.decorationType;
+import entity.Tile.textureType;
+import entity.Tile.tileType;
 
 public class TileEditionPan extends JPanel {
 
-	private CornerHeightSlide sliderHeight;
-	private CornerHeightSlide sliderHeightToDraw;
+	private Slider sliderHeight;
 
 	private JPanel texturePanel;
-	private JComboBox textureCombo;
-	private JLabel textureLabel;
+	private JComboBox<textureType> textureCombo;
 
 	private JPanel typePanel;
-	private JComboBox typeCombo;
-	private JLabel typeLabel;
+	private JComboBox<tileType> typeCombo;
 
 	private JPanel decorationPanel;
-	private JComboBox decorationCombo;
-	private JLabel decorationLabel;
+	private JComboBox<decorationType> decorationCombo;
+
+	private JPanel deployementZoneNumPanel;
+	private JButton deployementZoneNumMinus;
+	private JTextField deployementZoneNumTextField;
+	private JButton deployementZoneNumPlus;
 
 	private JPanel idPanel;
 	private JLabel idLabel;
@@ -61,7 +67,6 @@ public class TileEditionPan extends JPanel {
 	public void Reset() {
 		currentTile = null;
 		sliderHeight.Reset();
-		sliderHeightToDraw.Reset();
 		textureCombo.setSelectedIndex(0);
 		typeCombo.setSelectedIndex(0);
 		decorationCombo.setSelectedIndex(0);
@@ -81,20 +86,21 @@ public class TileEditionPan extends JPanel {
 		slideEvent = new OnSlideEvent();
 		comboSelectEvent = new ComboSelectEvent();
 
-		sliderHeight = new CornerHeightSlide("Height");
-		sliderHeightToDraw = new CornerHeightSlide("Height to Draw");
+		sliderHeight = new Slider("Height");
 
 		texturePanel = new JPanel();
-		textureCombo = new JComboBox();
-		textureLabel = new JLabel("Texture :");
+		textureCombo = new JComboBox<textureType>();
 
 		typePanel = new JPanel();
-		typeCombo = new JComboBox();
-		typeLabel = new JLabel("Type :");
+		typeCombo = new JComboBox<tileType>();
 
 		decorationPanel = new JPanel();
-		decorationCombo = new JComboBox();
-		decorationLabel = new JLabel("Decoration :");
+		decorationCombo = new JComboBox<decorationType>();
+
+		deployementZoneNumPanel = new JPanel();
+		deployementZoneNumMinus = new JButton("-");
+		deployementZoneNumTextField = new JTextField();
+		deployementZoneNumPlus = new JButton("+");
 
 		idPanel = new JPanel();
 		idLabel = new JLabel();
@@ -105,12 +111,12 @@ public class TileEditionPan extends JPanel {
 		PrepareTypePanel();
 		PrepareDecorationPanel();
 		PrepareIdPanel();
+		PrepareDeployementPanel();
 		ActivateActions();
 	}
 
 	private void ActivateActions() {
 		sliderHeight.slide.addChangeListener(slideEvent);
-		sliderHeightToDraw.slide.addChangeListener(slideEvent);
 		textureCombo.addActionListener(comboSelectEvent);
 		typeCombo.addActionListener(comboSelectEvent);
 		decorationCombo.addActionListener(comboSelectEvent);
@@ -118,7 +124,6 @@ public class TileEditionPan extends JPanel {
 
 	private void DeactivateActions() {
 		sliderHeight.slide.removeChangeListener(slideEvent);
-		sliderHeightToDraw.slide.removeChangeListener(slideEvent);
 		textureCombo.removeActionListener(comboSelectEvent);
 		typeCombo.removeActionListener(comboSelectEvent);
 		decorationCombo.removeActionListener(comboSelectEvent);
@@ -127,49 +132,80 @@ public class TileEditionPan extends JPanel {
 	private void PrepareTexturePanel() {
 		Tile.textureType[] textureArray = Tile.textureType.values();
 		for (int i = 0; i < textureArray.length; i++) {
-			textureCombo.addItem(textureArray[i].toString());
+			textureCombo.addItem(textureArray[i]);
 		}
-		texturePanel.add(textureLabel);
+		texturePanel.setBorder(BorderFactory.createTitledBorder("Texture :"));
 		texturePanel.add(textureCombo);
-		texturePanel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
 
 	}
 
 	private void PrepareTypePanel() {
 		Tile.tileType[] tileTypeArray = Tile.tileType.values();
 		for (int i = 0; i < tileTypeArray.length; i++) {
-			typeCombo.addItem(tileTypeArray[i].toString());
+			typeCombo.addItem(tileTypeArray[i]);
 		}
-		typePanel.add(typeLabel);
+		typePanel.setBorder(BorderFactory.createTitledBorder("Type :"));
 		typePanel.add(typeCombo);
-		typePanel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
 	}
 
 	private void PrepareDecorationPanel() {
 		Tile.decorationType[] decorationArray = Tile.decorationType.values();
 		for (int i = 0; i < decorationArray.length; i++) {
-			decorationCombo.addItem(decorationArray[i].toString());
+			decorationCombo.addItem(decorationArray[i]);
 		}
-		decorationPanel.add(decorationLabel);
+		decorationPanel.setBorder(BorderFactory.createTitledBorder("Decoration :"));
 		decorationPanel.add(decorationCombo);
-		decorationPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
+	}
+
+	private void PrepareDeployementPanel() {
+		deployementZoneNumPanel.setBorder(BorderFactory.createTitledBorder("Deployement Zone for player :"));
+		deployementZoneNumTextField.setEditable(false);
+		deployementZoneNumTextField.setText("0");
+
+		deployementZoneNumMinus.setFont(new Font("Arial", Font.BOLD, 10));
+		deployementZoneNumMinus.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				int deployementZoneNum = Integer.parseInt(deployementZoneNumTextField.getText());
+				if (deployementZoneNum > 1) {
+					deployementZoneNum--;
+				}
+				deployementZoneNumTextField.setText(String.valueOf(deployementZoneNum));
+				SaveTile();
+			}
+		});
+
+		deployementZoneNumPlus.setFont(new Font("Arial", Font.BOLD, 10));
+		deployementZoneNumPlus.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				int deployementZoneNum = Integer.parseInt(deployementZoneNumTextField.getText());
+				deployementZoneNum++;
+				deployementZoneNumTextField.setText(String.valueOf(deployementZoneNum));
+				SaveTile();
+			}
+		});
+
+		deployementZoneNumPanel.setLayout(new GridLayout(1, 3));
+		deployementZoneNumPanel.add(deployementZoneNumMinus);
+		deployementZoneNumPanel.add(deployementZoneNumTextField);
+		deployementZoneNumPanel.add(deployementZoneNumPlus);
 	}
 
 	private void PrepareIdPanel() {
+		idPanel.setBorder(BorderFactory.createTitledBorder("X/Y :"));
+
 		idLabel.setText("X/Y");
 		idPanel.add(idLabel, BorderLayout.CENTER);
-		idPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
 	}
 
 	public void AddElements() {
-		this.setLayout(new GridLayout(6, 1));
+		this.setLayout(new GridLayout(9, 1));
 
 		this.add(sliderHeight);
-		this.add(sliderHeightToDraw);
 
 		this.add(texturePanel);
 		this.add(typePanel);
 		this.add(decorationPanel);
+		this.add(deployementZoneNumPanel);
 		this.add(idPanel);
 	}
 
@@ -179,7 +215,6 @@ public class TileEditionPan extends JPanel {
 		DeactivateActions();
 
 		this.sliderHeight.setTheValueTo(tile.getHeight());
-		this.sliderHeightToDraw.setTheValueTo(tile.getHeightToDraw());
 
 		this.textureCombo.setSelectedItem(tile.getTexture().toString());
 		this.typeCombo.setSelectedItem(tile.getType().toString());
@@ -192,18 +227,20 @@ public class TileEditionPan extends JPanel {
 	}
 
 	public void SaveTile() {
-		if (currentTile.getHeight() != this.sliderHeight.slide.getValue() || currentTile.getHeightToDraw() != this.sliderHeightToDraw.slide.getValue()
-				|| currentTile.getTexture() != Tile.textureType.valueOf(this.textureCombo.getSelectedItem().toString())
-				|| currentTile.getType() != Tile.tileType.valueOf(this.typeCombo.getSelectedItem().toString())
-				|| currentTile.getDecoration() != Tile.decorationType.valueOf(this.decorationCombo.getSelectedItem().toString())) {
+		if (currentTile != null) {
+			if (currentTile.getHeight() != this.sliderHeight.slide.getValue() || currentTile.getTexture() != Tile.textureType.valueOf(this.textureCombo.getSelectedItem().toString())
+					|| currentTile.getType() != Tile.tileType.valueOf(this.typeCombo.getSelectedItem().toString())
+					|| currentTile.getDecoration() != Tile.decorationType.valueOf(this.decorationCombo.getSelectedItem().toString())
+					|| currentTile.isInDeploymentZone() != Integer.valueOf(deployementZoneNumTextField.getText())) {
 
-			currentTile.setHeight(this.sliderHeight.slide.getValue());
-			currentTile.setHeightToDraw(this.sliderHeightToDraw.slide.getValue());
+				currentTile.setHeight(this.sliderHeight.slide.getValue());
 
-			currentTile.setTexture(Tile.textureType.valueOf(this.textureCombo.getSelectedItem().toString()));
-			currentTile.setType(Tile.tileType.valueOf(this.typeCombo.getSelectedItem().toString()));
-			currentTile.setDecoration(Tile.decorationType.valueOf(this.decorationCombo.getSelectedItem().toString()));
-			containerFrame.updateCancas();
+				currentTile.setTexture(Tile.textureType.valueOf(this.textureCombo.getSelectedItem().toString()));
+				currentTile.setType(Tile.tileType.valueOf(this.typeCombo.getSelectedItem().toString()));
+				currentTile.setDecoration(Tile.decorationType.valueOf(this.decorationCombo.getSelectedItem().toString()));
+				currentTile.setInDeploymentZone(Integer.valueOf(deployementZoneNumTextField.getText()));
+				containerFrame.updateCancas();
+			}
 		}
 	}
 
@@ -325,7 +362,7 @@ public class TileEditionPan extends JPanel {
 	}
 
 	public class OnSlideEvent implements ChangeListener {
-		
+
 		@Override
 		public void stateChanged(ChangeEvent e) {
 			SaveTile();
@@ -334,7 +371,7 @@ public class TileEditionPan extends JPanel {
 	}
 
 	public class ComboSelectEvent implements ActionListener {
-		
+
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			SaveTile();

@@ -19,7 +19,6 @@ public class Tile {
 	private int posX;
 	private int posY;
 	private int height;
-	private int heightToDraw;
 
 	private boolean isHighlighted;
 	private boolean isHighlightedGreen;
@@ -40,7 +39,6 @@ public class Tile {
 		this.setPosX(0);
 		this.setPosY(0);
 		this.setHeight(10);
-		this.setHeightToDraw(0);
 		this.setTexture(textureType.Grass);
 		this.setType(tileType.Walkable);
 		this.setDecoration(decorationType.None);
@@ -53,7 +51,6 @@ public class Tile {
 		this.setPosX(posX);
 		this.setPosY(posY);
 		this.setHeight(height);
-		this.setHeightToDraw(0);
 		this.setTexture(textureType.Grass);
 		this.setType(tileType.Walkable);
 		this.setDecoration(decorationType.None);
@@ -62,12 +59,10 @@ public class Tile {
 		this.setInDeploymentZone(0);
 	}
 
-	public Tile(int posX, int posY, int height, int heightTotal,
-			textureType texture, tileType type, decorationType decoration) {
+	public Tile(int posX, int posY, int height, int heightTotal, textureType texture, tileType type, decorationType decoration) {
 		this.setPosX(posX);
 		this.setPosY(posY);
 		this.setHeight(height);
-		this.setHeightToDraw(heightTotal);
 		this.setTexture(texture);
 		this.setType(type);
 		this.setDecoration(decoration);
@@ -98,7 +93,6 @@ public class Tile {
 		this.setPosX(posX);
 		this.setPosY(posY);
 		this.setHeight(height);
-		this.setHeightToDraw(heightTotal);
 		this.setTexture(texture);
 		this.setType(type);
 		this.setDecoration(decoration);
@@ -139,10 +133,6 @@ public class Tile {
 		s += "<Z>";
 		s += this.getHeight();
 		s += "</Z>";
-
-		s += "<Z2>";
-		s += this.getHeightToDraw();
-		s += "</Z2>";
 
 		s += "<Tx>";
 		s += this.getTexture();
@@ -186,14 +176,6 @@ public class Tile {
 
 	public void setHeight(int height) {
 		this.height = height;
-	}
-
-	public int getHeightToDraw() {
-		return heightToDraw;
-	}
-
-	public void setHeightToDraw(int heightTotal) {
-		this.heightToDraw = heightTotal;
 	}
 
 	public textureType getTexture() {
@@ -285,8 +267,7 @@ public class Tile {
 	}
 
 	public static void main(String[] argv) {
-		Tile t = new Tile(0, 5, 12, 12, textureType.Grass,
-				tileType.DifficultGround, decorationType.Flowers3);
+		Tile t = new Tile(0, 5, 12, 12, textureType.Grass, tileType.DifficultGround, decorationType.Flowers3);
 		String s = t.toXMLString();
 		System.out.println(s);
 		Tile t2 = new Tile(s);

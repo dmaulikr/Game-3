@@ -101,7 +101,7 @@ public class DisplayManager {
 
 		GL11.glOrtho(-1, 1, -1, 1, -10, 1000);
 
-		GL11.glRotatef((float) Math.toDegrees(Math.atan(0.5)), 1, 0, 0); // 26,565
+		GL11.glRotatef((float) Math.toDegrees(Math.atan(0.6)), 1, 0, 0); // 26,565
 		GL11.glRotatef(-45.0f, 0, 1, 0); // -45
 
 		GL11.glMatrixMode(GL11.GL_MODELVIEW);
@@ -525,7 +525,7 @@ public class DisplayManager {
 
 	public void DrawHighlightG(Tile t) {
 
-		GL11.glColor4f(1f, 1f, 1f, 0.4f);
+		GL11.glColor4f(1f, 1f, 1f, 0.6f);
 		highlightG.bind();
 
 		float x1 = ((float) t.getPosY() * scale) - originY;

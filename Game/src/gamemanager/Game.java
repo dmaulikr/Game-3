@@ -166,7 +166,7 @@ public class Game {
 
 	public void run() {
 		while (!dm.isRequestClose() && !quit) {
-			map.LightUpPossibleMovement(9, 4, 2);
+			map.LightUpPossibleMovement(5, 5, 3);
 			if (!dm.isBusy()) {
 				manageKeyInput(im.getInputs());
 			}
