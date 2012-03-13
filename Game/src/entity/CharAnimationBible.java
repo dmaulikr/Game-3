@@ -1,8 +1,9 @@
 package entity;
 
 import java.util.ArrayList;
-
+import entity.Job.jobList;
 import displaymanager.DisplayManager.viewPoint;
+import entity.Character.*;
 
 public class CharAnimationBible {
 	int nbPointsOfView = 4;

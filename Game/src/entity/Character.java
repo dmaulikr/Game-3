@@ -1,32 +1,41 @@
 package entity;
 
-import java.util.ArrayList;
-
 import org.newdawn.slick.opengl.Texture;
 
 import displaymanager.DisplayManager.viewPoint;
 
 import jobs.Warrior;
-
-enum Race {
-	Human, Dwarf, Elve
-}
-
-enum Gender {
-	Male, Female
-}
-
-enum CharState {
-	Walking, Standing, Hitting, Casting, TakingDmg, Wounded, Dead
-}
+import entity.Job.jobList;
 
 public class Character {
+	public enum Race {
+		Human, Dwarf, Elve
+	}
+
+	public enum Gender {
+		Male, Female
+	}
+
+	public enum CharState {
+		Walking, Standing, Hitting, Casting, TakingDmg, Wounded, Dead
+	}
+
 	private Race race;
 	private Gender gender;
 	private Job actualJob;
 	private Job[] jobs;
-	private int posX;
-	private int posY;
+
+	private float posX;
+	private float posY;
+	private float posZ;
+
+	private float speed;
+
+	private int currentTileX;
+	private int currentTileY;
+
+	private int tileToGoX;
+	private int tileToGoY;
 
 	private int lifePoints;
 	private int manaPoints;
@@ -59,12 +68,11 @@ public class Character {
 
 	private int spriteSpeed;
 
-	public Character(Race race, Gender gender, Job job) {
+	public Character(Race race, Gender gender) {
 		this.setRace(race);
 		this.setGender(gender);
 		this.level = 1;
 		this.experience = 0;
-		this.setActualJob(job);
 		this.currentAnimation = null;
 		this.setState(CharState.Standing);
 		lastState = this.getState();
@@ -124,7 +132,6 @@ public class Character {
 		default:
 			break;
 		}
-
 	}
 
 	public Character(String XMLString) {
@@ -132,9 +139,6 @@ public class Character {
 		this.setGender(Gender.valueOf(GetXMLElement(XMLString, "GEN")));
 		this.level = Integer.valueOf(GetXMLElement(XMLString, "LVL"));
 		this.experience = Integer.valueOf(GetXMLElement(XMLString, "XP"));
-		this.currentAnimation = null;
-		this.setState(CharState.Standing);
-		lastState = this.getState();
 
 		maxLifePoints = Integer.valueOf(GetXMLElement(XMLString, "HP"));
 		maxManaPoints = Integer.valueOf(GetXMLElement(XMLString, "MP"));
@@ -168,10 +172,113 @@ public class Character {
 			}
 			i++;
 		}
+
+		this.currentAnimation = null;
+		this.setState(CharState.Standing);
+		lastState = this.getState();
 	}
 
-	public void Update(float GameTime) {
-		this.currentAnimation.Update(GameTime);
+	public void Update(float GameTimeLapse, Map map) {
+		this.currentAnimation.Update(GameTimeLapse);
+		if (tileToGoX != currentTileX || tileToGoY != currentTileY) {
+			int ecartX = 0;
+			int ecartY = 0;
+			boolean Xpos = false;
+			boolean Ypos = false;
+
+			if (tileToGoX > currentTileX) {
+				ecartX = tileToGoX - currentTileX;
+				Xpos = true;
+			}
+			if (tileToGoX < currentTileX) {
+				ecartX = currentTileX - tileToGoX;
+				Xpos = false;
+			}
+
+			if (tileToGoY > currentTileY) {
+				ecartY = tileToGoY - currentTileY;
+				Ypos = true;
+			}
+			if (tileToGoY < currentTileY) {
+				ecartY = currentTileY - tileToGoY;
+				Ypos = false;
+			}
+
+			if (ecartX > ecartY) {
+				if (Xpos) {
+					if ((posX + speed * GameTimeLapse) < currentTileX + 1) {
+						posX += speed * GameTimeLapse;
+					} else if ((posX + speed * GameTimeLapse) >= currentTileX + 1) {
+						posX = currentTileX + 1;
+					} else if (posX == currentTileX + 1) {
+						currentTileX++;
+					}
+
+					if (posX > currentTileX + 0.5f && posX < currentTileX + 1) {
+						posZ = fdex1(posX, (map.getTile(currentTileX + 1, currentTileY).getHeight()), (map.getTile(currentTileX, currentTileY).getHeight()));
+					} else if (posX < currentTileX + 0.25f) {
+						posZ = fdex2(posX, (map.getTile(currentTileX, currentTileY).getHeight()));
+					}
+				} else {
+					if ((posX - speed * GameTimeLapse) < currentTileX - 1) {
+						posX -= speed * GameTimeLapse;
+					} else if ((posX + speed * GameTimeLapse) >= currentTileX - 1) {
+						posX = currentTileX - 1;
+					} else if (posX == currentTileX - 1) {
+						currentTileX--;
+					}
+
+					if (posX < currentTileX + 0.5f && posX > currentTileX - 1) {
+						posZ = fdex1(posX, (map.getTile(currentTileX - 1, currentTileY).getHeight()), (map.getTile(currentTileX, currentTileY).getHeight()));
+					} else if (posX > currentTileX + 0.75f) {
+						posZ = fdex2(posX, (map.getTile(currentTileX, currentTileY).getHeight()));
+					}
+				}
+			} else {
+
+				if (Ypos) {
+					if ((posY + speed * GameTimeLapse) < currentTileY + 1) {
+						posY += speed * GameTimeLapse;
+					} else if ((posY + speed * GameTimeLapse) >= currentTileY + 1) {
+						posY = currentTileY + 1;
+					}
+
+					if (posY == currentTileY + 1) {
+						currentTileY++;
+					}
+
+					if (posY > currentTileY + 0.5f && posY < currentTileY + 1) {
+						posZ = fdex1(posY, (map.getTile(currentTileX, currentTileY + 1).getHeight()), (map.getTile(currentTileX, currentTileY).getHeight()));
+					} else if (posX < currentTileY + 0.25f) {
+						posZ = fdex2(posY, (map.getTile(currentTileX, currentTileY).getHeight()));
+					}
+				} else {
+					if ((posY - speed * GameTimeLapse) > currentTileY - 1) {
+						posY -= speed * GameTimeLapse;
+					} else if ((posY - speed * GameTimeLapse) <= currentTileY - 1) {
+						posY = currentTileY - 1;
+					}
+
+					if (posY == currentTileY - 1) {
+						currentTileY--;
+					}
+
+					if (posY < currentTileY + 0.5f && posY > currentTileY - 1) {
+						posZ = fdex1(posY, (map.getTile(currentTileX, currentTileY - 1).getHeight()), (map.getTile(currentTileX, currentTileY).getHeight()));
+					} else if (posX < currentTileY + 0.75f) {
+						posZ = fdex2(posY, (map.getTile(currentTileX, currentTileY).getHeight()));
+					}
+				}
+			}
+		}
+	}
+
+	private float fdex1(float x, float z2, float z0) {
+		return (((z2 + 0.25f) / 0.5f) * x) + z0;
+	}
+
+	private float fdex2(float x, float z0) {
+		return ((z0 + 0.25f) - 0.25f * x);
 	}
 
 	public void linkAnimationBible(CharAnimationBible bible) {
@@ -271,20 +378,28 @@ public class Character {
 		return XMLString.substring(posDeb + len, posFin);
 	}
 
-	public int getPosX() {
+	public float getPosX() {
 		return posX;
 	}
 
-	public void setPosX(int posX) {
+	public void setPosX(float posX) {
 		this.posX = posX;
 	}
 
-	public int getPosY() {
+	public float getPosY() {
 		return posY;
 	}
 
-	public void setPosY(int posY) {
+	public void setPosY(float posY) {
 		this.posY = posY;
+	}
+
+	public float getPosZ() {
+		return posZ;
+	}
+
+	public void setPosZ(float posZ) {
+		this.posZ = posZ;
 	}
 
 	public int getLifePoints() {
@@ -411,8 +526,12 @@ public class Character {
 		return actualJob;
 	}
 
-	public void setActualJob(Job actualJob) {
-		this.actualJob = actualJob;
+	public void setActualJob(jobList actualJob) {
+		for (Job j : jobs) {
+			if (j.getName() == actualJob.toString()) {
+				this.actualJob = j;
+			}
+		}
 	}
 
 	public Race getRace() {
@@ -447,8 +566,54 @@ public class Character {
 		this.state = state;
 	}
 
+	public int getCurrentTileX() {
+		return currentTileX;
+	}
+
+	public void setCurrentTileX(int currentTileX) {
+		this.currentTileX = currentTileX;
+		this.posX = (float) currentTileX;
+	}
+
+	public int getCurrentTileY() {
+		return currentTileY;
+	}
+
+	public void setCurrentTileY(int currentTileY) {
+		this.currentTileY = currentTileY;
+		this.posY = (float) currentTileY;
+	}
+
+	public int getTileToGoX() {
+		return tileToGoX;
+	}
+
+	public void setTileToGoX(int tileToGoX) {
+		this.tileToGoX = tileToGoX;
+	}
+
+	public int getTileToGoY() {
+		return tileToGoY;
+	}
+
+	public void setTileToGoY(int tileToGoY) {
+		this.tileToGoY = tileToGoY;
+	}
+
+	public void setHeight(float z) {
+		this.posZ = z;
+	}
+
+	public float getSpeed() {
+		return speed;
+	}
+
+	public void setSpeed(float speed) {
+		this.speed = speed;
+	}
+
 	public static void main(String[] argv) {
-		Character c1 = new Character(Race.Human, Gender.Female, new Warrior());
+		Character c1 = new Character(Race.Human, Gender.Female);
 		String save = c1.toXMLString();
 		System.out.println(save);
 		Character c2 = new Character(save);

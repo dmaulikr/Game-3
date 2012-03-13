@@ -219,7 +219,7 @@ public class TileEditionPan extends JPanel {
 		this.textureCombo.setSelectedItem(tile.getTexture().toString());
 		this.typeCombo.setSelectedItem(tile.getType().toString());
 		this.decorationCombo.setSelectedItem(tile.getDecoration().toString());
-
+		this.deployementZoneNumTextField.setText(String.valueOf(tile.isInDeploymentZone()));
 		ActivateActions();
 
 		this.idLabel.setText(tile.getPosX() + "/" + tile.getPosY());
@@ -265,16 +265,33 @@ public class TileEditionPan extends JPanel {
 		public void keyPressed(KeyEvent e) {
 			if (currentTile != null) {
 				switch (e.getKeyChar()) {
+				case '0':
+					deployementZoneNumTextField.setText("0");
+					SaveTile();
+					break;
+				case '1':
+					deployementZoneNumTextField.setText("1");
+					SaveTile();
+					break;
+				case '2':
+					deployementZoneNumTextField.setText("2");
+					SaveTile();
+					break;
+				case '3':
+					deployementZoneNumTextField.setText("3");
+					SaveTile();
+					break;
+
 				case 'a':
-					typeCombo.setSelectedItem(Tile.tileType.Walkable.toString());
+					typeCombo.setSelectedItem(Tile.tileType.Walkable);
 					SaveTile();
 					break;
 				case 'z':
-					typeCombo.setSelectedItem(Tile.tileType.Uncrossable.toString());
+					typeCombo.setSelectedItem(Tile.tileType.Uncrossable);
 					SaveTile();
 					break;
 				case 'e':
-					typeCombo.setSelectedItem(Tile.tileType.DifficultGround.toString());
+					typeCombo.setSelectedItem(Tile.tileType.DifficultGround);
 					SaveTile();
 					break;
 

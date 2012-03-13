@@ -2,20 +2,24 @@ package gamemanager;
 
 import javax.net.ssl.SSLEngineResult.Status;
 
+import jobs.Warrior;
+
 import inputmanager.InputManager;
 import inputmanager.InputManager.actions;
-
+import entity.Job.jobList;
 import displaymanager.DisplayManager;
 import displaymanager.DisplayManager.viewPoint;
 import entity.Map;
 import entity.Player;
 import entity.Tile;
 import entity.TileTexture;
+import entity.Character;
+import entity.Character.*;
 
 public class Game {
 
 	enum GameStatus {
-		PlacingBeforeBattle, InCharMenu, MoveSelection, TargetSelection, ExploringMap
+		PlacingBeforeBattle, Pending, InCharMenu, MoveSelection, TargetSelection, ExploringMap
 	}
 
 	Map map;
@@ -25,12 +29,20 @@ public class Game {
 
 	Player[] players;
 	Player currentPlayer;
+	int indexPlayer;
 	int nbPlayers;
+
+	int charIndex;
+	Character currentChar;
 
 	int cursorX;
 	int cursorY;
 
 	boolean quit;
+
+	boolean charPlaced;
+	int deployementcountDown;
+	int playerCountDown;
 
 	public Game(Map map, int nbPlayers) {
 		this.map = map;
@@ -48,10 +60,53 @@ public class Game {
 		this.nbPlayers = nbPlayers;
 		this.players = new Player[this.nbPlayers];
 		this.currentPlayer = null;
+
+	}
+
+	private void UpdateLogic() {
+		switch (state) {
+
+		case PlacingBeforeBattle:
+			if (charPlaced) {
+				if (deployementcountDown >= 0) {
+					deployementcountDown--;
+				}
+				if (deployementcountDown == 0) {
+					if (playerCountDown > 0) {
+						playerCountDown--;
+						if (indexPlayer < players.length - 1) {
+							indexPlayer++;
+							currentPlayer = players[indexPlayer];
+							deployementcountDown = currentPlayer.getChars().length;
+						}
+					}
+					if (playerCountDown == 0) {
+						state = GameStatus.Pending;
+					}
+				}
+
+				charPlaced = false;
+			}
+			break;
+
+		case Pending:
+			break;
+
+		}
 	}
 
 	public void setPlayer(int i, Player player) {
 		players[i] = player;
+	}
+
+	private void initPlacingBeforeBattle() {
+		this.indexPlayer = 0;
+		this.currentPlayer = players[this.indexPlayer];
+		this.currentChar = currentPlayer.getChars()[0];
+		this.playerCountDown = players.length;
+		this.deployementcountDown = currentPlayer.getChars().length;
+		this.charPlaced = false;
+		this.map.LightUpStartZone(indexPlayer + 1);
 	}
 
 	private void goUp() {
@@ -176,13 +231,23 @@ public class Game {
 	}
 
 	public void run() {
+		initPlacingBeforeBattle();
 		while (!dm.isRequestClose() && !quit) {
 			if (!dm.isBusy()) {
 				manageKeyInput(im.getInputs());
+				UpdateLogic();
 			}
 			dm.Update();
 		}
 		dm.Clean();
+	}
+
+	private void PlaceChar() {
+		currentChar.setCurrentTileX(cursorX);
+		currentChar.setCurrentTileY(cursorY);
+		currentChar.setHeight(map.getTile(cursorX, cursorY).getHeight());
+		charPlaced = true;
+		dm.getCharsToDRaw().add(currentChar);
 	}
 
 	private void manageKeyInput(actions act) {
@@ -219,10 +284,16 @@ public class Game {
 					quit = true;
 					break;
 				case ENTER:
-					quit = true;
+					PlaceChar();
 					break;
-
 				default:
+					break;
+				}
+				break;
+			case Pending:
+				switch (act) {
+				case QUIT:
+					quit = true;
 					break;
 				}
 				break;
@@ -388,10 +459,17 @@ public class Game {
 	public static void main(String[] argv) {
 
 		Map map = new Map(10, 10, "lolilol");
-
+		Character c1 = new Character(Race.Human, Gender.Male);
+		Character c2 = new Character(Race.Human, Gender.Male);
+		Character c3 = new Character(Race.Human, Gender.Male);
+		Character c4 = new Character(Race.Human, Gender.Male);
+		Character c5 = new Character(Race.Human, Gender.Male);
+		Player p1 = new Player("bobyx", new Character[] { c1, c2 });
+		Player p2 = new Player("bobyxou", new Character[] { c3, c4, c5 });
 		Game g = new Game(map, 2);
+		g.setPlayer(0, p1);
+		g.setPlayer(1, p2);
 		g.run();
 
 	}
-
 }

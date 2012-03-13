@@ -9,6 +9,7 @@ import org.lwjgl.opengl.GL11;
 
 import java.io.IOException;
 import java.nio.FloatBuffer;
+import java.util.ArrayList;
 import java.math.*;
 
 import javax.swing.text.html.MinimalHTMLWriter;
@@ -22,6 +23,7 @@ import entity.Map;
 import entity.Tile;
 import entity.Tile.textureType;
 import entity.TileTexture;
+import entity.Character;
 
 public class DisplayManager {
 	private Map demoMap;
@@ -33,6 +35,7 @@ public class DisplayManager {
 	private Texture imageHerbe;
 	private Texture highlight;
 	private Texture highlightG;
+	private Texture cara;
 
 	public enum viewPoint {
 		South, // base
@@ -43,6 +46,8 @@ public class DisplayManager {
 	}
 
 	private viewPoint currentView;
+
+	private ArrayList<Character> charsToDRaw;
 
 	private int currentTileOnFocusX;
 	private int currentTileOnFocusY;
@@ -62,7 +67,7 @@ public class DisplayManager {
 	public DisplayManager(Map demoMap) {
 		setDemoMap(demoMap);
 		setScale(1f / 5f);
-		setZscale(1f / 100f);
+		setZscale(1f / 15f);
 
 		originX = 0;
 		originY = 0;
@@ -74,7 +79,7 @@ public class DisplayManager {
 		rotationToGo = 0f;
 		isBusy = false;
 		currentView = viewPoint.South;
-
+		charsToDRaw = new ArrayList<Character>();
 		try {
 			Display.setDisplayMode(new DisplayMode(800, 600));
 			Display.setSwapInterval(1);
@@ -178,6 +183,12 @@ public class DisplayManager {
 					}
 					if ((demoMap.getTile(i, j).isHighlightedGreen())) {
 						DrawHighlightG(demoMap.getTile(i, j));
+					}
+
+					for (Character c : charsToDRaw) {
+						if (c.getCurrentTileX() == i && c.getCurrentTileY() == j) {
+							DrawChar(c);
+						}
 					}
 				}
 			}
@@ -525,11 +536,39 @@ public class DisplayManager {
 
 	}
 
+	public void DrawChar(Character c) {
+
+		GL11.glColor4f(1f, 1f, 1f, 1f);
+		cara.bind();
+
+		float x1 = (c.getPosY() * scale) - originY;
+		float x2 = ((c.getPosY() + 1) * scale) - originY;
+
+		float y1 = (c.getPosX() * scale) - originX;
+		float y2 = ((c.getPosX() + 1) * scale) - originX;
+
+		float z1 = (c.getPosZ() * zscale);
+		float z2 = ((c.getPosZ() + 4.f) * zscale);
+
+		GL11.glBegin(GL11.GL_QUADS);
+		GL11.glTexCoord2d(0, 0);
+		GL11.glVertex3d(x1, z2, y2);
+		GL11.glTexCoord2d(1, 0);
+		GL11.glVertex3d(x2, z2, y1);
+		GL11.glTexCoord2d(1, 1);
+		GL11.glVertex3d(x2, z1, y1);
+		GL11.glTexCoord2d(0, 1);
+		GL11.glVertex3d(x1, z1, y2);
+		GL11.glEnd();
+
+	}
+
 	private void LoadTextures() {
 		try {
 			imageHerbe = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("images/fleur1.png"));
 			highlight = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("images/highlightblue.PNG"));
 			highlightG = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("images/highlightgreen.PNG"));
+			cara = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("images/perso1.png"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -756,6 +795,14 @@ public class DisplayManager {
 
 	public viewPoint getCurrentView() {
 		return currentView;
+	}
+
+	public ArrayList<Character> getCharsToDRaw() {
+		return charsToDRaw;
+	}
+
+	public void setCharsToDRaw(ArrayList<Character> charsToDRaw) {
+		this.charsToDRaw = charsToDRaw;
 	}
 
 	public static void main(String[] argv) {

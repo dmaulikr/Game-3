@@ -5,10 +5,12 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
+import entity.Character.*;
+import entity.Job.jobList;
 import displaymanager.DisplayManager.viewPoint;
 
 public class CharAnimation extends Animation {
-	
+
 	public CharAnimation(viewPoint vp, jobList job, Race race, Gender gen, CharState state) {
 		String path = super.basicPath + (race.toString() + "/" + gen.toString() + "/" + job.toString() + "/" + state.toString() + "/" + vp.toString());
 		this.speed = 0;

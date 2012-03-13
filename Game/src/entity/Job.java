@@ -1,10 +1,12 @@
 package entity;
 
-enum jobList {
-	Warrior
-}
+
 
 public class Job {
+	public enum jobList {
+		Warrior
+	}
+	
 	private String name;
 	private String description;
 
