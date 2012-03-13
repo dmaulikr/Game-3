@@ -56,6 +56,14 @@ public class Map {
 		}
 	}
 
+	public void CleanLightUpZones() {
+		for (int i = 0; i < length; i++) {
+			for (int j = 0; j < width; j++) {
+				getTile(i, j).setHighlightedGreen(false);
+			}
+		}
+	}
+
 	public void LightUpStartZone(int playerNum) {
 		for (int i = 0; i < length; i++) {
 			for (int j = 0; j < width; j++) {

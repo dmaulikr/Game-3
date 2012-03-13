@@ -90,6 +90,7 @@ public class Game {
 					}
 					if (playerCountDown == 0) {
 						state = GameStatus.Pending;
+						map.CleanLightUpZones();
 					}
 				}
 
@@ -98,6 +99,11 @@ public class Game {
 			break;
 
 		case Pending:
+			if (!GetTheCharToPlay()) {
+				HourglassTick();
+			} else {
+				state = GameStatus.InCharMenu;
+			}
 			break;
 
 		}
@@ -240,6 +246,31 @@ public class Game {
 		}
 	}
 
+	public boolean GetTheCharToPlay() {
+		for (Player p : players) {
+			for (Character c : p.getChars()) {
+				if (c.isReadyToPlay()) {
+					cursorX=c.getCurrentTileX();
+					cursorY=c.getCurrentTileY();
+					currentPlayer = p;
+					currentChar = c;
+					c.setReadyToPlay(false);
+					UpdateCursor();
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	private void HourglassTick() {
+		for (Player p : players) {
+			for (Character c : p.getChars()) {
+				c.HourglassTick();
+			}
+		}
+	}
+
 	public void run() {
 		initPlacingBeforeBattle();
 		while (!dm.isRequestClose() && !quit) {
@@ -254,12 +285,25 @@ public class Game {
 
 	private void PlaceChar() {
 		if (map.getTile(cursorX, cursorY).getDeploymentZone() == this.indexPlayer + 1) {
-			currentChar.setCurrentTileX(cursorX);
-			currentChar.setCurrentTileY(cursorY);
-			currentChar.setHeight(map.getTile(cursorX, cursorY).getHeight());
-			charPlaced = true;
-			dm.getCharsToDRaw().add(players[this.indexPlayer].getChars()[indexChar]);
+			if (!isTileOccupied(cursorX, cursorY)) {
+				currentChar.setCurrentTileX(cursorX);
+				currentChar.setCurrentTileY(cursorY);
+				currentChar.setHeight(map.getTile(cursorX, cursorY).getHeight());
+				charPlaced = true;
+				dm.getCharsToDRaw().add(players[this.indexPlayer].getChars()[indexChar]);
+			}
 		}
+	}
+
+	private boolean isTileOccupied(int X, int Y) {
+		for (Player p : players) {
+			for (Character c : p.getChars()) {
+				if (c.getCurrentTileX() == X && c.getCurrentTileY() == Y) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 
 	private void manageKeyInput(actions act) {
@@ -495,7 +539,7 @@ public class Game {
 		map.getTile(2, 3).setDeploymentZone(2);
 		map.getTile(2, 3).setHeight(7);
 
-		Game g = new Game(map, 1);
+		Game g = new Game(map, 2);
 		g.setPlayer(0, p1);
 		g.setPlayer(1, p2);
 		g.run();

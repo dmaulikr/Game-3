@@ -64,6 +64,9 @@ public class DisplayManager {
 
 	private boolean isBusy;
 
+	private int Height = 600;
+	private int Width = 800;
+
 	public DisplayManager(Map demoMap) {
 		setDemoMap(demoMap);
 		setScale(1f / 5f);
@@ -81,7 +84,7 @@ public class DisplayManager {
 		currentView = viewPoint.South;
 		charsToDRaw = new ArrayList<Character>();
 		try {
-			Display.setDisplayMode(new DisplayMode(800, 600));
+			Display.setDisplayMode(new DisplayMode(Width, Height));
 			Display.setSwapInterval(1);
 			Display.sync(60);
 			Display.create();
@@ -91,16 +94,11 @@ public class DisplayManager {
 		}
 	}
 
-	public void init() {
-
-		GL11.glViewport(0, 0, 800, 600);
-		GL11.glDepthRange(0, 1000);
-
+	public void Ready3D() {
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
 		GL11.glEnable(GL11.GL_BLEND);
 
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-		GL11.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 		GL11.glMatrixMode(GL11.GL_PROJECTION);
 		GL11.glLoadIdentity();
 
@@ -111,12 +109,46 @@ public class DisplayManager {
 
 		GL11.glMatrixMode(GL11.GL_MODELVIEW);
 		GL11.glLoadIdentity();
+	}
+
+	public void Ready2D() {
+		GL11.glEnable(GL11.GL_TEXTURE_2D);
+		GL11.glEnable(GL11.GL_BLEND);
+
+		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+		GL11.glMatrixMode(GL11.GL_PROJECTION);
+		GL11.glLoadIdentity();
+
+		GL11.glOrtho(0, Width, 0, Height, -1, 1);
+
+		GL11.glMatrixMode(GL11.GL_MODELVIEW);
+		GL11.glLoadIdentity();
+	}
+
+	public void init() {
+		GL11.glViewport(0, 0, 800, 600);
+		GL11.glDepthRange(0, 1000);
+		Ready2D();
+		Ready3D();
 
 		// LoadTextures();
 		TileTexture ttx = new TileTexture();
 		ttx.LoadBundles(demoMap.getAllTextureTypes());
 		demoMap.BindTextures(ttx);
 		LoadTextures();
+	}
+
+	public void Render3D() {
+		Ready3D();
+	}
+
+	public void Render2D() {
+		Ready2D();
+	}
+
+	public void Render() {
+		Render3D();
+		Render2D();
 	}
 
 	public void run() {
@@ -178,11 +210,13 @@ public class DisplayManager {
 					} else {
 						DrawTheLinkSE(demoMap.getTile(i, j), new Tile(i, j + 1, 0));
 					}
-					if ((demoMap.getTile(i, j).isHighlighted())) {
-						DrawHighlight(demoMap.getTile(i, j));
-					}
-					if ((demoMap.getTile(i, j).isHighlightedGreen())) {
+
+					if (demoMap.getTile(i, j).isHighlightedGreen() && !demoMap.getTile(i, j).isHighlighted()) {
 						DrawHighlightG(demoMap.getTile(i, j));
+					}
+
+					if (demoMap.getTile(i, j).isHighlighted()) {
+						DrawHighlight(demoMap.getTile(i, j));
 					}
 
 					for (Character c : charsToDRaw) {
@@ -211,11 +245,18 @@ public class DisplayManager {
 					} else {
 						DrawTheLinkNO(demoMap.getTile(i, j), new Tile(i, j - 1, 0));
 					}
-					if ((demoMap.getTile(i, j).isHighlighted())) {
+					if (demoMap.getTile(i, j).isHighlightedGreen() && !demoMap.getTile(i, j).isHighlighted()) {
+						DrawHighlightG(demoMap.getTile(i, j));
+					}
+
+					if (demoMap.getTile(i, j).isHighlighted()) {
 						DrawHighlight(demoMap.getTile(i, j));
 					}
-					if ((demoMap.getTile(i, j).isHighlightedGreen())) {
-						DrawHighlightG(demoMap.getTile(i, j));
+
+					for (Character c : charsToDRaw) {
+						if (c.getCurrentTileX() == i && c.getCurrentTileY() == j) {
+							DrawChar(c);
+						}
 					}
 				}
 			}
@@ -238,11 +279,18 @@ public class DisplayManager {
 					} else {
 						DrawTheLinkNO(demoMap.getTile(i, j), new Tile(i, j - 1, 0));
 					}
-					if ((demoMap.getTile(i, j).isHighlighted())) {
+					if (demoMap.getTile(i, j).isHighlightedGreen() && !demoMap.getTile(i, j).isHighlighted()) {
+						DrawHighlightG(demoMap.getTile(i, j));
+					}
+
+					if (demoMap.getTile(i, j).isHighlighted()) {
 						DrawHighlight(demoMap.getTile(i, j));
 					}
-					if ((demoMap.getTile(i, j).isHighlightedGreen())) {
-						DrawHighlightG(demoMap.getTile(i, j));
+
+					for (Character c : charsToDRaw) {
+						if (c.getCurrentTileX() == i && c.getCurrentTileY() == j) {
+							DrawChar(c);
+						}
 					}
 				}
 			}
@@ -265,11 +313,18 @@ public class DisplayManager {
 					} else {
 						DrawTheLinkSE(demoMap.getTile(i, j), new Tile(i, j + 1, 0));
 					}
-					if ((demoMap.getTile(i, j).isHighlighted())) {
+					if (demoMap.getTile(i, j).isHighlightedGreen() && !demoMap.getTile(i, j).isHighlighted()) {
+						DrawHighlightG(demoMap.getTile(i, j));
+					}
+
+					if (demoMap.getTile(i, j).isHighlighted()) {
 						DrawHighlight(demoMap.getTile(i, j));
 					}
-					if ((demoMap.getTile(i, j).isHighlightedGreen())) {
-						DrawHighlightG(demoMap.getTile(i, j));
+
+					for (Character c : charsToDRaw) {
+						if (c.getCurrentTileX() == i && c.getCurrentTileY() == j) {
+							DrawChar(c);
+						}
 					}
 				}
 			}

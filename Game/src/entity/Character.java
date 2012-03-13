@@ -61,6 +61,8 @@ public class Character {
 
 	private CharState state;
 	private CharState lastState;
+	private int hourglass;
+	private boolean isReadyToPlay;
 
 	private Animation currentAnimation;
 
@@ -79,7 +81,10 @@ public class Character {
 		jobs = new Job[jobList.values().length];
 		jobs[0] = new Warrior();
 		actualJob = jobs[0];
-
+		hourglass = 100;
+		isReadyToPlay = false;
+		currentTileX = -1;
+		currentTileY = -1;
 		switch (race) {
 		case Human:
 			maxLifePoints = 50;
@@ -176,10 +181,22 @@ public class Character {
 		this.currentAnimation = null;
 		this.setState(CharState.Standing);
 		lastState = this.getState();
+		hourglass = 100;
+		isReadyToPlay = false;
+	}
+
+	public void HourglassTick() {
+		hourglass -= initiative;
+		if (hourglass <= 0) {
+			hourglass = 0;
+			setReadyToPlay(true);
+			hourglass = 100;
+		}
 	}
 
 	public void Update(float GameTimeLapse, Map map) {
 		this.currentAnimation.Update(GameTimeLapse);
+
 		if (tileToGoX != currentTileX || tileToGoY != currentTileY) {
 			int ecartX = 0;
 			int ecartY = 0;
@@ -610,6 +627,14 @@ public class Character {
 
 	public void setSpeed(float speed) {
 		this.speed = speed;
+	}
+
+	public boolean isReadyToPlay() {
+		return isReadyToPlay;
+	}
+
+	public void setReadyToPlay(boolean isReadyToPlay) {
+		this.isReadyToPlay = isReadyToPlay;
 	}
 
 	public static void main(String[] argv) {
