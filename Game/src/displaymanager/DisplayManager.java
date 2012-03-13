@@ -21,7 +21,7 @@ public class DisplayManager {
 		this.width = width;
 		this.requestClose = false;
 		this.gameRender = new GameboardRender(map);
-		this.gui = new GUI();
+		this.gui = new GUI(this.height, this.width);
 		try {
 			Display.setDisplayMode(new DisplayMode(this.height, this.width));
 			Display.setSwapInterval(1);
@@ -62,19 +62,20 @@ public class DisplayManager {
 	}
 
 	private void Render3D() {
-		//Ready3D();
+		// Ready3D();
 		make3D();
 		gameRender.Render();
 	}
 
 	private void Render2D() {
-		//Ready2D();
+		// Ready2D();
 		make2D();
-		gui.Render();	
+		gui.Render();
 	}
 
 	private void make2D() {
 		// Remove the Z axis
+		// GL11.glDisable(GL11.GL_LIGHTING);
 		GL11.glMatrixMode(GL11.GL_PROJECTION);
 		GL11.glPushMatrix();
 		GL11.glLoadIdentity();
@@ -86,6 +87,7 @@ public class DisplayManager {
 
 	private void make3D() {
 		// Restore the Z axis
+		// GL11.glEnable(GL11.GL_LIGHTING);
 		GL11.glMatrixMode(GL11.GL_PROJECTION);
 		GL11.glPopMatrix();
 		GL11.glMatrixMode(GL11.GL_MODELVIEW);
@@ -107,6 +109,7 @@ public class DisplayManager {
 
 		GL11.glMatrixMode(GL11.GL_MODELVIEW);
 		GL11.glLoadIdentity();
+		//GL11.glEnable(GL11.GL_LIGHTING);
 	}
 
 	public void Clean() {

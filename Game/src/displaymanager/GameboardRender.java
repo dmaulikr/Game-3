@@ -1,6 +1,8 @@
 package displaymanager;
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.FloatBuffer;
 import java.util.ArrayList;
 
 import org.lwjgl.LWJGLException;
@@ -74,6 +76,7 @@ public class GameboardRender {
 
 	public void Init() {
 		LoadTextures();
+		//SetupLigths();
 		TileTexture tt = new TileTexture();
 		tt.LoadBundles(this.demoMap.getAllTextureTypes());
 		this.demoMap.BindTextures(tt);
@@ -87,23 +90,20 @@ public class GameboardRender {
 	private void Draw() {
 		// Clear
 		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
-
-		GL11.glBegin(GL11.GL_LINES);
-
-		GL11.glColor3d(1.0, 0.0, 0.0);
-		GL11.glVertex3d(0.0, 0.0, 0.0);
-		GL11.glVertex3d(1.0, 0.0, 0.0);
-
-		GL11.glColor3d(0.0, 1.0, 0.0);
-		GL11.glVertex3d(0.0, 0.0, 0.0);
-		GL11.glVertex3d(0.0, 1.0, 0.0);
-
-		GL11.glColor3d(0.0, 0.0, 1.0);
-		GL11.glVertex3d(0.0, 0.0, 0.0);
-		GL11.glVertex3d(0.0, 0.0, 1.0);
-
-		GL11.glEnd();
-
+		/*
+		 * GL11.glBegin(GL11.GL_LINES);
+		 * 
+		 * GL11.glColor3d(1.0, 0.0, 0.0); GL11.glVertex3d(0.0, 0.0, 0.0);
+		 * GL11.glVertex3d(1.0, 0.0, 0.0);
+		 * 
+		 * GL11.glColor3d(0.0, 1.0, 0.0); GL11.glVertex3d(0.0, 0.0, 0.0);
+		 * GL11.glVertex3d(0.0, 1.0, 0.0);
+		 * 
+		 * GL11.glColor3d(0.0, 0.0, 1.0); GL11.glVertex3d(0.0, 0.0, 0.0);
+		 * GL11.glVertex3d(0.0, 0.0, 1.0);
+		 * 
+		 * GL11.glEnd();
+		 */
 		switch (currentView) {
 		case South:
 			for (int i = 0; i < demoMap.getLength(); i++) {
@@ -708,6 +708,36 @@ public class GameboardRender {
 			}
 		}
 
+	}
+
+	private void SetupLigths() {
+		FloatBuffer lightAmbient = ByteBuffer.allocateDirect(16).asFloatBuffer();
+		//FloatBuffer lightDiffuse = ByteBuffer.allocateDirect(16).asFloatBuffer();
+		FloatBuffer lightPosition = ByteBuffer.allocateDirect(16).asFloatBuffer();
+		//FloatBuffer lightDir = ByteBuffer.allocateDirect(16).asFloatBuffer();
+		
+		lightAmbient.mark();
+		lightAmbient.put(new float[] {0.2f, 0.2f, 0.2f, 1.0f}); 
+		lightAmbient.reset();
+		
+		//lightDiffuse.mark();
+		//lightDiffuse.put(new float[] {1.0f, 1.0f, 1.0f, 1.0f}); 
+		//lightDiffuse.reset();
+		
+		lightPosition.mark();
+		lightPosition.put(new float[] {1.0f, 1.0f, 1.0f, 1.0f});
+		lightPosition.reset();
+		
+		//lightDir.mark();
+		//lightDir.put(new float[] {0.0f, 0.0f, 0.0f, 1.0f});
+		//lightDir.reset();
+		
+		GL11.glLight(GL11.GL_LIGHT1, GL11.GL_AMBIENT, lightAmbient); 
+		//GL11.glLight(GL11.GL_LIGHT1, GL11.GL_DIFFUSE, lightDiffuse); 
+		//GL11.glLight(GL11.GL_LIGHT1, GL11.GL_SPOT_DIRECTION, lightDir);
+		GL11.glLight(GL11.GL_LIGHT1, GL11.GL_POSITION, lightPosition); 
+		
+		GL11.glEnable(GL11.GL_LIGHT1);
 	}
 
 	public Map getDemoMap() {
