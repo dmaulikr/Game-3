@@ -48,7 +48,7 @@ public class Game {
 	public Game(int height, int width, Map map, int nbPlayers) {
 		this.map = map;
 		dm = new DisplayManager(height, width, map);
-		this.dm.init();
+		this.dm.Init();
 		this.im = new InputManager();
 		this.cursorX = 0;
 		this.cursorY = 0;

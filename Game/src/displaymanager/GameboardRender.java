@@ -72,7 +72,7 @@ public class GameboardRender {
 
 	}
 
-	public void init() {
+	public void Init() {
 		LoadTextures();
 		TileTexture tt = new TileTexture();
 		tt.LoadBundles(this.demoMap.getAllTextureTypes());
