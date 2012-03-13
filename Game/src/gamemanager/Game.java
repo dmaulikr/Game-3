@@ -85,6 +85,7 @@ public class Game {
 							deployementcountDown = currentPlayer.getChars().length;
 							indexChar = 0;
 							currentChar = players[indexPlayer].getChars()[indexChar];
+							map.LightUpStartZone(indexPlayer + 1);
 						}
 					}
 					if (playerCountDown == 0) {
@@ -252,11 +253,13 @@ public class Game {
 	}
 
 	private void PlaceChar() {
-		currentChar.setCurrentTileX(cursorX);
-		currentChar.setCurrentTileY(cursorY);
-		currentChar.setHeight(map.getTile(cursorX, cursorY).getHeight());
-		charPlaced = true;
-		dm.getCharsToDRaw().add(players[this.indexPlayer].getChars()[indexChar]);
+		if (map.getTile(cursorX, cursorY).getDeploymentZone() == this.indexPlayer + 1) {
+			currentChar.setCurrentTileX(cursorX);
+			currentChar.setCurrentTileY(cursorY);
+			currentChar.setHeight(map.getTile(cursorX, cursorY).getHeight());
+			charPlaced = true;
+			dm.getCharsToDRaw().add(players[this.indexPlayer].getChars()[indexChar]);
+		}
 	}
 
 	private void manageKeyInput(actions act) {
@@ -475,7 +478,24 @@ public class Game {
 		Character c5 = new Character(Race.Human, Gender.Male);
 		Player p1 = new Player("bobyx", new Character[] { c1, c2 });
 		Player p2 = new Player("bobyxou", new Character[] { c3, c4, c5 });
-		Game g = new Game(map, 2);
+
+		map.getTile(0, 0).setDeploymentZone(1);
+		map.getTile(0, 1).setHeight(4);
+		map.getTile(0, 1).setDeploymentZone(1);
+		map.getTile(0, 2).setHeight(5);
+		map.getTile(0, 2).setDeploymentZone(1);
+		map.getTile(0, 3).setDeploymentZone(1);
+
+		map.getTile(2, 0).setDeploymentZone(2);
+		map.getTile(2, 0).setHeight(4);
+		map.getTile(2, 1).setDeploymentZone(2);
+		map.getTile(2, 1).setHeight(5);
+		map.getTile(2, 2).setDeploymentZone(2);
+		map.getTile(2, 2).setHeight(6);
+		map.getTile(2, 3).setDeploymentZone(2);
+		map.getTile(2, 3).setHeight(7);
+
+		Game g = new Game(map, 1);
 		g.setPlayer(0, p1);
 		g.setPlayer(1, p2);
 		g.run();
