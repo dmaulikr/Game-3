@@ -59,7 +59,7 @@ public class Map {
 	public void LightUpStartZone(int playerNum) {
 		for (int i = 0; i < length; i++) {
 			for (int j = 0; j < width; j++) {
-				if (getTile(i, j).isInDeploymentZone() == playerNum) {
+				if (getTile(i, j).getDeploymentZone() == playerNum) {
 					getTile(i, j).setHighlightedGreen(true);
 				} else {
 					getTile(i, j).setHighlightedGreen(false);

@@ -30,6 +30,7 @@ public class Game {
 	Player[] players;
 	Player currentPlayer;
 	int indexPlayer;
+	int indexChar;
 	int nbPlayers;
 
 	int charIndex;
@@ -68,8 +69,12 @@ public class Game {
 
 		case PlacingBeforeBattle:
 			if (charPlaced) {
-				if (deployementcountDown >= 0) {
+				if (deployementcountDown > 0) {
 					deployementcountDown--;
+					indexChar++;
+					if (indexChar < players[indexPlayer].getChars().length) {
+						currentChar = players[indexPlayer].getChars()[indexChar];
+					}
 				}
 				if (deployementcountDown == 0) {
 					if (playerCountDown > 0) {
@@ -78,6 +83,8 @@ public class Game {
 							indexPlayer++;
 							currentPlayer = players[indexPlayer];
 							deployementcountDown = currentPlayer.getChars().length;
+							indexChar = 0;
+							currentChar = players[indexPlayer].getChars()[indexChar];
 						}
 					}
 					if (playerCountDown == 0) {
@@ -102,11 +109,13 @@ public class Game {
 	private void initPlacingBeforeBattle() {
 		this.indexPlayer = 0;
 		this.currentPlayer = players[this.indexPlayer];
-		this.currentChar = currentPlayer.getChars()[0];
+		this.indexChar = 0;
+		this.currentChar = currentPlayer.getChars()[this.indexChar];
 		this.playerCountDown = players.length;
 		this.deployementcountDown = currentPlayer.getChars().length;
 		this.charPlaced = false;
 		this.map.LightUpStartZone(indexPlayer + 1);
+
 	}
 
 	private void goUp() {
@@ -247,7 +256,7 @@ public class Game {
 		currentChar.setCurrentTileY(cursorY);
 		currentChar.setHeight(map.getTile(cursorX, cursorY).getHeight());
 		charPlaced = true;
-		dm.getCharsToDRaw().add(currentChar);
+		dm.getCharsToDRaw().add(players[this.indexPlayer].getChars()[indexChar]);
 	}
 
 	private void manageKeyInput(actions act) {

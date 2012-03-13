@@ -46,7 +46,7 @@ public class Tile {
 		this.setDecoration(decorationType.None);
 		this.setHighlighted(false);
 		this.setHighlightedGreen(false);
-		this.setInDeploymentZone(0);
+		this.setDeploymentZone(0);
 		this.setCharacter(null);
 	}
 
@@ -59,7 +59,7 @@ public class Tile {
 		this.setDecoration(decorationType.None);
 		this.setHighlighted(false);
 		this.setHighlightedGreen(false);
-		this.setInDeploymentZone(0);
+		this.setDeploymentZone(0);
 	}
 
 	public Tile(int posX, int posY, int height, int heightTotal, textureType texture, tileType type, decorationType decoration) {
@@ -71,7 +71,7 @@ public class Tile {
 		this.setDecoration(decoration);
 		this.setHighlighted(false);
 		this.setHighlightedGreen(false);
-		this.setInDeploymentZone(0);
+		this.setDeploymentZone(0);
 	}
 
 	public Tile(String XMLString) {
@@ -99,7 +99,7 @@ public class Tile {
 		this.setDecoration(decoration);
 		this.setHighlighted(false);
 		this.setHighlightedGreen(false);
-		this.setInDeploymentZone(inDeployementZone);
+		this.setDeploymentZone(inDeployementZone);
 	}
 
 	public void BindTextures(TileTexture tileTexture) {
@@ -148,7 +148,7 @@ public class Tile {
 		s += "</Dc>";
 
 		s += "<DZ>";
-		s += this.isInDeploymentZone();
+		s += this.getDeploymentZone();
 		s += "</DZ>";
 
 		return s;
@@ -259,12 +259,12 @@ public class Tile {
 		this.textureSE = textureSE;
 	}
 
-	public int isInDeploymentZone() {
+	public int getDeploymentZone() {
 		return deploymentZone;
 	}
 
-	public void setInDeploymentZone(int isInDeploymentZone) {
-		this.deploymentZone = isInDeploymentZone;
+	public void setDeploymentZone(int deploymentZone) {
+		this.deploymentZone = deploymentZone;
 	}
 
 	public Character getCharacter() {

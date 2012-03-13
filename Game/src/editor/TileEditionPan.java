@@ -219,7 +219,7 @@ public class TileEditionPan extends JPanel {
 		this.textureCombo.setSelectedItem(tile.getTexture().toString());
 		this.typeCombo.setSelectedItem(tile.getType().toString());
 		this.decorationCombo.setSelectedItem(tile.getDecoration().toString());
-		this.deployementZoneNumTextField.setText(String.valueOf(tile.isInDeploymentZone()));
+		this.deployementZoneNumTextField.setText(String.valueOf(tile.getDeploymentZone()));
 		ActivateActions();
 
 		this.idLabel.setText(tile.getPosX() + "/" + tile.getPosY());
@@ -231,14 +231,14 @@ public class TileEditionPan extends JPanel {
 			if (currentTile.getHeight() != this.sliderHeight.slide.getValue() || currentTile.getTexture() != Tile.textureType.valueOf(this.textureCombo.getSelectedItem().toString())
 					|| currentTile.getType() != Tile.tileType.valueOf(this.typeCombo.getSelectedItem().toString())
 					|| currentTile.getDecoration() != Tile.decorationType.valueOf(this.decorationCombo.getSelectedItem().toString())
-					|| currentTile.isInDeploymentZone() != Integer.valueOf(deployementZoneNumTextField.getText())) {
+					|| currentTile.getDeploymentZone() != Integer.valueOf(deployementZoneNumTextField.getText())) {
 
 				currentTile.setHeight(this.sliderHeight.slide.getValue());
 
 				currentTile.setTexture(Tile.textureType.valueOf(this.textureCombo.getSelectedItem().toString()));
 				currentTile.setType(Tile.tileType.valueOf(this.typeCombo.getSelectedItem().toString()));
 				currentTile.setDecoration(Tile.decorationType.valueOf(this.decorationCombo.getSelectedItem().toString()));
-				currentTile.setInDeploymentZone(Integer.valueOf(deployementZoneNumTextField.getText()));
+				currentTile.setDeploymentZone(Integer.valueOf(deployementZoneNumTextField.getText()));
 				containerFrame.updateCancas();
 			}
 		}
