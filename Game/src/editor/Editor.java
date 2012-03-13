@@ -242,7 +242,7 @@ public class Editor extends JFrame {
 		public void actionPerformed(ActionEvent e) {
 			if (currentMap != null) {
 
-				Game g = new Game(currentMap, 0);
+				Game g = new Game(800,600,currentMap, 0);
 				g.run();
 			}
 		}

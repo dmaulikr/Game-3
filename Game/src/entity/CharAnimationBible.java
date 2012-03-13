@@ -2,7 +2,7 @@ package entity;
 
 import java.util.ArrayList;
 import entity.Job.jobList;
-import displaymanager.DisplayManager.viewPoint;
+import displaymanager.GameboardRender.viewPoint;
 import entity.Character.*;
 
 public class CharAnimationBible {

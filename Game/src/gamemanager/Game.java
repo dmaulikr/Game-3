@@ -8,7 +8,7 @@ import inputmanager.InputManager;
 import inputmanager.InputManager.actions;
 import entity.Job.jobList;
 import displaymanager.DisplayManager;
-import displaymanager.DisplayManager.viewPoint;
+import displaymanager.GameboardRender.viewPoint;
 import entity.Map;
 import entity.Player;
 import entity.Tile;
@@ -45,13 +45,10 @@ public class Game {
 	int deployementcountDown;
 	int playerCountDown;
 
-	public Game(Map map, int nbPlayers) {
+	public Game(int height, int width, Map map, int nbPlayers) {
 		this.map = map;
-		dm = new DisplayManager(map);
+		dm = new DisplayManager(height, width, map);
 		this.dm.init();
-		TileTexture tt = new TileTexture();
-		tt.LoadBundles(map.getAllTextureTypes());
-		this.map.BindTextures(tt);
 		this.im = new InputManager();
 		this.cursorX = 0;
 		this.cursorY = 0;
@@ -126,7 +123,7 @@ public class Game {
 	}
 
 	private void goUp() {
-		switch (dm.getCurrentView()) {
+		switch (dm.getGameBoard().getCurrentView()) {
 		case South:
 			if (cursorX > 0) {
 				cursorX--;
@@ -152,7 +149,7 @@ public class Game {
 	}
 
 	private void goDown() {
-		switch (dm.getCurrentView()) {
+		switch (dm.getGameBoard().getCurrentView()) {
 		case South:
 			if (cursorX < map.getLength() - 1) {
 				cursorX++;
@@ -178,7 +175,7 @@ public class Game {
 	}
 
 	private void goLeft() {
-		switch (dm.getCurrentView()) {
+		switch (dm.getGameBoard().getCurrentView()) {
 		case South:
 			if (cursorY > 0) {
 				cursorY--;
@@ -204,7 +201,7 @@ public class Game {
 	}
 
 	private void goRigth() {
-		switch (dm.getCurrentView()) {
+		switch (dm.getGameBoard().getCurrentView()) {
 		case South:
 			if (cursorY < map.getWidth() - 1) {
 				cursorY++;
@@ -241,7 +238,7 @@ public class Game {
 				} else {
 					map.getTile(i, j).setHighlighted(false);
 				}
-				dm.RequestFocusOn(cursorX, cursorY, map.getTile(cursorX, cursorY).getHeight());
+				dm.getGameBoard().RequestFocusOn(cursorX, cursorY, map.getTile(cursorX, cursorY).getHeight());
 			}
 		}
 	}
@@ -250,8 +247,8 @@ public class Game {
 		for (Player p : players) {
 			for (Character c : p.getChars()) {
 				if (c.isReadyToPlay()) {
-					cursorX=c.getCurrentTileX();
-					cursorY=c.getCurrentTileY();
+					cursorX = c.getCurrentTileX();
+					cursorY = c.getCurrentTileY();
 					currentPlayer = p;
 					currentChar = c;
 					c.setReadyToPlay(false);
@@ -274,11 +271,11 @@ public class Game {
 	public void run() {
 		initPlacingBeforeBattle();
 		while (!dm.isRequestClose() && !quit) {
-			if (!dm.isBusy()) {
+			if (!dm.getGameBoard().isBusy()) {
 				manageKeyInput(im.getInputs());
 				UpdateLogic();
 			}
-			dm.Update();
+			dm.Render();
 		}
 		dm.Clean();
 	}
@@ -290,7 +287,7 @@ public class Game {
 				currentChar.setCurrentTileY(cursorY);
 				currentChar.setHeight(map.getTile(cursorX, cursorY).getHeight());
 				charPlaced = true;
-				dm.getCharsToDRaw().add(players[this.indexPlayer].getChars()[indexChar]);
+				dm.getGameBoard().getCharsToDRaw().add(players[this.indexPlayer].getChars()[indexChar]);
 			}
 		}
 	}
@@ -313,16 +310,16 @@ public class Game {
 			case PlacingBeforeBattle:
 				switch (act) {
 				case VIEW_SOUTH:
-					dm.RequestView(viewPoint.South);
+					dm.getGameBoard().RequestView(viewPoint.South);
 					break;
 				case VIEW_NORTH:
-					dm.RequestView(viewPoint.North);
+					dm.getGameBoard().RequestView(viewPoint.North);
 					break;
 				case VIEW_EAST:
-					dm.RequestView(viewPoint.East);
+					dm.getGameBoard().RequestView(viewPoint.East);
 					break;
 				case VIEW_WEST:
-					dm.RequestView(viewPoint.West);
+					dm.getGameBoard().RequestView(viewPoint.West);
 					break;
 				case UP:
 					goUp();
@@ -357,16 +354,16 @@ public class Game {
 			case InCharMenu:
 				switch (act) {
 				case VIEW_SOUTH:
-					dm.RequestView(viewPoint.South);
+					dm.getGameBoard().RequestView(viewPoint.South);
 					break;
 				case VIEW_NORTH:
-					dm.RequestView(viewPoint.North);
+					dm.getGameBoard().RequestView(viewPoint.North);
 					break;
 				case VIEW_EAST:
-					dm.RequestView(viewPoint.East);
+					dm.getGameBoard().RequestView(viewPoint.East);
 					break;
 				case VIEW_WEST:
-					dm.RequestView(viewPoint.West);
+					dm.getGameBoard().RequestView(viewPoint.West);
 					break;
 				case UP:
 					goUp();
@@ -395,16 +392,16 @@ public class Game {
 			case MoveSelection:
 				switch (act) {
 				case VIEW_SOUTH:
-					dm.RequestView(viewPoint.South);
+					dm.getGameBoard().RequestView(viewPoint.South);
 					break;
 				case VIEW_NORTH:
-					dm.RequestView(viewPoint.North);
+					dm.getGameBoard().RequestView(viewPoint.North);
 					break;
 				case VIEW_EAST:
-					dm.RequestView(viewPoint.East);
+					dm.getGameBoard().RequestView(viewPoint.East);
 					break;
 				case VIEW_WEST:
-					dm.RequestView(viewPoint.West);
+					dm.getGameBoard().RequestView(viewPoint.West);
 					break;
 				case UP:
 					goUp();
@@ -433,16 +430,16 @@ public class Game {
 			case TargetSelection:
 				switch (act) {
 				case VIEW_SOUTH:
-					dm.RequestView(viewPoint.South);
+					dm.getGameBoard().RequestView(viewPoint.South);
 					break;
 				case VIEW_NORTH:
-					dm.RequestView(viewPoint.North);
+					dm.getGameBoard().RequestView(viewPoint.North);
 					break;
 				case VIEW_EAST:
-					dm.RequestView(viewPoint.East);
+					dm.getGameBoard().RequestView(viewPoint.East);
 					break;
 				case VIEW_WEST:
-					dm.RequestView(viewPoint.West);
+					dm.getGameBoard().RequestView(viewPoint.West);
 					break;
 				case UP:
 					goUp();
@@ -471,16 +468,16 @@ public class Game {
 			case ExploringMap:
 				switch (act) {
 				case VIEW_SOUTH:
-					dm.RequestView(viewPoint.South);
+					dm.getGameBoard().RequestView(viewPoint.South);
 					break;
 				case VIEW_NORTH:
-					dm.RequestView(viewPoint.North);
+					dm.getGameBoard().RequestView(viewPoint.North);
 					break;
 				case VIEW_EAST:
-					dm.RequestView(viewPoint.East);
+					dm.getGameBoard().RequestView(viewPoint.East);
 					break;
 				case VIEW_WEST:
-					dm.RequestView(viewPoint.West);
+					dm.getGameBoard().RequestView(viewPoint.West);
 					break;
 				case UP:
 					goUp();
@@ -539,7 +536,7 @@ public class Game {
 		map.getTile(2, 3).setDeploymentZone(2);
 		map.getTile(2, 3).setHeight(7);
 
-		Game g = new Game(map, 2);
+		Game g = new Game(800, 600, map, 2);
 		g.setPlayer(0, p1);
 		g.setPlayer(1, p2);
 		g.run();

@@ -7,7 +7,7 @@ import java.io.IOException;
 
 import entity.Character.*;
 import entity.Job.jobList;
-import displaymanager.DisplayManager.viewPoint;
+import displaymanager.GameboardRender.viewPoint;
 
 public class CharAnimation extends Animation {
 

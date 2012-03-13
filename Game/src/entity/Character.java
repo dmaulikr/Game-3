@@ -2,7 +2,7 @@ package entity;
 
 import org.newdawn.slick.opengl.Texture;
 
-import displaymanager.DisplayManager.viewPoint;
+import displaymanager.GameboardRender.viewPoint;
 
 import jobs.Warrior;
 import entity.Job.jobList;
