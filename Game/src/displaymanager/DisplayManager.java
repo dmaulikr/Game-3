@@ -14,14 +14,14 @@ public class DisplayManager {
 	boolean requestClose;
 
 	GameboardRender gameRender;
-	GUI gui;
+	HUD hud;
 
 	public DisplayManager(int height, int width, Map map) {
 		this.height = height;
 		this.width = width;
 		this.requestClose = false;
 		this.gameRender = new GameboardRender(map);
-		this.gui = new GUI(this.height, this.width);
+		this.hud = new HUD(this.height, this.width);
 		try {
 			Display.setDisplayMode(new DisplayMode(this.height, this.width));
 			Display.setSwapInterval(1);
@@ -34,10 +34,10 @@ public class DisplayManager {
 	}
 
 	public void Init() {
-		GL11.glViewport(0, 0, 800, 600);
+		GL11.glViewport(0, 0, this.height, this.width);
 		GL11.glDepthRange(0, 1000);
 		gameRender.Init();
-		gui.Init();
+		hud.Init();
 		Ready3D();
 	}
 
@@ -70,12 +70,13 @@ public class DisplayManager {
 	private void Render2D() {
 		// Ready2D();
 		make2D();
-		gui.Render();
+		hud.Render();
 	}
 
 	private void make2D() {
 		// Remove the Z axis
-		// GL11.glDisable(GL11.GL_LIGHTING);
+		GL11.glDisable(GL11.GL_LIGHTING);
+		GL11.glDisable(GL11.GL_DEPTH_TEST);
 		GL11.glMatrixMode(GL11.GL_PROJECTION);
 		GL11.glPushMatrix();
 		GL11.glLoadIdentity();
@@ -86,12 +87,12 @@ public class DisplayManager {
 	}
 
 	private void make3D() {
-		// Restore the Z axis
-		// GL11.glEnable(GL11.GL_LIGHTING);
 		GL11.glMatrixMode(GL11.GL_PROJECTION);
 		GL11.glPopMatrix();
 		GL11.glMatrixMode(GL11.GL_MODELVIEW);
 		GL11.glPopMatrix();
+		GL11.glEnable(GL11.GL_DEPTH_TEST);
+		GL11.glEnable(GL11.GL_LIGHTING);
 	}
 
 	private void Ready3D() {
@@ -106,10 +107,10 @@ public class DisplayManager {
 
 		GL11.glRotatef((float) Math.toDegrees(Math.atan(0.6)), 1, 0, 0); // 26,565
 		GL11.glRotatef(-45.0f, 0, 1, 0); // -45
-
+		GL11.glTranslatef(0, -0.5f, 0);
 		GL11.glMatrixMode(GL11.GL_MODELVIEW);
 		GL11.glLoadIdentity();
-		//GL11.glEnable(GL11.GL_LIGHTING);
+		// GL11.glEnable(GL11.GL_LIGHTING);
 	}
 
 	public void Clean() {
@@ -123,7 +124,7 @@ public class DisplayManager {
 	public static void main(String[] argv) {
 		Map map = new Map(10, 15, "lolilol");
 		map.getTile(2, 2).setHeight(2);
-		DisplayManager display = new DisplayManager(800, 600, map);
+		DisplayManager display = new DisplayManager(1200, 800, map);
 		display.Init();
 		display.run();
 	}

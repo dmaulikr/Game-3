@@ -5,6 +5,7 @@ import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 
+import org.lwjgl.BufferUtils;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
@@ -76,7 +77,7 @@ public class GameboardRender {
 
 	public void Init() {
 		LoadTextures();
-		//SetupLigths();
+		SetupLigths();
 		TileTexture tt = new TileTexture();
 		tt.LoadBundles(this.demoMap.getAllTextureTypes());
 		this.demoMap.BindTextures(tt);
@@ -247,6 +248,7 @@ public class GameboardRender {
 
 	private void DrawATile(Tile t) {
 		GL11.glColor4f(1f, 1f, 1f, 1f);
+
 		t.getTextureTop().bind();
 		// SouthEast means X is constant.
 		float x1 = (t.getPosY() * scale) - originY;
@@ -267,14 +269,11 @@ public class GameboardRender {
 		GL11.glTexCoord2d(0, 1);
 		GL11.glVertex3d(x1, y, z2);
 		GL11.glEnd();
-
-		GL11.glColor3f(0f, 0f, 0f);
-		GL11.glBegin(GL11.GL_LINE_LOOP);
-		GL11.glVertex3d(x1, y, z1);
-		GL11.glVertex3d(x2, y, z1);
-		GL11.glVertex3d(x2, y, z2);
-		GL11.glVertex3d(x1, y, z2);
-		GL11.glEnd();
+		/*
+		 * GL11.glColor3f(0f, 0f, 0f); GL11.glBegin(GL11.GL_LINE_LOOP);
+		 * GL11.glVertex3d(x1, y, z1); GL11.glVertex3d(x2, y, z1);
+		 * GL11.glVertex3d(x2, y, z2); GL11.glVertex3d(x1, y, z2); GL11.glEnd();
+		 */
 	}
 
 	private void DrawTheLinkSE(Tile t1, Tile t2) {
@@ -306,14 +305,12 @@ public class GameboardRender {
 		GL11.glTexCoord2d(0, 1);
 		GL11.glVertex3d(x4, y4, z4);
 		GL11.glEnd();
-
-		GL11.glColor3f(0f, 0f, 0f);
-		GL11.glBegin(GL11.GL_LINE_LOOP);
-		GL11.glVertex3d(x1, y1, z1);
-		GL11.glVertex3d(x2, y2, z2);
-		GL11.glVertex3d(x3, y3, z3);
-		GL11.glVertex3d(x4, y4, z4);
-		GL11.glEnd();
+		/*
+		 * GL11.glColor3f(0f, 0f, 0f); GL11.glBegin(GL11.GL_LINE_LOOP);
+		 * GL11.glVertex3d(x1, y1, z1); GL11.glVertex3d(x2, y2, z2);
+		 * GL11.glVertex3d(x3, y3, z3); GL11.glVertex3d(x4, y4, z4);
+		 * GL11.glEnd();
+		 */
 	}
 
 	private void DrawTheLinkSO(Tile t1, Tile t2) {
@@ -345,14 +342,12 @@ public class GameboardRender {
 		GL11.glTexCoord2d(0, 1);
 		GL11.glVertex3d(x4, y4, z4);
 		GL11.glEnd();
-
-		GL11.glColor3f(0f, 0f, 0f);
-		GL11.glBegin(GL11.GL_LINE_LOOP);
-		GL11.glVertex3d(x1, y1, z1);
-		GL11.glVertex3d(x2, y2, z2);
-		GL11.glVertex3d(x3, y3, z3);
-		GL11.glVertex3d(x4, y4, z4);
-		GL11.glEnd();
+		/*
+		 * GL11.glColor3f(0f, 0f, 0f); GL11.glBegin(GL11.GL_LINE_LOOP);
+		 * GL11.glVertex3d(x1, y1, z1); GL11.glVertex3d(x2, y2, z2);
+		 * GL11.glVertex3d(x3, y3, z3); GL11.glVertex3d(x4, y4, z4);
+		 * GL11.glEnd();
+		 */
 	}
 
 	private void DrawTheLinkNE(Tile t1, Tile t2) {
@@ -384,14 +379,12 @@ public class GameboardRender {
 		GL11.glTexCoord2d(0, 1);
 		GL11.glVertex3d(x4, y4, z4);
 		GL11.glEnd();
-
-		GL11.glColor3f(0f, 0f, 0f);
-		GL11.glBegin(GL11.GL_LINE_LOOP);
-		GL11.glVertex3d(x1, y1, z1);
-		GL11.glVertex3d(x2, y2, z2);
-		GL11.glVertex3d(x3, y3, z3);
-		GL11.glVertex3d(x4, y4, z4);
-		GL11.glEnd();
+		/*
+		 * GL11.glColor3f(0f, 0f, 0f); GL11.glBegin(GL11.GL_LINE_LOOP);
+		 * GL11.glVertex3d(x1, y1, z1); GL11.glVertex3d(x2, y2, z2);
+		 * GL11.glVertex3d(x3, y3, z3); GL11.glVertex3d(x4, y4, z4);
+		 * GL11.glEnd();
+		 */
 	}
 
 	private void DrawTheLinkNO(Tile t1, Tile t2) {
@@ -423,14 +416,12 @@ public class GameboardRender {
 		GL11.glTexCoord2d(0, 1);
 		GL11.glVertex3d(x4, y4, z4);
 		GL11.glEnd();
-
-		GL11.glColor3f(0f, 0f, 0f);
-		GL11.glBegin(GL11.GL_LINE_LOOP);
-		GL11.glVertex3d(x1, y1, z1);
-		GL11.glVertex3d(x2, y2, z2);
-		GL11.glVertex3d(x3, y3, z3);
-		GL11.glVertex3d(x4, y4, z4);
-		GL11.glEnd();
+		/*
+		 * GL11.glColor3f(0f, 0f, 0f); GL11.glBegin(GL11.GL_LINE_LOOP);
+		 * GL11.glVertex3d(x1, y1, z1); GL11.glVertex3d(x2, y2, z2);
+		 * GL11.glVertex3d(x3, y3, z3); GL11.glVertex3d(x4, y4, z4);
+		 * GL11.glEnd();
+		 */
 	}
 
 	public void DrawHighlight(Tile t) {
@@ -444,7 +435,7 @@ public class GameboardRender {
 		float y1 = ((float) t.getPosX() * scale) - originX;
 		float y2 = (((float) t.getPosX() + 1) * scale) - originX;
 
-		float z1 = (((float) t.getHeight() * zscale));
+		float z1 = ((((float) t.getHeight() + 0.1f) * zscale));
 
 		GL11.glBegin(GL11.GL_QUADS);
 		GL11.glTexCoord2d(0, 0);
@@ -470,7 +461,7 @@ public class GameboardRender {
 		float y1 = ((float) t.getPosX() * scale) - originX;
 		float y2 = (((float) t.getPosX() + 1) * scale) - originX;
 
-		float z1 = (((float) t.getHeight() * zscale));
+		float z1 = ((((float) t.getHeight() + 0.1f) * zscale));
 
 		GL11.glBegin(GL11.GL_QUADS);
 		GL11.glTexCoord2d(0, 0);
@@ -662,11 +653,13 @@ public class GameboardRender {
 				if (rotationToGo < 0) {
 					GL11.glRotatef(1f, 0, 1, 0);
 					GL11.glTranslated(-b, 0, a);
+					UpdateLights();
 					rotationToGo += 1f;
 				}
 				if (rotationToGo > 0) {
 					GL11.glRotatef(-1f, 0, 1, 0);
 					GL11.glTranslated(b, 0, -a);
+					UpdateLights();
 					rotationToGo -= 1f;
 				}
 				if (rotationToGo == -45f || rotationToGo == -135f || rotationToGo == -225f || rotationToGo == -315f) {
@@ -711,33 +704,40 @@ public class GameboardRender {
 	}
 
 	private void SetupLigths() {
-		FloatBuffer lightAmbient = ByteBuffer.allocateDirect(16).asFloatBuffer();
-		//FloatBuffer lightDiffuse = ByteBuffer.allocateDirect(16).asFloatBuffer();
-		FloatBuffer lightPosition = ByteBuffer.allocateDirect(16).asFloatBuffer();
-		//FloatBuffer lightDir = ByteBuffer.allocateDirect(16).asFloatBuffer();
-		
-		lightAmbient.mark();
-		lightAmbient.put(new float[] {0.2f, 0.2f, 0.2f, 1.0f}); 
-		lightAmbient.reset();
-		
-		//lightDiffuse.mark();
-		//lightDiffuse.put(new float[] {1.0f, 1.0f, 1.0f, 1.0f}); 
-		//lightDiffuse.reset();
-		
-		lightPosition.mark();
-		lightPosition.put(new float[] {1.0f, 1.0f, 1.0f, 1.0f});
-		lightPosition.reset();
-		
-		//lightDir.mark();
-		//lightDir.put(new float[] {0.0f, 0.0f, 0.0f, 1.0f});
-		//lightDir.reset();
-		
-		GL11.glLight(GL11.GL_LIGHT1, GL11.GL_AMBIENT, lightAmbient); 
-		//GL11.glLight(GL11.GL_LIGHT1, GL11.GL_DIFFUSE, lightDiffuse); 
-		//GL11.glLight(GL11.GL_LIGHT1, GL11.GL_SPOT_DIRECTION, lightDir);
-		GL11.glLight(GL11.GL_LIGHT1, GL11.GL_POSITION, lightPosition); 
-		
-		GL11.glEnable(GL11.GL_LIGHT1);
+		FloatBuffer matSpecular;
+		FloatBuffer lightPosition;
+		FloatBuffer whiteLight;
+		FloatBuffer lModelAmbient;
+
+		matSpecular = BufferUtils.createFloatBuffer(4);
+		matSpecular.put(1.0f).put(1.0f).put(1.0f).put(1.0f).flip();
+
+		lightPosition = BufferUtils.createFloatBuffer(4);
+		lightPosition.put(0.5f).put(0.5f).put(5.0f).put(0.2f).flip();
+
+		whiteLight = BufferUtils.createFloatBuffer(4);
+		whiteLight.put(1.0f).put(1.0f).put(1.0f).put(1.0f).flip();
+
+		lModelAmbient = BufferUtils.createFloatBuffer(4);
+		lModelAmbient.put(0.5f).put(0.5f).put(0.5f).put(1.0f).flip();
+
+		GL11.glShadeModel(GL11.GL_SMOOTH);
+
+		GL11.glLight(GL11.GL_LIGHT0, GL11.GL_POSITION, lightPosition);
+		GL11.glLight(GL11.GL_LIGHT0, GL11.GL_SPECULAR, whiteLight);
+		GL11.glLight(GL11.GL_LIGHT0, GL11.GL_DIFFUSE, whiteLight);
+		GL11.glLightModel(GL11.GL_LIGHT_MODEL_AMBIENT, lModelAmbient);
+
+		GL11.glEnable(GL11.GL_LIGHTING);
+		GL11.glEnable(GL11.GL_LIGHT0);
+
+	}
+
+	private void UpdateLights() {
+		FloatBuffer lightPosition;
+		lightPosition = BufferUtils.createFloatBuffer(4);
+		lightPosition.put(0.5f).put(0.5f).put(5.0f).put(0.2f).flip();
+		GL11.glLight(GL11.GL_LIGHT0, GL11.GL_POSITION, lightPosition);
 	}
 
 	public Map getDemoMap() {

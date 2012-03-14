@@ -270,10 +270,14 @@ public class Game {
 
 	public void run() {
 		initPlacingBeforeBattle();
+		actions act;
 		while (!dm.isRequestClose() && !quit) {
+			act = im.getInputs();
 			if (!dm.getGameBoard().isBusy()) {
-				manageKeyInput(im.getInputs());
+				manageKeyInput(act);
 				UpdateLogic();
+			} else {
+				act = actions.none;
 			}
 			dm.Render();
 		}
@@ -507,6 +511,7 @@ public class Game {
 				break;
 			}
 		}
+
 	}
 
 	public static void main(String[] argv) {
@@ -536,7 +541,7 @@ public class Game {
 		map.getTile(2, 3).setDeploymentZone(2);
 		map.getTile(2, 3).setHeight(7);
 
-		Game g = new Game(800, 600, map, 2);
+		Game g = new Game(1280, 1024, map, 2);
 		g.setPlayer(0, p1);
 		g.setPlayer(1, p2);
 		g.run();
