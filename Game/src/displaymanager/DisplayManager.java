@@ -49,12 +49,14 @@ public class DisplayManager {
 	}
 
 	public void Render() {
+		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
 		requestClose = Display.isCloseRequested();
 		if (Display.isVisible()) {
 			Render3D();
 			Render2D();
 		}
 		Display.update();
+		Display.sync(60);
 	}
 
 	public boolean isRequestClose() {
@@ -80,7 +82,7 @@ public class DisplayManager {
 		GL11.glMatrixMode(GL11.GL_PROJECTION);
 		GL11.glPushMatrix();
 		GL11.glLoadIdentity();
-		GL11.glOrtho(0, this.width, 0, this.height, -1, 1);
+		GL11.glOrtho(0, this.width, this.height, 0, 1, -1);
 		GL11.glMatrixMode(GL11.GL_MODELVIEW);
 		GL11.glPushMatrix();
 		GL11.glLoadIdentity();
@@ -105,12 +107,11 @@ public class DisplayManager {
 
 		GL11.glOrtho(-1, 1, -1, 1, -10, 1000);
 
-		GL11.glRotatef((float) Math.toDegrees(Math.atan(0.6)), 1, 0, 0); // 26,565
-		GL11.glRotatef(-45.0f, 0, 1, 0); // -45
+		GL11.glRotatef((float) Math.toDegrees(Math.atan(0.5)), 1, 0, 0);
+		GL11.glRotatef(-45.0f, 0, 1, 0);
 		GL11.glTranslatef(0, -0.5f, 0);
 		GL11.glMatrixMode(GL11.GL_MODELVIEW);
 		GL11.glLoadIdentity();
-		// GL11.glEnable(GL11.GL_LIGHTING);
 	}
 
 	public void Clean() {
@@ -124,7 +125,7 @@ public class DisplayManager {
 	public static void main(String[] argv) {
 		Map map = new Map(10, 15, "lolilol");
 		map.getTile(2, 2).setHeight(2);
-		DisplayManager display = new DisplayManager(1200, 800, map);
+		DisplayManager display = new DisplayManager(800, 600, map);
 		display.Init();
 		display.run();
 	}
