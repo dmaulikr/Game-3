@@ -90,7 +90,7 @@ public class GameboardRender {
 
 	private void Draw() {
 		// Clear
-		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
+		//GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
 		/*
 		 * GL11.glBegin(GL11.GL_LINES);
 		 * 

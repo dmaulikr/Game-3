@@ -49,7 +49,7 @@ public class DisplayManager {
 	}
 
 	public void Render() {
-		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
+		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
 		requestClose = Display.isCloseRequested();
 		if (Display.isVisible()) {
 			Render3D();
@@ -120,6 +120,10 @@ public class DisplayManager {
 
 	public GameboardRender getGameBoard() {
 		return this.gameRender;
+	}
+
+	public HUD getHUD() {
+		return this.hud;
 	}
 
 	public static void main(String[] argv) {

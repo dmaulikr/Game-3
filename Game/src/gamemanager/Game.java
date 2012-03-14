@@ -71,6 +71,7 @@ public class Game {
 					indexChar++;
 					if (indexChar < players[indexPlayer].getChars().length) {
 						currentChar = players[indexPlayer].getChars()[indexChar];
+						this.dm.getHUD().SetCurrentChar(currentChar);
 					}
 				}
 				if (deployementcountDown == 0) {
@@ -82,6 +83,7 @@ public class Game {
 							deployementcountDown = currentPlayer.getChars().length;
 							indexChar = 0;
 							currentChar = players[indexPlayer].getChars()[indexChar];
+							this.dm.getHUD().SetCurrentChar(currentChar);
 							map.LightUpStartZone(indexPlayer + 1);
 						}
 					}
@@ -115,6 +117,7 @@ public class Game {
 		this.currentPlayer = players[this.indexPlayer];
 		this.indexChar = 0;
 		this.currentChar = currentPlayer.getChars()[this.indexChar];
+		this.dm.getHUD().SetCurrentChar(currentChar);
 		this.playerCountDown = players.length;
 		this.deployementcountDown = currentPlayer.getChars().length;
 		this.charPlaced = false;
@@ -251,6 +254,7 @@ public class Game {
 					cursorY = c.getCurrentTileY();
 					currentPlayer = p;
 					currentChar = c;
+					this.dm.getHUD().SetCurrentChar(currentChar);
 					c.setReadyToPlay(false);
 					UpdateCursor();
 					return true;
@@ -518,10 +522,15 @@ public class Game {
 
 		Map map = new Map(10, 10, "lolilol");
 		Character c1 = new Character(Race.Human, Gender.Male);
-		Character c2 = new Character(Race.Human, Gender.Male);
-		Character c3 = new Character(Race.Human, Gender.Male);
+		c1.setName("bobix1");
+		Character c2 = new Character(Race.Dwarf, Gender.Male);
+		c2.setName("bobix2");
+		Character c3 = new Character(Race.Elve, Gender.Male);
+		c3.setName("bobixou1");
 		Character c4 = new Character(Race.Human, Gender.Male);
+		c4.setName("bobixou2");
 		Character c5 = new Character(Race.Human, Gender.Male);
+		c5.setName("bobixou3");
 		Player p1 = new Player("bobyx", new Character[] { c1, c2 });
 		Player p2 = new Player("bobyxou", new Character[] { c3, c4, c5 });
 

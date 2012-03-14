@@ -85,6 +85,7 @@ public class Character {
 		isReadyToPlay = false;
 		currentTileX = -1;
 		currentTileY = -1;
+		name="noname";
 		switch (race) {
 		case Human:
 			maxLifePoints = 50;
