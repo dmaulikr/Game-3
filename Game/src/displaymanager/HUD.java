@@ -22,22 +22,22 @@ public class HUD {
 	UnicodeFont font2;
 	Character currentChar;
 	Character currentTarget;
-	private Texture ATK;
-	private Texture MAG;
-	private Texture ARP;
-	private Texture MAP;
-	private Texture ARM;
-	private Texture MAR;
+
+	CharCaracRender caracRender1;
 	private Texture HP;
 	private Texture MP;
 
 	public HUD(int height, int width) {
 		this.height = height;
 		this.width = width;
+		caracRender1 = new CharCaracRender();
+		caracRender1.setXdep(150f);
+		caracRender1.setYdep(25f);
 	}
 
 	public void SetCurrentChar(Character c) {
 		this.currentChar = c;
+		this.caracRender1.setCurrentChar(c);
 	}
 
 	public void SetCurrentTarget(Character c) {
@@ -46,29 +46,30 @@ public class HUD {
 
 	public void Init() {
 		try {
-			font = new UnicodeFont("content/font/old_london/OldLondon.ttf", 36, false, false);
+			font = new UnicodeFont("content/font/old_london/OldLondon.ttf", 36,
+					false, false);
 			font.addAsciiGlyphs();
 			font.getEffects().add(new ColorEffect());
 			font.loadGlyphs();
 
-			font2 = new UnicodeFont("content/font/old_london/OldLondon.ttf", 24, false, false);
+			font2 = new UnicodeFont("content/font/old_london/OldLondon.ttf",
+					24, false, false);
 			font2.addAsciiGlyphs();
 			font2.getEffects().add(new ColorEffect());
 			font2.loadGlyphs();
 		} catch (SlickException e) {
 			e.printStackTrace();
 		}
-
 		try {
-			ATK = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("content/textures/HUD/ATK.png"));
-			MAG = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("content/textures/HUD/MAG.png"));
-			ARM = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("content/textures/HUD/ARM.png"));
-			MAR = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("content/textures/HUD/MAR.png"));
-			HP = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("content/textures/HUD/HP.png"));
-			MP = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("content/textures/HUD/MP.png"));
+			HP = TextureLoader.getTexture("PNG", ResourceLoader
+					.getResourceAsStream("content/textures/HUD/HP.png"));
+			MP = TextureLoader.getTexture("PNG", ResourceLoader
+					.getResourceAsStream("content/textures/HUD/MP.png"));
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		caracRender1.Init();
 
 	}
 
@@ -83,15 +84,10 @@ public class HUD {
 		GL11.glEnd();
 
 		if (currentChar != null) {
-
 			RenderName();
 			RenderLvl();
 			RenderJob();
-
-			RenderATK();
-			RenderMAG();
-			RenderARM();
-			RenderMAR();
+			caracRender1.Render();
 		}
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
 	}
@@ -103,138 +99,14 @@ public class HUD {
 
 	public void RenderLvl() {
 		Color.white.bind();
-		font.drawString(25f, 150f, "lvl : " + currentChar.getLevel(), Color.white);
+		font.drawString(25f, 150f, "lvl : " + currentChar.getLevel(),
+				Color.white);
 	}
 
 	public void RenderJob() {
 		Color.white.bind();
-		font.drawString(25f, 175f, currentChar.getActualJob().getName(), Color.white);
-	}
-
-	public void RenderATK() {
-		RenderATKimg();
-		Color.white.bind();
-		font2.drawString(150f, 25f, String.valueOf(currentChar.getAttackPower()), Color.white);
-	}
-
-	public void RenderMAG() {
-		RenderMAGimg();
-		Color.white.bind();
-		font2.drawString(200f, 25f, String.valueOf(currentChar.getMagicPower()), Color.white);
-	}
-
-	public void RenderARM() {
-		RenderARMimg();
-		Color.white.bind();
-		font2.drawString(150f, 50f, String.valueOf(currentChar.getArmor()), Color.white);
-	}
-
-	public void RenderMAR() {
-		RenderMARimg();
-		Color.white.bind();
-		font2.drawString(200f, 50f, String.valueOf(currentChar.getMagicArmor()), Color.white);
-	}
-
-	public void RenderATKimg() {
-		GL11.glEnable(GL11.GL_TEXTURE_2D);
-		GL11.glColor4f(1f, 1f, 1f, 1f);
-		ATK.bind();
-		GL11.glBegin(GL11.GL_QUADS);
-		GL11.glTexCoord2d(0, 0);
-		GL11.glVertex2f(125f, 25f);
-		GL11.glTexCoord2d(1, 0);
-		GL11.glVertex2f(150f, 25f);
-		GL11.glTexCoord2d(1, 1);
-		GL11.glVertex2f(150f, 50f);
-		GL11.glTexCoord2d(0, 1);
-		GL11.glVertex2f(125f, 50f);
-		GL11.glEnd();
-		GL11.glDisable(GL11.GL_TEXTURE_2D);
-	}
-
-	public void RenderMAGimg() {
-		GL11.glEnable(GL11.GL_TEXTURE_2D);
-		GL11.glColor4f(1f, 1f, 1f, 1f);
-		MAG.bind();
-		GL11.glBegin(GL11.GL_QUADS);
-		GL11.glTexCoord2d(0, 0);
-		GL11.glVertex2f(175f, 25f);
-		GL11.glTexCoord2d(1, 0);
-		GL11.glVertex2f(200f, 25f);
-		GL11.glTexCoord2d(1, 1);
-		GL11.glVertex2f(200f, 50f);
-		GL11.glTexCoord2d(0, 1);
-		GL11.glVertex2f(175f, 50f);
-		GL11.glEnd();
-		GL11.glDisable(GL11.GL_TEXTURE_2D);
-	}
-
-	public void RenderARMimg() {
-		GL11.glEnable(GL11.GL_TEXTURE_2D);
-		GL11.glColor4f(1f, 1f, 1f, 1f);
-		ARM.bind();
-		GL11.glBegin(GL11.GL_QUADS);
-		GL11.glTexCoord2d(0, 0);
-		GL11.glVertex2f(125f, 50f);
-		GL11.glTexCoord2d(1, 0);
-		GL11.glVertex2f(150f, 50f);
-		GL11.glTexCoord2d(1, 1);
-		GL11.glVertex2f(150f, 75f);
-		GL11.glTexCoord2d(0, 1);
-		GL11.glVertex2f(125f, 75f);
-		GL11.glEnd();
-		GL11.glDisable(GL11.GL_TEXTURE_2D);
-	}
-
-	public void RenderMARimg() {
-		GL11.glEnable(GL11.GL_TEXTURE_2D);
-		GL11.glColor4f(1f, 1f, 1f, 1f);
-		MAR.bind();
-		GL11.glBegin(GL11.GL_QUADS);
-		GL11.glTexCoord2d(0, 0);
-		GL11.glVertex2f(175f, 50f);
-		GL11.glTexCoord2d(1, 0);
-		GL11.glVertex2f(200f, 50f);
-		GL11.glTexCoord2d(1, 1);
-		GL11.glVertex2f(200f, 75f);
-		GL11.glTexCoord2d(0, 1);
-		GL11.glVertex2f(175f, 75f);
-		GL11.glEnd();
-		GL11.glDisable(GL11.GL_TEXTURE_2D);
-	}
-
-	public void RenderHPimg() {
-		GL11.glEnable(GL11.GL_TEXTURE_2D);
-		GL11.glColor4f(1f, 1f, 1f, 1f);
-		HP.bind();
-		GL11.glBegin(GL11.GL_QUADS);
-		GL11.glTexCoord2d(0, 0);
-		GL11.glVertex2f(25f, 25f);
-		GL11.glTexCoord2d(1, 0);
-		GL11.glVertex2f(50f, 25f);
-		GL11.glTexCoord2d(1, 1);
-		GL11.glVertex2f(50f, 50f);
-		GL11.glTexCoord2d(0, 1);
-		GL11.glVertex2f(25f, 50f);
-		GL11.glEnd();
-		GL11.glDisable(GL11.GL_TEXTURE_2D);
-	}
-
-	public void RenderMPimg() {
-		GL11.glEnable(GL11.GL_TEXTURE_2D);
-		GL11.glColor4f(1f, 1f, 1f, 1f);
-		MP.bind();
-		GL11.glBegin(GL11.GL_QUADS);
-		GL11.glTexCoord2d(0, 0);
-		GL11.glVertex2f(25f, 25f);
-		GL11.glTexCoord2d(1, 0);
-		GL11.glVertex2f(50f, 25f);
-		GL11.glTexCoord2d(1, 1);
-		GL11.glVertex2f(50f, 50f);
-		GL11.glTexCoord2d(0, 1);
-		GL11.glVertex2f(25f, 50f);
-		GL11.glEnd();
-		GL11.glDisable(GL11.GL_TEXTURE_2D);
+		font.drawString(25f, 175f, currentChar.getActualJob().getName(),
+				Color.white);
 	}
 
 }
