@@ -26,7 +26,7 @@ public class CharBarsRender {
 		Xdep = 0;
 		Ydep = 0;
 		currentChar = null;
-		HPBar = new BarDrawer(1.0f, 0.0f, 0.0f);
+		HPBar = new BarDrawer(0.8f, 0.05f, 0.09f);
 		MPBar = new BarDrawer(0.0f, 0.0f, 1.0f);
 	}
 

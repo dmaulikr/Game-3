@@ -25,7 +25,7 @@ public class BarDrawer {
 	}
 
 	public void Init() {
-		
+
 	}
 
 	public void Render(float prct) {
@@ -42,10 +42,10 @@ public class BarDrawer {
 	private void DrawBackgroundBar(float X, float Y, float currentValue) {
 		GL11.glColor4f(colorR - (colorR / 2f), colorG - (colorG / 2f), colorB - (colorB / 2f), 1f);
 		GL11.glBegin(GL11.GL_QUADS);
-		GL11.glVertex2f(X + currentValue, Y);
-		GL11.glVertex2f(X + 100f, Y);
-		GL11.glVertex2f(X + 100f, Y + 25f);
-		GL11.glVertex2f(X + currentValue, Y + 25f);
+		GL11.glVertex2f(X + currentValue * 2f, Y);
+		GL11.glVertex2f(X + 200f, Y);
+		GL11.glVertex2f(X + 200f, Y + 25f);
+		GL11.glVertex2f(X + currentValue * 2f, Y + 25f);
 		GL11.glEnd();
 	}
 
@@ -53,8 +53,8 @@ public class BarDrawer {
 		GL11.glColor4f(colorR, colorG, colorB, 1f);
 		GL11.glBegin(GL11.GL_QUADS);
 		GL11.glVertex2f(X, Y);
-		GL11.glVertex2f(X + currentValue, Y);
-		GL11.glVertex2f(X + currentValue, Y + 25f);
+		GL11.glVertex2f(X + currentValue * 2f, Y);
+		GL11.glVertex2f(X + currentValue * 2f, Y + 25f);
 		GL11.glVertex2f(X, Y + 25f);
 		GL11.glEnd();
 	}

@@ -23,8 +23,10 @@ public class HUD {
 	Character currentChar;
 	Character currentTarget;
 
-	CharBarsRender caracBars1;
+	CharBarsRender barRender1;
 	CharCaracRender caracRender1;
+	CharDescRender descDesc1;
+
 	private Texture HP;
 	private Texture MP;
 
@@ -35,15 +37,21 @@ public class HUD {
 		this.caracRender1.setXdep(150f);
 		this.caracRender1.setYdep(25f);
 
-		this.caracBars1 = new CharBarsRender();
-		this.caracBars1.setXdep(150f);
-		this.caracBars1.setYdep(150f);
+		this.barRender1 = new CharBarsRender();
+		this.barRender1.setXdep(25f);
+		this.barRender1.setYdep(150f);
+
+		this.descDesc1 = new CharDescRender();
+		this.descDesc1.setXdep(25f);
+		this.descDesc1.setYdep(25f);
+
 	}
 
 	public void SetCurrentChar(Character c) {
 		this.currentChar = c;
 		this.caracRender1.setCurrentChar(c);
-		this.caracBars1.setCurrentChar(c);
+		this.barRender1.setCurrentChar(c);
+		this.descDesc1.SetCurrentChar(c);
 	}
 
 	public void SetCurrentTarget(Character c) {
@@ -72,8 +80,8 @@ public class HUD {
 			e.printStackTrace();
 		}
 		this.caracRender1.Init();
-		this.caracBars1.Init();
-
+		this.barRender1.Init();
+		this.descDesc1.Init();
 	}
 
 	public void Render() {
@@ -87,28 +95,12 @@ public class HUD {
 		GL11.glEnd();
 
 		if (currentChar != null) {
-			RenderName();
-			RenderLvl();
-			RenderJob();
+
 			caracRender1.Render();
-			caracBars1.Render();
+			barRender1.Render();
+			descDesc1.Render();
 		}
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
-	}
-
-	public void RenderName() {
-		Color.white.bind();
-		font.drawString(25f, 125f, currentChar.getName(), Color.white);
-	}
-
-	public void RenderLvl() {
-		Color.white.bind();
-		font.drawString(25f, 150f, "lvl : " + currentChar.getLevel(), Color.white);
-	}
-
-	public void RenderJob() {
-		Color.white.bind();
-		font.drawString(25f, 175f, currentChar.getActualJob().getName(), Color.white);
 	}
 
 }
