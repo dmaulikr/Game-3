@@ -33,38 +33,16 @@ public class CharCaracRender {
 		currentChar = null;
 	}
 
-	public void Init() {
-		try {
-			font = new UnicodeFont("content/font/old_london/OldLondon.ttf", 24,
-					false, false);
-			font.addAsciiGlyphs();
-			font.getEffects().add(new ColorEffect());
-			font.loadGlyphs();
-		} catch (SlickException e) {
-			e.printStackTrace();
-		}
-
-		try {
-			ATK = TextureLoader.getTexture("PNG", ResourceLoader
-					.getResourceAsStream("content/textures/HUD/ATK.png"));
-			MAG = TextureLoader.getTexture("PNG", ResourceLoader
-					.getResourceAsStream("content/textures/HUD/MAG.png"));
-			ARM = TextureLoader.getTexture("PNG", ResourceLoader
-					.getResourceAsStream("content/textures/HUD/ARM.png"));
-			MAR = TextureLoader.getTexture("PNG", ResourceLoader
-					.getResourceAsStream("content/textures/HUD/MAR.png"));
-			ARP = TextureLoader.getTexture("PNG", ResourceLoader
-					.getResourceAsStream("content/textures/HUD/ARP.png"));
-			MAP = TextureLoader.getTexture("PNG", ResourceLoader
-					.getResourceAsStream("content/textures/HUD/MAP.png"));
-			I = TextureLoader.getTexture("PNG", ResourceLoader
-					.getResourceAsStream("content/textures/HUD/I.png"));
-			M = TextureLoader.getTexture("PNG", ResourceLoader
-					.getResourceAsStream("content/textures/HUD/M.png"));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
+	public void Init(Texture ATK, Texture MAG, Texture ARM, Texture MAR, Texture ARP, Texture MAP, Texture I, Texture M, UnicodeFont font) {
+		this.font = font;
+		this.ATK = ATK;
+		this.MAG = MAG;
+		this.ARM = ARM;
+		this.MAR = MAR;
+		this.ARP = ARP;
+		this.MAP = MAP;
+		this.I = I;
+		this.M = M;
 	}
 
 	public void Render() {
@@ -83,15 +61,13 @@ public class CharCaracRender {
 	public void RenderATK(Character c, float X, float Y) {
 		RenderATKimg(X, Y);
 		Color.white.bind();
-		font.drawString(X + 25f, Y, String.valueOf(c.getAttackPower()),
-				Color.white);
+		font.drawString(X + 25f, Y, String.valueOf(c.getAttackPower()), Color.white);
 	}
 
 	public void RenderMAG(Character c, float X, float Y) {
 		RenderMAGimg(X, Y);
 		Color.white.bind();
-		font.drawString(X + 25f, Y, String.valueOf(c.getMagicPower()),
-				Color.white);
+		font.drawString(X + 25f, Y, String.valueOf(c.getMagicPower()), Color.white);
 	}
 
 	public void RenderARM(Character c, float X, float Y) {
@@ -103,36 +79,31 @@ public class CharCaracRender {
 	public void RenderMAR(Character c, float X, float Y) {
 		RenderMARimg(X, Y);
 		Color.white.bind();
-		font.drawString(X + 25f, Y, String.valueOf(c.getMagicArmor()),
-				Color.white);
+		font.drawString(X + 25f, Y, String.valueOf(c.getMagicArmor()), Color.white);
 	}
 
 	public void RenderARP(Character c, float X, float Y) {
 		RenderARPimg(X, Y);
 		Color.white.bind();
-		font.drawString(X + 25f, Y, String.valueOf(c.getArmorPenetration()),
-				Color.white);
+		font.drawString(X + 25f, Y, String.valueOf(c.getArmorPenetration()), Color.white);
 	}
 
 	public void RenderMAP(Character c, float X, float Y) {
 		RenderMAPimg(X, Y);
 		Color.white.bind();
-		font.drawString(X + 25f, Y, String.valueOf(c.getMagicPenetration()),
-				Color.white);
+		font.drawString(X + 25f, Y, String.valueOf(c.getMagicPenetration()), Color.white);
 	}
 
 	public void RenderI(Character c, float X, float Y) {
 		RenderIimg(X, Y);
 		Color.white.bind();
-		font.drawString(X + 25f, Y, String.valueOf(c.getInitiative()),
-				Color.white);
+		font.drawString(X + 25f, Y, String.valueOf(c.getInitiative()), Color.white);
 	}
 
 	public void RenderM(Character c, float X, float Y) {
 		RenderMimg(X, Y);
 		Color.white.bind();
-		font.drawString(X + 25f, Y, String.valueOf(c.getMovement()),
-				Color.white);
+		font.drawString(X + 25f, Y, String.valueOf(c.getMovement()), Color.white);
 	}
 
 	public void RenderATKimg(float X, float Y) {

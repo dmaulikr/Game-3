@@ -19,7 +19,18 @@ public class HUD {
 	private int height;
 	private int width;
 	UnicodeFont font;
-	UnicodeFont font2;
+
+	private Texture ATK;
+	private Texture MAG;
+	private Texture ARP;
+	private Texture MAP;
+	private Texture ARM;
+	private Texture MAR;
+	private Texture I;
+	private Texture M;
+	private Texture HP;
+	private Texture MP;
+
 	Character currentChar;
 	Character currentTarget;
 
@@ -27,10 +38,11 @@ public class HUD {
 	CharCaracRender caracRender1;
 	CharDescRender descDesc1;
 
-	private Texture HP;
-	private Texture MP;
+	CharBarsRender barRender2;
+	CharCaracRender caracRender2;
+	CharDescRender descDesc2;
 
-	public HUD(int height, int width) {
+	public HUD(int width, int height) {
 		this.height = height;
 		this.width = width;
 		this.caracRender1 = new CharCaracRender();
@@ -45,6 +57,18 @@ public class HUD {
 		this.descDesc1.setXdep(25f);
 		this.descDesc1.setYdep(25f);
 
+		this.caracRender2 = new CharCaracRender();
+		this.caracRender2.setXdep((width / 2) + 150f);
+		this.caracRender2.setYdep(25f);
+
+		this.barRender2 = new CharBarsRender();
+		this.barRender2.setXdep((width / 2) + 25f);
+		this.barRender2.setYdep(150f);
+
+		this.descDesc2 = new CharDescRender();
+		this.descDesc2.setXdep((width / 2) + 25f);
+		this.descDesc2.setYdep(25f);
+
 	}
 
 	public void SetCurrentChar(Character c) {
@@ -56,32 +80,50 @@ public class HUD {
 
 	public void SetCurrentTarget(Character c) {
 		this.currentTarget = c;
+		this.caracRender2.setCurrentChar(c);
+		this.barRender2.setCurrentChar(c);
+		this.descDesc2.SetCurrentChar(c);
+		if (c != null) {
+			if (c.equals(this.currentChar)) {
+				this.currentTarget = null;
+				this.caracRender2.setCurrentChar(null);
+				this.barRender2.setCurrentChar(null);
+				this.descDesc2.SetCurrentChar(null);
+			}
+		}
+
 	}
 
 	public void Init() {
 		try {
-			font = new UnicodeFont("content/font/old_london/OldLondon.ttf", 36, false, false);
+			font = new UnicodeFont("content/font/old_london/OldLondon.ttf", 24, false, false);
 			font.addAsciiGlyphs();
 			font.getEffects().add(new ColorEffect());
 			font.loadGlyphs();
-
-			font2 = new UnicodeFont("content/font/old_london/OldLondon.ttf", 24, false, false);
-			font2.addAsciiGlyphs();
-			font2.getEffects().add(new ColorEffect());
-			font2.loadGlyphs();
 		} catch (SlickException e) {
 			e.printStackTrace();
 		}
 		try {
 			HP = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("content/textures/HUD/HP.png"));
 			MP = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("content/textures/HUD/MP.png"));
-
+			ATK = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("content/textures/HUD/ATK.png"));
+			MAG = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("content/textures/HUD/MAG.png"));
+			ARM = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("content/textures/HUD/ARM.png"));
+			MAR = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("content/textures/HUD/MAR.png"));
+			ARP = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("content/textures/HUD/ARP.png"));
+			MAP = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("content/textures/HUD/MAP.png"));
+			I = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("content/textures/HUD/I.png"));
+			M = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("content/textures/HUD/M.png"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		this.caracRender1.Init();
-		this.barRender1.Init();
-		this.descDesc1.Init();
+		this.caracRender1.Init(ATK, MAG, ARM, MAR, ARP, MAP, I, M, font);
+		this.barRender1.Init(HP, MP, font);
+		this.descDesc1.Init(font);
+
+		this.caracRender2.Init(ATK, MAG, ARM, MAR, ARP, MAP, I, M, font);
+		this.barRender2.Init(HP, MP, font);
+		this.descDesc2.Init(font);
 	}
 
 	public void Render() {
@@ -99,6 +141,13 @@ public class HUD {
 			caracRender1.Render();
 			barRender1.Render();
 			descDesc1.Render();
+		}
+
+		if (currentTarget != null) {
+
+			caracRender2.Render();
+			barRender2.Render();
+			descDesc2.Render();
 		}
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
 	}

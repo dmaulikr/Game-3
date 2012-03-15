@@ -17,8 +17,6 @@ public class CharBarsRender {
 	private float Ydep;
 	private UnicodeFont font;
 	private Character currentChar;
-	private Texture HP;
-	private Texture MP;
 	BarDrawer HPBar;
 	BarDrawer MPBar;
 
@@ -30,21 +28,8 @@ public class CharBarsRender {
 		MPBar = new BarDrawer(0.0f, 0.0f, 1.0f);
 	}
 
-	public void Init() {
-		try {
-			font = new UnicodeFont("content/font/old_london/OldLondon.ttf", 24, false, false);
-			font.addAsciiGlyphs();
-			font.getEffects().add(new ColorEffect());
-			font.loadGlyphs();
-		} catch (SlickException e) {
-			e.printStackTrace();
-		}
-		try {
-			HP = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("content/textures/HUD/HP.png"));
-			MP = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("content/textures/HUD/MP.png"));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+	public void Init(Texture HP, Texture MP, UnicodeFont font) {
+		this.font = font;
 		HPBar.Init();
 		MPBar.Init();
 		HPBar.setIcon(HP);

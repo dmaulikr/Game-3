@@ -16,14 +16,14 @@ public class DisplayManager {
 	GameboardRender gameRender;
 	HUD hud;
 
-	public DisplayManager(int height, int width, Map map) {
+	public DisplayManager(int width, int height, Map map) {
 		this.height = height;
 		this.width = width;
 		this.requestClose = false;
 		this.gameRender = new GameboardRender(map);
-		this.hud = new HUD(this.height, this.width);
+		this.hud = new HUD(this.width, this.height);
 		try {
-			Display.setDisplayMode(new DisplayMode(this.height, this.width));
+			Display.setDisplayMode(new DisplayMode(this.width, this.height));
 			Display.setSwapInterval(1);
 			Display.sync(60);
 			Display.create();
@@ -34,7 +34,7 @@ public class DisplayManager {
 	}
 
 	public void Init() {
-		GL11.glViewport(0, 0, this.height, this.width);
+		GL11.glViewport(0, 0, this.width, this.height);
 		GL11.glDepthRange(0, 1000);
 		gameRender.Init();
 		hud.Init();

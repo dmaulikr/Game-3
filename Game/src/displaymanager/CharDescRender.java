@@ -25,15 +25,8 @@ public class CharDescRender {
 		}
 	}
 
-	public void Init() {
-		try {
-			font = new UnicodeFont("content/font/old_london/OldLondon.ttf", 24, false, false);
-			font.addAsciiGlyphs();
-			font.getEffects().add(new ColorEffect());
-			font.loadGlyphs();
-		} catch (SlickException e) {
-			e.printStackTrace();
-		}
+	public void Init(UnicodeFont font) {
+		this.font = font;
 	}
 
 	public void RenderName(float X, float Y) {

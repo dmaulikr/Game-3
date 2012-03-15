@@ -70,6 +70,8 @@ public class Character {
 
 	private int spriteSpeed;
 
+	private boolean isPlaced;
+
 	public Character(Race race, Gender gender) {
 		this.setRace(race);
 		this.setGender(gender);
@@ -86,6 +88,7 @@ public class Character {
 		currentTileX = -1;
 		currentTileY = -1;
 		name = "noname";
+		isPlaced = false;
 		switch (race) {
 		case Human:
 			maxLifePoints = 50;
@@ -639,6 +642,14 @@ public class Character {
 
 	public void setReadyToPlay(boolean isReadyToPlay) {
 		this.isReadyToPlay = isReadyToPlay;
+	}
+
+	public boolean isPlaced() {
+		return isPlaced;
+	}
+
+	public void setPlaced(boolean isPlaced) {
+		this.isPlaced = isPlaced;
 	}
 
 	public static void main(String[] argv) {
