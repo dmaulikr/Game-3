@@ -258,14 +258,12 @@ public class Game {
 			for (int j = 0; j < map.getWidth(); j++) {
 				if (i == cursorX && j == cursorY) {
 					map.getTile(i, j).setHighlighted(true);
-				} else if (i == currentChar.getPosX()
-						&& j == currentChar.getPosY() && currentChar.isPlaced()) {
+				} else if (i == currentChar.getPosX() && j == currentChar.getPosY() && currentChar.isPlaced()) {
 					map.getTile(i, j).setHighlighted(true);
 				} else {
 					map.getTile(i, j).setHighlighted(false);
 				}
-				dm.getGameBoard().RequestFocusOn(cursorX, cursorY,
-						map.getTile(cursorX, cursorY).getHeight());
+				dm.getGameBoard().RequestFocusOn(cursorX, cursorY, map.getTile(cursorX, cursorY).getHeight());
 				dm.getHUD().SetCurrentTarget(getCharOnTile(cursorX, cursorY));
 			}
 		}
@@ -323,12 +321,10 @@ public class Game {
 			if (!isTileOccupied(cursorX, cursorY)) {
 				currentChar.setCurrentTileX(cursorX);
 				currentChar.setCurrentTileY(cursorY);
-				currentChar
-						.setHeight(map.getTile(cursorX, cursorY).getHeight());
+				currentChar.setHeight(map.getTile(cursorX, cursorY).getHeight());
 				charPlaced = true;
 				currentChar.setPlaced(true);
-				dm.getGameBoard().getCharsToDRaw()
-						.add(players[this.indexPlayer].getChars()[indexChar]);
+				dm.getGameBoard().getCharsToDRaw().add(players[this.indexPlayer].getChars()[indexChar]);
 			}
 		}
 	}
@@ -363,9 +359,7 @@ public class Game {
 				if (currentChar.hasMoved()) {
 
 				} else {
-					map.LightUpPossibleMovement(currentChar.getCurrentTileX(),
-							currentChar.getCurrentTileY(),
-							currentChar.getMovement());
+					map.LightUpPossibleMovement(currentChar.getCurrentTileX(), currentChar.getCurrentTileY(), currentChar.getMovement());
 					state = GameStatus.MoveSelection;
 				}
 				break;
@@ -381,9 +375,14 @@ public class Game {
 	}
 
 	private void Move() {
-		currentChar.setTileToGoX(cursorX);
-		currentChar.setTileToGoY(cursorY);
-		currentChar.setIsMoving(true);
+		if (map.getTile(cursorX, cursorY).isHighlightedGreen() && !isTileOccupied(cursorX, cursorY)) {
+			map.getTile(currentChar.getCurrentTileX(), currentChar.getCurrentTileY()).setHighlighted(false);
+			currentChar.setTileToGoX(cursorX);
+			currentChar.setTileToGoY(cursorY);
+			currentChar.setIsMoving(true);
+			map.CleanLightUpZones();
+			state = GameStatus.InCharMenu;
+		}
 	}
 
 	private void manageKeyInput(actions act) {

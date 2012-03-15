@@ -1,7 +1,5 @@
 package entity;
 
-
-
 public class Job {
 	public enum jobList {
 		Warrior

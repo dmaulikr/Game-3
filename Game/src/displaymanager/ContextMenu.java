@@ -10,6 +10,8 @@ public class ContextMenu {
 	private float Ydep;
 	private UnicodeFont font;
 
+	private boolean[] enable;
+
 	public ContextMenu() {
 		this.options = null;
 		this.index = 0;
@@ -17,7 +19,6 @@ public class ContextMenu {
 
 	public void Init(UnicodeFont font) {
 		this.font = font;
-
 	}
 
 	public void Render() {
