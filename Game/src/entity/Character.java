@@ -29,7 +29,7 @@ public class Character {
 	private float posY;
 	private float posZ;
 
-	private float speed;
+	private float speed = 0.01f;
 
 	private int currentTileX;
 	private int currentTileY;
@@ -69,6 +69,7 @@ public class Character {
 	private CharAnimationBible animationBible;
 
 	private int spriteSpeed;
+	private boolean isMoving;
 
 	private boolean isPlaced;
 	private boolean hasMoved;
@@ -91,6 +92,7 @@ public class Character {
 		name = "noname";
 		isPlaced = false;
 		setHasMoved(false);
+		isMoving = false;
 		switch (race) {
 		case Human:
 			maxLifePoints = 50;
@@ -208,95 +210,110 @@ public class Character {
 		if (currentAnimation != null) {
 			this.currentAnimation.Update(GameTimeLapse);
 		}
-		if (tileToGoX != currentTileX || tileToGoY != currentTileY) {
-			int ecartX = 0;
-			int ecartY = 0;
-			boolean Xpos = false;
-			boolean Ypos = false;
+		if (isMoving) {
+			if (tileToGoX != currentTileX || tileToGoY != currentTileY) {
+				int ecartX = 0;
+				int ecartY = 0;
+				boolean Xpos = false;
+				boolean Ypos = false;
 
-			if (tileToGoX > currentTileX) {
-				ecartX = tileToGoX - currentTileX;
-				Xpos = true;
-			}
-			if (tileToGoX < currentTileX) {
-				ecartX = currentTileX - tileToGoX;
-				Xpos = false;
-			}
+				if (tileToGoX > currentTileX) {
+					ecartX = tileToGoX - currentTileX;
+					Xpos = true;
+				}
+				if (tileToGoX < currentTileX) {
+					ecartX = currentTileX - tileToGoX;
+					Xpos = false;
+				}
 
-			if (tileToGoY > currentTileY) {
-				ecartY = tileToGoY - currentTileY;
-				Ypos = true;
-			}
-			if (tileToGoY < currentTileY) {
-				ecartY = currentTileY - tileToGoY;
-				Ypos = false;
-			}
+				if (tileToGoY > currentTileY) {
+					ecartY = tileToGoY - currentTileY;
+					Ypos = true;
+				}
+				if (tileToGoY < currentTileY) {
+					ecartY = currentTileY - tileToGoY;
+					Ypos = false;
+				}
 
-			if (ecartX > ecartY) {
-				if (Xpos) {
-					if ((posX + speed * GameTimeLapse) < currentTileX + 1) {
-						posX += speed * GameTimeLapse;
-					} else if ((posX + speed * GameTimeLapse) >= currentTileX + 1) {
-						posX = currentTileX + 1;
-					} else if (posX == currentTileX + 1) {
-						currentTileX++;
-					}
+				if (ecartX > ecartY) {
+					if (Xpos) {
+						if ((posX + speed) < currentTileX + 1) {
+							posX += speed;
+						} else if (posX == currentTileX + 1) {
+							currentTileX++;
+						} else if ((posX + speed) > currentTileX + 1) {
+							posX = currentTileX + 1;
+						}
 
-					if (posX > currentTileX + 0.5f && posX < currentTileX + 1) {
-						posZ = fdex1(posX, (map.getTile(currentTileX + 1, currentTileY).getHeight()), (map.getTile(currentTileX, currentTileY).getHeight()));
-					} else if (posX < currentTileX + 0.25f) {
-						posZ = fdex2(posX, (map.getTile(currentTileX, currentTileY).getHeight()));
+						posZ = map.getTile(currentTileX, currentTileY).getHeight() + 0.15f;
+						/*
+						 * if (posX > currentTileX + 0.5f && posX < currentTileX
+						 * + 1) { posZ = fdex1(posX, (map.getTile(currentTileX +
+						 * 1, currentTileY).getHeight()),
+						 * (map.getTile(currentTileX,
+						 * currentTileY).getHeight())); } else if (posX <
+						 * currentTileX + 0.25f) { posZ = fdex2(posX,
+						 * (map.getTile(currentTileX,
+						 * currentTileY).getHeight())); }
+						 */
+					} else {
+						if ((posX - speed) < currentTileX - 1) {
+							posX -= speed;
+						} else if (posX == currentTileX - 1) {
+							currentTileX--;
+						} else if ((posX + speed * GameTimeLapse) > currentTileX - 1) {
+							posX = currentTileX - 1;
+						}
+						posZ = map.getTile(currentTileX, currentTileY).getHeight() + 0.15f;
+						/*
+						 * if (posX < currentTileX + 0.5f && posX > currentTileX
+						 * - 1) { posZ = fdex1(posX, (map.getTile(currentTileX -
+						 * 1, currentTileY).getHeight()),
+						 * (map.getTile(currentTileX,
+						 * currentTileY).getHeight())); } else if (posX >
+						 * currentTileX + 0.75f) { posZ = fdex2(posX,
+						 * (map.getTile(currentTileX,
+						 * currentTileY).getHeight())); }
+						 */
 					}
 				} else {
-					if ((posX - speed * GameTimeLapse) < currentTileX - 1) {
-						posX -= speed * GameTimeLapse;
-					} else if ((posX + speed * GameTimeLapse) >= currentTileX - 1) {
-						posX = currentTileX - 1;
-					} else if (posX == currentTileX - 1) {
-						currentTileX--;
-					}
 
-					if (posX < currentTileX + 0.5f && posX > currentTileX - 1) {
-						posZ = fdex1(posX, (map.getTile(currentTileX - 1, currentTileY).getHeight()), (map.getTile(currentTileX, currentTileY).getHeight()));
-					} else if (posX > currentTileX + 0.75f) {
-						posZ = fdex2(posX, (map.getTile(currentTileX, currentTileY).getHeight()));
+					if (Ypos) {
+						if ((posY + speed * GameTimeLapse) < currentTileY + 1) {
+							posY += speed * GameTimeLapse;
+						} else if ((posY + speed * GameTimeLapse) > currentTileY + 1) {
+							posY = currentTileY + 1;
+						}
+
+						if (posY == currentTileY + 1) {
+							currentTileY++;
+						}
+
+						if (posY > currentTileY + 0.5f && posY < currentTileY + 1) {
+							posZ = fdex1(posY, (map.getTile(currentTileX, currentTileY + 1).getHeight()), (map.getTile(currentTileX, currentTileY).getHeight()));
+						} else if (posX < currentTileY + 0.25f) {
+							posZ = fdex2(posY, (map.getTile(currentTileX, currentTileY).getHeight()));
+						}
+					} else {
+						if ((posY - speed * GameTimeLapse) > currentTileY - 1) {
+							posY -= speed * GameTimeLapse;
+						} else if ((posY - speed * GameTimeLapse) < currentTileY - 1) {
+							posY = currentTileY - 1;
+						}
+
+						if (posY == currentTileY - 1) {
+							currentTileY--;
+						}
+
+						if (posY < currentTileY + 0.5f && posY > currentTileY - 1) {
+							posZ = fdex1(posY, (map.getTile(currentTileX, currentTileY - 1).getHeight()), (map.getTile(currentTileX, currentTileY).getHeight()));
+						} else if (posX < currentTileY + 0.75f) {
+							posZ = fdex2(posY, (map.getTile(currentTileX, currentTileY).getHeight()));
+						}
 					}
 				}
 			} else {
-
-				if (Ypos) {
-					if ((posY + speed * GameTimeLapse) < currentTileY + 1) {
-						posY += speed * GameTimeLapse;
-					} else if ((posY + speed * GameTimeLapse) >= currentTileY + 1) {
-						posY = currentTileY + 1;
-					}
-
-					if (posY == currentTileY + 1) {
-						currentTileY++;
-					}
-
-					if (posY > currentTileY + 0.5f && posY < currentTileY + 1) {
-						posZ = fdex1(posY, (map.getTile(currentTileX, currentTileY + 1).getHeight()), (map.getTile(currentTileX, currentTileY).getHeight()));
-					} else if (posX < currentTileY + 0.25f) {
-						posZ = fdex2(posY, (map.getTile(currentTileX, currentTileY).getHeight()));
-					}
-				} else {
-					if ((posY - speed * GameTimeLapse) > currentTileY - 1) {
-						posY -= speed * GameTimeLapse;
-					} else if ((posY - speed * GameTimeLapse) <= currentTileY - 1) {
-						posY = currentTileY - 1;
-					}
-
-					if (posY == currentTileY - 1) {
-						currentTileY--;
-					}
-
-					if (posY < currentTileY + 0.5f && posY > currentTileY - 1) {
-						posZ = fdex1(posY, (map.getTile(currentTileX, currentTileY - 1).getHeight()), (map.getTile(currentTileX, currentTileY).getHeight()));
-					} else if (posX < currentTileY + 0.75f) {
-						posZ = fdex2(posY, (map.getTile(currentTileX, currentTileY).getHeight()));
-					}
-				}
+				isMoving = false;
 			}
 		}
 	}
@@ -662,6 +679,14 @@ public class Character {
 
 	public void setHasMoved(boolean hasMoved) {
 		this.hasMoved = hasMoved;
+	}
+
+	public boolean IsMoving() {
+		return isMoving;
+	}
+
+	public void setIsMoving(boolean isMoving) {
+		this.isMoving = isMoving;
 	}
 
 	public static void main(String[] argv) {

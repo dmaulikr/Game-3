@@ -74,15 +74,13 @@ public class Game {
 
 	private void UpdateLogic() {
 
-		/*long delta = getTime() - lastLoopTime;
+		long delta = getTime() - lastLoopTime;
 		lastLoopTime = getTime();
 		for (Player p : players) {
 			for (Character c : p.getChars()) {
-				if (c.isReadyToPlay()) {
-					c.Update(delta, map);
-				}
+				c.Update(delta, map);
 			}
-		}*/
+		}
 		switch (state) {
 
 		case PlacingBeforeBattle:
@@ -260,12 +258,14 @@ public class Game {
 			for (int j = 0; j < map.getWidth(); j++) {
 				if (i == cursorX && j == cursorY) {
 					map.getTile(i, j).setHighlighted(true);
-				} else if (i == currentChar.getPosX() && j == currentChar.getPosY() && currentChar.isPlaced()) {
+				} else if (i == currentChar.getPosX()
+						&& j == currentChar.getPosY() && currentChar.isPlaced()) {
 					map.getTile(i, j).setHighlighted(true);
 				} else {
 					map.getTile(i, j).setHighlighted(false);
 				}
-				dm.getGameBoard().RequestFocusOn(cursorX, cursorY, map.getTile(cursorX, cursorY).getHeight());
+				dm.getGameBoard().RequestFocusOn(cursorX, cursorY,
+						map.getTile(cursorX, cursorY).getHeight());
 				dm.getHUD().SetCurrentTarget(getCharOnTile(cursorX, cursorY));
 			}
 		}
@@ -306,12 +306,13 @@ public class Game {
 		actions act;
 		while (!dm.isRequestClose() && !quit) {
 			act = im.getInputs();
-			if (!dm.getGameBoard().isBusy()) {
+			if (!dm.getGameBoard().isBusy() && !currentChar.IsMoving()) {
 				manageKeyInput(act);
-				UpdateLogic();
+
 			} else {
 				act = actions.none;
 			}
+			UpdateLogic();
 			dm.Render();
 		}
 		dm.Clean();
@@ -322,10 +323,12 @@ public class Game {
 			if (!isTileOccupied(cursorX, cursorY)) {
 				currentChar.setCurrentTileX(cursorX);
 				currentChar.setCurrentTileY(cursorY);
-				currentChar.setHeight(map.getTile(cursorX, cursorY).getHeight());
+				currentChar
+						.setHeight(map.getTile(cursorX, cursorY).getHeight());
 				charPlaced = true;
 				currentChar.setPlaced(true);
-				dm.getGameBoard().getCharsToDRaw().add(players[this.indexPlayer].getChars()[indexChar]);
+				dm.getGameBoard().getCharsToDRaw()
+						.add(players[this.indexPlayer].getChars()[indexChar]);
 			}
 		}
 	}
@@ -360,10 +363,12 @@ public class Game {
 				if (currentChar.hasMoved()) {
 
 				} else {
-					map.LightUpPossibleMovement(currentChar.getCurrentTileX(), currentChar.getCurrentTileY(), currentChar.getMovement());
+					map.LightUpPossibleMovement(currentChar.getCurrentTileX(),
+							currentChar.getCurrentTileY(),
+							currentChar.getMovement());
 					state = GameStatus.MoveSelection;
-					break;
 				}
+				break;
 			case 1:
 				break;
 			case 2:
@@ -378,6 +383,7 @@ public class Game {
 	private void Move() {
 		currentChar.setTileToGoX(cursorX);
 		currentChar.setTileToGoY(cursorY);
+		currentChar.setIsMoving(true);
 	}
 
 	private void manageKeyInput(actions act) {
@@ -496,7 +502,7 @@ public class Game {
 					quit = true;
 					break;
 				case ENTER:
-					quit = true;
+					Move();
 					break;
 
 				default:
