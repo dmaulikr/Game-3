@@ -22,7 +22,7 @@ public class CharCaracRender {
 	private Texture MAR;
 	private Texture I;
 	private Texture M;
-	UnicodeFont font;
+	private UnicodeFont font;
 	private float Xdep;
 	private float Ydep;
 	private Character currentChar;
@@ -271,24 +271,12 @@ public class CharCaracRender {
 		GL11.glDisable(GL11.GL_TEXTURE_2D);
 	}
 
-	public float getXdep() {
-		return Xdep;
-	}
-
 	public void setXdep(float xdep) {
 		Xdep = xdep;
 	}
 
-	public float getYdep() {
-		return Ydep;
-	}
-
 	public void setYdep(float ydep) {
 		Ydep = ydep;
-	}
-
-	public Character getCurrentChar() {
-		return currentChar;
 	}
 
 	public void setCurrentChar(Character c) {

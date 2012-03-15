@@ -534,6 +534,8 @@ public class Game {
 		Player p1 = new Player("bobyx", new Character[] { c1, c2 });
 		Player p2 = new Player("bobyxou", new Character[] { c3, c4, c5 });
 
+		c3.setLifePoints(10);
+
 		map.getTile(0, 0).setDeploymentZone(1);
 		map.getTile(0, 1).setHeight(4);
 		map.getTile(0, 1).setDeploymentZone(1);

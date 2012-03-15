@@ -23,6 +23,7 @@ public class HUD {
 	Character currentChar;
 	Character currentTarget;
 
+	CharBarsRender caracBars1;
 	CharCaracRender caracRender1;
 	private Texture HP;
 	private Texture MP;
@@ -30,14 +31,19 @@ public class HUD {
 	public HUD(int height, int width) {
 		this.height = height;
 		this.width = width;
-		caracRender1 = new CharCaracRender();
-		caracRender1.setXdep(150f);
-		caracRender1.setYdep(25f);
+		this.caracRender1 = new CharCaracRender();
+		this.caracRender1.setXdep(150f);
+		this.caracRender1.setYdep(25f);
+
+		this.caracBars1 = new CharBarsRender();
+		this.caracBars1.setXdep(150f);
+		this.caracBars1.setYdep(150f);
 	}
 
 	public void SetCurrentChar(Character c) {
 		this.currentChar = c;
 		this.caracRender1.setCurrentChar(c);
+		this.caracBars1.setCurrentChar(c);
 	}
 
 	public void SetCurrentTarget(Character c) {
@@ -46,14 +52,12 @@ public class HUD {
 
 	public void Init() {
 		try {
-			font = new UnicodeFont("content/font/old_london/OldLondon.ttf", 36,
-					false, false);
+			font = new UnicodeFont("content/font/old_london/OldLondon.ttf", 36, false, false);
 			font.addAsciiGlyphs();
 			font.getEffects().add(new ColorEffect());
 			font.loadGlyphs();
 
-			font2 = new UnicodeFont("content/font/old_london/OldLondon.ttf",
-					24, false, false);
+			font2 = new UnicodeFont("content/font/old_london/OldLondon.ttf", 24, false, false);
 			font2.addAsciiGlyphs();
 			font2.getEffects().add(new ColorEffect());
 			font2.loadGlyphs();
@@ -61,15 +65,14 @@ public class HUD {
 			e.printStackTrace();
 		}
 		try {
-			HP = TextureLoader.getTexture("PNG", ResourceLoader
-					.getResourceAsStream("content/textures/HUD/HP.png"));
-			MP = TextureLoader.getTexture("PNG", ResourceLoader
-					.getResourceAsStream("content/textures/HUD/MP.png"));
+			HP = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("content/textures/HUD/HP.png"));
+			MP = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("content/textures/HUD/MP.png"));
 
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		caracRender1.Init();
+		this.caracRender1.Init();
+		this.caracBars1.Init();
 
 	}
 
@@ -88,6 +91,7 @@ public class HUD {
 			RenderLvl();
 			RenderJob();
 			caracRender1.Render();
+			caracBars1.Render();
 		}
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
 	}
@@ -99,14 +103,12 @@ public class HUD {
 
 	public void RenderLvl() {
 		Color.white.bind();
-		font.drawString(25f, 150f, "lvl : " + currentChar.getLevel(),
-				Color.white);
+		font.drawString(25f, 150f, "lvl : " + currentChar.getLevel(), Color.white);
 	}
 
 	public void RenderJob() {
 		Color.white.bind();
-		font.drawString(25f, 175f, currentChar.getActualJob().getName(),
-				Color.white);
+		font.drawString(25f, 175f, currentChar.getActualJob().getName(), Color.white);
 	}
 
 }

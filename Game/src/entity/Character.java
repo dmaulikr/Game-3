@@ -85,7 +85,7 @@ public class Character {
 		isReadyToPlay = false;
 		currentTileX = -1;
 		currentTileY = -1;
-		name="noname";
+		name = "noname";
 		switch (race) {
 		case Human:
 			maxLifePoints = 50;
@@ -138,6 +138,9 @@ public class Character {
 		default:
 			break;
 		}
+
+		lifePoints = maxLifePoints;
+		manaPoints = maxManaPoints;
 	}
 
 	public Character(String XMLString) {
