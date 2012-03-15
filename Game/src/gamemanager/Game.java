@@ -2,6 +2,8 @@ package gamemanager;
 
 import javax.net.ssl.SSLEngineResult.Status;
 
+import org.lwjgl.Sys;
+
 import jobs.Warrior;
 
 import inputmanager.InputManager;
@@ -22,6 +24,12 @@ public class Game {
 		PlacingBeforeBattle, Pending, InCharMenu, MoveSelection, TargetSelection, ExploringMap
 	}
 
+	enum Menus {
+		Actions
+	}
+
+	String[] actionMenuString = { "Move", "Attack", "Comp", "End Turn" };
+	Menus actualMenu;
 	Map map;
 	DisplayManager dm;
 	InputManager im;
@@ -45,6 +53,9 @@ public class Game {
 	int deployementcountDown;
 	int playerCountDown;
 
+	private long timerTicksPerSecond = Sys.getTimerResolution();
+	private long lastLoopTime;
+
 	public Game(int width, int height, Map map, int nbPlayers) {
 		this.map = map;
 		dm = new DisplayManager(width, height, map);
@@ -58,10 +69,20 @@ public class Game {
 		this.nbPlayers = nbPlayers;
 		this.players = new Player[this.nbPlayers];
 		this.currentPlayer = null;
-
+		lastLoopTime = getTime();
 	}
 
 	private void UpdateLogic() {
+
+		/*long delta = getTime() - lastLoopTime;
+		lastLoopTime = getTime();
+		for (Player p : players) {
+			for (Character c : p.getChars()) {
+				if (c.isReadyToPlay()) {
+					c.Update(delta, map);
+				}
+			}
+		}*/
 		switch (state) {
 
 		case PlacingBeforeBattle:
@@ -101,10 +122,11 @@ public class Game {
 			if (!GetTheCharToPlay()) {
 				HourglassTick();
 			} else {
+				dm.getHUD().getContextMenu().setMenu(actionMenuString);
+				actualMenu = Menus.Actions;
 				state = GameStatus.InCharMenu;
 			}
 			break;
-
 		}
 	}
 
@@ -275,6 +297,10 @@ public class Game {
 		}
 	}
 
+	public long getTime() {
+		return (Sys.getTime() * 1000) / timerTicksPerSecond;
+	}
+
 	public void run() {
 		initPlacingBeforeBattle();
 		actions act;
@@ -324,6 +350,34 @@ public class Game {
 			}
 		}
 		return null;
+	}
+
+	private void ProcessMenuEnter() {
+		switch (actualMenu) {
+		case Actions:
+			switch (dm.getHUD().getContextMenu().getIndex()) {
+			case 0:
+				if (currentChar.hasMoved()) {
+
+				} else {
+					map.LightUpPossibleMovement(currentChar.getCurrentTileX(), currentChar.getCurrentTileY(), currentChar.getMovement());
+					state = GameStatus.MoveSelection;
+					break;
+				}
+			case 1:
+				break;
+			case 2:
+				break;
+			case 3:
+				break;
+			}
+			break;
+		}
+	}
+
+	private void Move() {
+		currentChar.setTileToGoX(cursorX);
+		currentChar.setTileToGoY(cursorY);
 	}
 
 	private void manageKeyInput(actions act) {
@@ -389,22 +443,22 @@ public class Game {
 					dm.getGameBoard().RequestView(viewPoint.West);
 					break;
 				case UP:
-					goUp();
+					dm.getHUD().getContextMenu().Previous();
 					break;
 				case DOWN:
-					goDown();
+					dm.getHUD().getContextMenu().Next();
 					break;
 				case LEFT:
-					goLeft();
+					dm.getHUD().getContextMenu().Previous();
 					break;
 				case RIGHT:
-					goRigth();
+					dm.getHUD().getContextMenu().Next();
 					break;
 				case QUIT:
 					quit = true;
 					break;
 				case ENTER:
-					quit = true;
+					ProcessMenuEnter();
 					break;
 
 				default:
@@ -535,7 +589,7 @@ public class Game {
 
 	public static void main(String[] argv) {
 
-		Map map = new Map(10, 10, "lolilol");
+		Map map = new Map(25, 25, "lolilol");
 		Character c1 = new Character(Race.Human, Gender.Male);
 		c1.setName("bobix1");
 		Character c2 = new Character(Race.Dwarf, Gender.Male);

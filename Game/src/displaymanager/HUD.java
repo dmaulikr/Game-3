@@ -18,8 +18,7 @@ import entity.TileTexture;
 public class HUD {
 	private int height;
 	private int width;
-	UnicodeFont font;
-
+	private UnicodeFont font;
 	private Texture ATK;
 	private Texture MAG;
 	private Texture ARP;
@@ -41,6 +40,8 @@ public class HUD {
 	CharBarsRender barRender2;
 	CharCaracRender caracRender2;
 	CharDescRender descDesc2;
+
+	ContextMenu contextMenu;
 
 	public HUD(int width, int height) {
 		this.height = height;
@@ -69,6 +70,9 @@ public class HUD {
 		this.descDesc2.setXdep((width / 2) + 25f);
 		this.descDesc2.setYdep(25f);
 
+		this.contextMenu = new ContextMenu();
+		this.contextMenu.setXdep((width / 2) - 100f);
+		this.contextMenu.setYdep(25f);
 	}
 
 	public void SetCurrentChar(Character c) {
@@ -100,6 +104,7 @@ public class HUD {
 			font.addAsciiGlyphs();
 			font.getEffects().add(new ColorEffect());
 			font.loadGlyphs();
+
 		} catch (SlickException e) {
 			e.printStackTrace();
 		}
@@ -124,17 +129,17 @@ public class HUD {
 		this.caracRender2.Init(ATK, MAG, ARM, MAR, ARP, MAP, I, M, font);
 		this.barRender2.Init(HP, MP, font);
 		this.descDesc2.Init(font);
+
+		this.contextMenu.Init(font);
 	}
 
 	public void Render() {
-		GL11.glDisable(GL11.GL_TEXTURE_2D);
-		GL11.glColor4f(0.0f, 0.0f, 0.0f, 1f);
-		GL11.glBegin(GL11.GL_QUADS);
-		GL11.glVertex2f(0, 0);
-		GL11.glVertex2f(width, 0);
-		GL11.glVertex2f(width, 200);
-		GL11.glVertex2f(0, 200);
-		GL11.glEnd();
+		/*
+		 * GL11.glDisable(GL11.GL_TEXTURE_2D); GL11.glColor4f(0.0f, 0.0f, 0.0f,
+		 * 1f); GL11.glBegin(GL11.GL_QUADS); GL11.glVertex2f(0, 0);
+		 * GL11.glVertex2f(width, 0); GL11.glVertex2f(width, 200);
+		 * GL11.glVertex2f(0, 200); GL11.glEnd();
+		 */
 
 		if (currentChar != null) {
 
@@ -149,7 +154,14 @@ public class HUD {
 			barRender2.Render();
 			descDesc2.Render();
 		}
+
+		contextMenu.Render();
+
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
+	}
+
+	public ContextMenu getContextMenu() {
+		return contextMenu;
 	}
 
 }

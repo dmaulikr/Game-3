@@ -71,6 +71,7 @@ public class Character {
 	private int spriteSpeed;
 
 	private boolean isPlaced;
+	private boolean hasMoved;
 
 	public Character(Race race, Gender gender) {
 		this.setRace(race);
@@ -89,6 +90,7 @@ public class Character {
 		currentTileY = -1;
 		name = "noname";
 		isPlaced = false;
+		setHasMoved(false);
 		switch (race) {
 		case Human:
 			maxLifePoints = 50;
@@ -197,13 +199,15 @@ public class Character {
 		if (hourglass <= 0) {
 			hourglass = 0;
 			setReadyToPlay(true);
+			setHasMoved(false);
 			hourglass = 100;
 		}
 	}
 
 	public void Update(float GameTimeLapse, Map map) {
-		this.currentAnimation.Update(GameTimeLapse);
-
+		if (currentAnimation != null) {
+			this.currentAnimation.Update(GameTimeLapse);
+		}
 		if (tileToGoX != currentTileX || tileToGoY != currentTileY) {
 			int ecartX = 0;
 			int ecartY = 0;
@@ -650,6 +654,14 @@ public class Character {
 
 	public void setPlaced(boolean isPlaced) {
 		this.isPlaced = isPlaced;
+	}
+
+	public boolean hasMoved() {
+		return hasMoved;
+	}
+
+	public void setHasMoved(boolean hasMoved) {
+		this.hasMoved = hasMoved;
 	}
 
 	public static void main(String[] argv) {
