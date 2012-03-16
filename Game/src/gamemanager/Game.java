@@ -387,205 +387,75 @@ public class Game {
 
 	private void manageKeyInput(actions act) {
 		if (!act.equals(actions.none)) {
-			switch (state) {
-
-			case PlacingBeforeBattle:
-				switch (act) {
-				case VIEW_SOUTH:
-					dm.getGameBoard().RequestView(viewPoint.South);
-					break;
-				case VIEW_NORTH:
-					dm.getGameBoard().RequestView(viewPoint.North);
-					break;
-				case VIEW_EAST:
-					dm.getGameBoard().RequestView(viewPoint.East);
-					break;
-				case VIEW_WEST:
-					dm.getGameBoard().RequestView(viewPoint.West);
-					break;
-				case UP:
+			switch (act) {
+			case VIEW_SOUTH:
+				dm.getGameBoard().RequestView(viewPoint.South);
+				break;
+				
+			case VIEW_NORTH:
+				dm.getGameBoard().RequestView(viewPoint.North);
+				break;
+				
+			case VIEW_EAST:
+				dm.getGameBoard().RequestView(viewPoint.East);
+				break;
+				
+			case VIEW_WEST:
+				dm.getGameBoard().RequestView(viewPoint.West);
+				break;
+				
+			case UP:
+				if (state == GameStatus.PlacingBeforeBattle || state == GameStatus.MoveSelection || state == GameStatus.TargetSelection || state == GameStatus.ExploringMap) {
 					goUp();
-					break;
-				case DOWN:
+				} else if (state == GameStatus.InCharMenu) {
+					dm.getHUD().getContextMenu().Previous();
+				}
+				break;
+				
+			case DOWN:
+				if (state == GameStatus.PlacingBeforeBattle || state == GameStatus.MoveSelection || state == GameStatus.TargetSelection || state == GameStatus.ExploringMap) {
 					goDown();
-					break;
-				case LEFT:
+				} else if (state == GameStatus.InCharMenu) {
+					dm.getHUD().getContextMenu().Next();
+				}
+				break;
+				
+			case LEFT:
+				if (state == GameStatus.PlacingBeforeBattle || state == GameStatus.MoveSelection || state == GameStatus.TargetSelection || state == GameStatus.ExploringMap) {
 					goLeft();
-					break;
-				case RIGHT:
+				} else if (state == GameStatus.InCharMenu) {
+					dm.getHUD().getContextMenu().Previous();
+				}
+				break;
+				
+			case RIGHT:
+				if (state == GameStatus.PlacingBeforeBattle || state == GameStatus.MoveSelection || state == GameStatus.TargetSelection || state == GameStatus.ExploringMap) {
 					goRigth();
-					break;
-				case QUIT:
-					quit = true;
-					break;
-				case ENTER:
+				} else if (state == GameStatus.InCharMenu) {
+					dm.getHUD().getContextMenu().Next();
+				}
+				break;
+				
+			case QUIT:
+				quit = true;
+				break;
+
+			case ENTER:
+				switch (state) {
+				case PlacingBeforeBattle:
 					PlaceChar();
 					break;
-				default:
-					break;
-				}
-				break;
-			case Pending:
-				switch (act) {
-				case QUIT:
-					quit = true;
-					break;
-				}
-				break;
-
-			case InCharMenu:
-				switch (act) {
-				case VIEW_SOUTH:
-					dm.getGameBoard().RequestView(viewPoint.South);
-					break;
-				case VIEW_NORTH:
-					dm.getGameBoard().RequestView(viewPoint.North);
-					break;
-				case VIEW_EAST:
-					dm.getGameBoard().RequestView(viewPoint.East);
-					break;
-				case VIEW_WEST:
-					dm.getGameBoard().RequestView(viewPoint.West);
-					break;
-				case UP:
-					dm.getHUD().getContextMenu().Previous();
-					break;
-				case DOWN:
-					dm.getHUD().getContextMenu().Next();
-					break;
-				case LEFT:
-					dm.getHUD().getContextMenu().Previous();
-					break;
-				case RIGHT:
-					dm.getHUD().getContextMenu().Next();
-					break;
-				case QUIT:
-					quit = true;
-					break;
-				case ENTER:
+				case InCharMenu:
 					ProcessMenuEnter();
 					break;
-
-				default:
-					break;
-				}
-				break;
-
-			case MoveSelection:
-				switch (act) {
-				case VIEW_SOUTH:
-					dm.getGameBoard().RequestView(viewPoint.South);
-					break;
-				case VIEW_NORTH:
-					dm.getGameBoard().RequestView(viewPoint.North);
-					break;
-				case VIEW_EAST:
-					dm.getGameBoard().RequestView(viewPoint.East);
-					break;
-				case VIEW_WEST:
-					dm.getGameBoard().RequestView(viewPoint.West);
-					break;
-				case UP:
-					goUp();
-					break;
-				case DOWN:
-					goDown();
-					break;
-				case LEFT:
-					goLeft();
-					break;
-				case RIGHT:
-					goRigth();
-					break;
-				case QUIT:
-					quit = true;
-					break;
-				case ENTER:
+				case MoveSelection:
 					Move();
 					break;
-
-				default:
+				case TargetSelection:
+					break;
+				case ExploringMap:
 					break;
 				}
-				break;
-
-			case TargetSelection:
-				switch (act) {
-				case VIEW_SOUTH:
-					dm.getGameBoard().RequestView(viewPoint.South);
-					break;
-				case VIEW_NORTH:
-					dm.getGameBoard().RequestView(viewPoint.North);
-					break;
-				case VIEW_EAST:
-					dm.getGameBoard().RequestView(viewPoint.East);
-					break;
-				case VIEW_WEST:
-					dm.getGameBoard().RequestView(viewPoint.West);
-					break;
-				case UP:
-					goUp();
-					break;
-				case DOWN:
-					goDown();
-					break;
-				case LEFT:
-					goLeft();
-					break;
-				case RIGHT:
-					goRigth();
-					break;
-				case QUIT:
-					quit = true;
-					break;
-				case ENTER:
-					quit = true;
-					break;
-
-				default:
-					break;
-				}
-				break;
-
-			case ExploringMap:
-				switch (act) {
-				case VIEW_SOUTH:
-					dm.getGameBoard().RequestView(viewPoint.South);
-					break;
-				case VIEW_NORTH:
-					dm.getGameBoard().RequestView(viewPoint.North);
-					break;
-				case VIEW_EAST:
-					dm.getGameBoard().RequestView(viewPoint.East);
-					break;
-				case VIEW_WEST:
-					dm.getGameBoard().RequestView(viewPoint.West);
-					break;
-				case UP:
-					goUp();
-					break;
-				case DOWN:
-					goDown();
-					break;
-				case LEFT:
-					goLeft();
-					break;
-				case RIGHT:
-					goRigth();
-					break;
-				case QUIT:
-					quit = true;
-					break;
-				case ENTER:
-					quit = true;
-					break;
-
-				default:
-					break;
-				}
-				break;
-
-			default:
 				break;
 			}
 		}
