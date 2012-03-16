@@ -186,15 +186,15 @@ public class Game {
 		initPlacingBeforeBattle();
 		actions act;
 		while (!dm.isRequestClose() && !quit) {
-			
+
 			act = im.getInputs();
 			UpdateLogic();
-			
+
 			if (!dm.getGameBoard().isBusy() && !currentChar.IsMoving()) {
 				manageKeyInput(act);
 			} else {
 				act = actions.none;
-			}			
+			}
 			dm.Render();
 		}
 		dm.Clean();
@@ -243,7 +243,7 @@ public class Game {
 				if (currentChar.hasMoved()) {
 
 				} else {
-					map.LightUpPossibleMovement(currentChar.getCurrentTileX(), currentChar.getCurrentTileY(), currentChar.getMovement());
+					LightUpPossibleMovementR(currentChar.getCurrentTileX(), currentChar.getCurrentTileY(), currentChar.getMovement());
 					state = GameStatus.MoveSelection;
 				}
 				dm.getHUD().getContextMenu().setShow(false);
@@ -259,6 +259,68 @@ public class Game {
 				break;
 			}
 			break;
+		}
+	}
+
+	public void LightUpPossibleMovementR(int X, int Y, int movement) {
+		if (movement <= 0) {
+			return;
+		} else {
+			int zEcart;
+
+			if (X + 1 < map.getLength()) {
+				if (map.getTile(X + 1, Y).getHeight() > map.getTile(X, Y).getHeight()) {
+					zEcart = map.getTile(X + 1, Y).getHeight() - map.getTile(X, Y).getHeight();
+				} else {
+					zEcart = map.getTile(X, Y).getHeight() - map.getTile(X + 1, Y).getHeight();
+				}
+				if (zEcart <= 2) {
+					if (!isTileOccupied(X + 1, Y)) {
+						map.getTile(X + 1, Y).setHighlightedGreen(true);
+					}
+					LightUpPossibleMovementR(X + 1, Y, movement - (zEcart + 1));
+				}
+			}
+			if (X > 0) {
+				if (map.getTile(X - 1, Y).getHeight() > map.getTile(X, Y).getHeight()) {
+					zEcart = map.getTile(X - 1, Y).getHeight() - map.getTile(X, Y).getHeight();
+				} else {
+					zEcart = map.getTile(X, Y).getHeight() - map.getTile(X - 1, Y).getHeight();
+				}
+				if (zEcart <= 2) {
+					if (!isTileOccupied(X - 1, Y)) {
+						map.getTile(X - 1, Y).setHighlightedGreen(true);
+					}
+					LightUpPossibleMovementR(X - 1, Y, movement - (zEcart + 1));
+				}
+			}
+			if (Y + 1 < map.getWidth()) {
+				if (map.getTile(X, Y + 1).getHeight() > map.getTile(X, Y).getHeight()) {
+					zEcart = map.getTile(X, Y + 1).getHeight() - map.getTile(X, Y).getHeight();
+				} else {
+					zEcart = map.getTile(X, Y).getHeight() - map.getTile(X, Y + 1).getHeight();
+				}
+				if (zEcart <= 2) {
+					if (!isTileOccupied(X, Y + 1)) {
+						map.getTile(X, Y).setHighlightedGreen(true);
+					}
+					LightUpPossibleMovementR(X, Y + 1, movement - (zEcart + 1));
+				}
+			}
+			if (Y - 1 > 0) {
+				if (map.getTile(X, Y - 1).getHeight() > map.getTile(X, Y).getHeight()) {
+					zEcart = map.getTile(X, Y - 1).getHeight() - map.getTile(X, Y).getHeight();
+				} else {
+					zEcart = map.getTile(X, Y).getHeight() - map.getTile(X, Y - 1).getHeight();
+				}
+				if (zEcart <= 2) {
+					if (!isTileOccupied(X, Y - 1)) {
+						map.getTile(X, Y - 1).setHighlightedGreen(true);
+					}
+					LightUpPossibleMovementR(X, Y - 1, movement - (zEcart + 1));
+				}
+			}
+
 		}
 	}
 

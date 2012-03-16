@@ -22,6 +22,7 @@ public class Tile {
 
 	private boolean isHighlighted;
 	private boolean isHighlightedGreen;
+	private boolean isHighlightedRed;
 	private textureType texture;
 	private tileType type;
 	private decorationType decoration;
@@ -46,6 +47,7 @@ public class Tile {
 		this.setDecoration(decorationType.None);
 		this.setHighlighted(false);
 		this.setHighlightedGreen(false);
+		this.setHighlightedRed(false);
 		this.setDeploymentZone(0);
 		this.setCharacter(null);
 	}
@@ -59,6 +61,7 @@ public class Tile {
 		this.setDecoration(decorationType.None);
 		this.setHighlighted(false);
 		this.setHighlightedGreen(false);
+		this.setHighlightedRed(false);
 		this.setDeploymentZone(0);
 	}
 
@@ -71,6 +74,7 @@ public class Tile {
 		this.setDecoration(decoration);
 		this.setHighlighted(false);
 		this.setHighlightedGreen(false);
+		this.setHighlightedRed(false);
 		this.setDeploymentZone(0);
 	}
 
@@ -99,6 +103,7 @@ public class Tile {
 		this.setDecoration(decoration);
 		this.setHighlighted(false);
 		this.setHighlightedGreen(false);
+		this.setHighlightedRed(false);
 		this.setDeploymentZone(inDeployementZone);
 	}
 
@@ -217,6 +222,14 @@ public class Tile {
 
 	public void setHighlightedGreen(boolean isHighlightedGreen) {
 		this.isHighlightedGreen = isHighlightedGreen;
+	}
+
+	public boolean isHighlightedRed() {
+		return isHighlightedRed;
+	}
+
+	public void setHighlightedRed(boolean isHighlightedRed) {
+		this.isHighlightedRed = isHighlightedRed;
 	}
 
 	public Texture getTextureTop() {
