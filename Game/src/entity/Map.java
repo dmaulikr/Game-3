@@ -60,6 +60,7 @@ public class Map {
 		for (int i = 0; i < length; i++) {
 			for (int j = 0; j < width; j++) {
 				getTile(i, j).setHighlightedGreen(false);
+				getTile(i, j).setHighlightedRed(false);
 			}
 		}
 	}

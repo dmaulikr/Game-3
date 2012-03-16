@@ -323,6 +323,68 @@ public class Game {
 
 		}
 	}
+	
+	public void LightUpPossibleAttackR(int X, int Y, int range) {
+		if (range <= 0) {
+			return;
+		} else {
+			int zEcart;
+
+			if (X + 1 < map.getLength()) {
+				if (map.getTile(X + 1, Y).getHeight() > map.getTile(X, Y).getHeight()) {
+					zEcart = map.getTile(X + 1, Y).getHeight() - map.getTile(X, Y).getHeight();
+				} else {
+					zEcart = map.getTile(X, Y).getHeight() - map.getTile(X + 1, Y).getHeight();
+				}
+				if (zEcart <= 2) {
+					if (!isTileOccupied(X + 1, Y)) {
+						map.getTile(X + 1, Y).setHighlightedRed(true);
+					}
+					LightUpPossibleMovementR(X + 1, Y, range - (zEcart + 1));
+				}
+			}
+			if (X > 0) {
+				if (map.getTile(X - 1, Y).getHeight() > map.getTile(X, Y).getHeight()) {
+					zEcart = map.getTile(X - 1, Y).getHeight() - map.getTile(X, Y).getHeight();
+				} else {
+					zEcart = map.getTile(X, Y).getHeight() - map.getTile(X - 1, Y).getHeight();
+				}
+				if (zEcart <= 2) {
+					if (!isTileOccupied(X - 1, Y)) {
+						map.getTile(X - 1, Y).setHighlightedRed(true);
+					}
+					LightUpPossibleMovementR(X - 1, Y, range - (zEcart + 1));
+				}
+			}
+			if (Y + 1 < map.getWidth()) {
+				if (map.getTile(X, Y + 1).getHeight() > map.getTile(X, Y).getHeight()) {
+					zEcart = map.getTile(X, Y + 1).getHeight() - map.getTile(X, Y).getHeight();
+				} else {
+					zEcart = map.getTile(X, Y).getHeight() - map.getTile(X, Y + 1).getHeight();
+				}
+				if (zEcart <= 2) {
+					if (!isTileOccupied(X, Y + 1)) {
+						map.getTile(X, Y).setHighlightedRed(true);
+					}
+					LightUpPossibleMovementR(X, Y + 1, range - (zEcart + 1));
+				}
+			}
+			if (Y - 1 > 0) {
+				if (map.getTile(X, Y - 1).getHeight() > map.getTile(X, Y).getHeight()) {
+					zEcart = map.getTile(X, Y - 1).getHeight() - map.getTile(X, Y).getHeight();
+				} else {
+					zEcart = map.getTile(X, Y).getHeight() - map.getTile(X, Y - 1).getHeight();
+				}
+				if (zEcart <= 2) {
+					if (!isTileOccupied(X, Y - 1)) {
+						map.getTile(X, Y - 1).setHighlightedRed(true);
+					}
+					LightUpPossibleMovementR(X, Y - 1, range - (zEcart + 1));
+				}
+			}
+
+		}
+	}
 
 	private void Move() {
 		if (map.getTile(cursorX, cursorY).isHighlightedGreen() && !isTileOccupied(cursorX, cursorY)) {

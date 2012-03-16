@@ -27,6 +27,7 @@ public class GameboardRender {
 	private Texture imageHerbe;
 	private Texture highlight;
 	private Texture highlightG;
+	private Texture highlightR;
 	private Texture cara;
 
 	public enum viewPoint {
@@ -90,7 +91,7 @@ public class GameboardRender {
 
 	private void Draw() {
 		// Clear
-		//GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
+		// GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
 		/*
 		 * GL11.glBegin(GL11.GL_LINES);
 		 * 
@@ -227,12 +228,13 @@ public class GameboardRender {
 					} else {
 						DrawTheLinkSE(demoMap.getTile(i, j), new Tile(i, j + 1, 0));
 					}
-					if (demoMap.getTile(i, j).isHighlightedGreen() && !demoMap.getTile(i, j).isHighlighted()) {
-						DrawHighlightG(demoMap.getTile(i, j));
-					}
 
-					if (demoMap.getTile(i, j).isHighlighted()) {
+					if (demoMap.getTile(i, j).isHighlightedRed()) {
+						DrawHighlightR(demoMap.getTile(i, j));
+					} else if (demoMap.getTile(i, j).isHighlighted()) {
 						DrawHighlight(demoMap.getTile(i, j));
+					} else if (demoMap.getTile(i, j).isHighlightedGreen()) {
+						DrawHighlightG(demoMap.getTile(i, j));
 					}
 
 					for (Character c : charsToDRaw) {
@@ -476,6 +478,32 @@ public class GameboardRender {
 
 	}
 
+	public void DrawHighlightR(Tile t) {
+
+		GL11.glColor4f(1f, 1f, 1f, 0.6f);
+		highlightR.bind();
+
+		float x1 = ((float) t.getPosY() * scale) - originY;
+		float x2 = (((float) t.getPosY() + 1) * scale) - originY;
+
+		float y1 = ((float) t.getPosX() * scale) - originX;
+		float y2 = (((float) t.getPosX() + 1) * scale) - originX;
+
+		float z1 = ((((float) t.getHeight() + 0.1f) * zscale));
+
+		GL11.glBegin(GL11.GL_QUADS);
+		GL11.glTexCoord2d(0, 0);
+		GL11.glVertex3d(x1, z1, y1);
+		GL11.glTexCoord2d(1, 0);
+		GL11.glVertex3d(x2, z1, y1);
+		GL11.glTexCoord2d(1, 1);
+		GL11.glVertex3d(x2, z1, y2);
+		GL11.glTexCoord2d(0, 1);
+		GL11.glVertex3d(x1, z1, y2);
+		GL11.glEnd();
+
+	}
+
 	public void DrawChar(Character c) {
 
 		GL11.glColor4f(1f, 1f, 1f, 1f);
@@ -508,6 +536,7 @@ public class GameboardRender {
 			imageHerbe = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("images/fleur1.png"));
 			highlight = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("images/highlightblue.PNG"));
 			highlightG = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("images/highlightgreen.PNG"));
+			highlightR = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("images/highlightred.PNG"));
 			cara = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("images/perso1.png"));
 		} catch (IOException e) {
 			e.printStackTrace();
