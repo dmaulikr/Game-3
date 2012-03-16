@@ -125,7 +125,13 @@ public class Game {
 				state = GameStatus.InCharMenu;
 			}
 			break;
+		case InCharMenu:
+			if (currentChar.hasMoved()) {
+				dm.getHUD().getContextMenu().DisableOption(0);
+			}
+			break;
 		}
+
 	}
 
 	public void setPlayer(int i, Player player) {
@@ -142,6 +148,201 @@ public class Game {
 		this.deployementcountDown = currentPlayer.getChars().length;
 		this.charPlaced = false;
 		this.map.LightUpStartZone(indexPlayer + 1);
+
+	}
+
+	public boolean GetTheCharToPlay() {
+		for (Player p : players) {
+			for (Character c : p.getChars()) {
+				if (c.isReadyToPlay()) {
+					cursorX = c.getCurrentTileX();
+					cursorY = c.getCurrentTileY();
+					currentPlayer = p;
+					currentChar = c;
+					this.dm.getHUD().SetCurrentChar(currentChar);
+					c.setReadyToPlay(false);
+					UpdateCursor();
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	private void HourglassTick() {
+		for (Player p : players) {
+			for (Character c : p.getChars()) {
+				c.HourglassTick();
+			}
+		}
+	}
+
+	public long getTime() {
+		return (Sys.getTime() * 1000) / timerTicksPerSecond;
+	}
+
+	public void run() {
+		initPlacingBeforeBattle();
+		actions act;
+		while (!dm.isRequestClose() && !quit) {
+			
+			act = im.getInputs();
+			UpdateLogic();
+			
+			if (!dm.getGameBoard().isBusy() && !currentChar.IsMoving()) {
+				manageKeyInput(act);
+			} else {
+				act = actions.none;
+			}			
+			dm.Render();
+		}
+		dm.Clean();
+	}
+
+	private void PlaceChar() {
+		if (map.getTile(cursorX, cursorY).getDeploymentZone() == this.indexPlayer + 1) {
+			if (!isTileOccupied(cursorX, cursorY)) {
+				currentChar.setCurrentTileX(cursorX);
+				currentChar.setCurrentTileY(cursorY);
+				currentChar.setHeight(map.getTile(cursorX, cursorY).getHeight());
+				charPlaced = true;
+				currentChar.setPlaced(true);
+				dm.getGameBoard().getCharsToDRaw().add(players[this.indexPlayer].getChars()[indexChar]);
+			}
+		}
+	}
+
+	private boolean isTileOccupied(int X, int Y) {
+		for (Player p : players) {
+			for (Character c : p.getChars()) {
+				if (c.getCurrentTileX() == X && c.getCurrentTileY() == Y) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	private Character getCharOnTile(int X, int Y) {
+		for (Player p : players) {
+			for (Character c : p.getChars()) {
+				if (c.getCurrentTileX() == X && c.getCurrentTileY() == Y) {
+					return c;
+				}
+			}
+		}
+		return null;
+	}
+
+	private void ProcessMenuEnter() {
+		switch (actualMenu) {
+		case Actions:
+			switch (dm.getHUD().getContextMenu().getIndex()) {
+			case 0:
+				if (currentChar.hasMoved()) {
+
+				} else {
+					map.LightUpPossibleMovement(currentChar.getCurrentTileX(), currentChar.getCurrentTileY(), currentChar.getMovement());
+					state = GameStatus.MoveSelection;
+				}
+				break;
+			case 1:
+				break;
+			case 2:
+				break;
+			case 3:
+				break;
+			}
+			break;
+		}
+	}
+
+	private void Move() {
+		if (map.getTile(cursorX, cursorY).isHighlightedGreen() && !isTileOccupied(cursorX, cursorY)) {
+			map.getTile(currentChar.getCurrentTileX(), currentChar.getCurrentTileY()).setHighlighted(false);
+			currentChar.setTileToGoX(cursorX);
+			currentChar.setTileToGoY(cursorY);
+			currentChar.setIsMoving(true);
+			currentChar.setHasMoved(true);
+			map.CleanLightUpZones();
+			state = GameStatus.InCharMenu;
+		}
+	}
+
+	private void manageKeyInput(actions act) {
+		if (!act.equals(actions.none)) {
+			switch (act) {
+			case VIEW_SOUTH:
+				dm.getGameBoard().RequestView(viewPoint.South);
+				break;
+
+			case VIEW_NORTH:
+				dm.getGameBoard().RequestView(viewPoint.North);
+				break;
+
+			case VIEW_EAST:
+				dm.getGameBoard().RequestView(viewPoint.East);
+				break;
+
+			case VIEW_WEST:
+				dm.getGameBoard().RequestView(viewPoint.West);
+				break;
+
+			case UP:
+				if (state == GameStatus.PlacingBeforeBattle || state == GameStatus.MoveSelection || state == GameStatus.TargetSelection || state == GameStatus.ExploringMap) {
+					goUp();
+				} else if (state == GameStatus.InCharMenu) {
+					dm.getHUD().getContextMenu().Previous();
+				}
+				break;
+
+			case DOWN:
+				if (state == GameStatus.PlacingBeforeBattle || state == GameStatus.MoveSelection || state == GameStatus.TargetSelection || state == GameStatus.ExploringMap) {
+					goDown();
+				} else if (state == GameStatus.InCharMenu) {
+					dm.getHUD().getContextMenu().Next();
+				}
+				break;
+
+			case LEFT:
+				if (state == GameStatus.PlacingBeforeBattle || state == GameStatus.MoveSelection || state == GameStatus.TargetSelection || state == GameStatus.ExploringMap) {
+					goLeft();
+				} else if (state == GameStatus.InCharMenu) {
+					dm.getHUD().getContextMenu().Previous();
+				}
+				break;
+
+			case RIGHT:
+				if (state == GameStatus.PlacingBeforeBattle || state == GameStatus.MoveSelection || state == GameStatus.TargetSelection || state == GameStatus.ExploringMap) {
+					goRigth();
+				} else if (state == GameStatus.InCharMenu) {
+					dm.getHUD().getContextMenu().Next();
+				}
+				break;
+
+			case QUIT:
+				quit = true;
+				break;
+
+			case ENTER:
+				switch (state) {
+				case PlacingBeforeBattle:
+					PlaceChar();
+					break;
+				case InCharMenu:
+					ProcessMenuEnter();
+					break;
+				case MoveSelection:
+					Move();
+					break;
+				case TargetSelection:
+					break;
+				case ExploringMap:
+					break;
+				}
+				break;
+			}
+		}
 
 	}
 
@@ -229,25 +430,21 @@ public class Game {
 			if (cursorY < map.getWidth() - 1) {
 				cursorY++;
 			}
-
 			break;
 		case West:
 			if (cursorX < map.getLength() - 1) {
 				cursorX++;
 			}
-
 			break;
 		case North:
 			if (cursorY > 0) {
 				cursorY--;
 			}
-
 			break;
 		case East:
 			if (cursorX > 0) {
 				cursorX--;
 			}
-
 			break;
 		}
 		UpdateCursor();
@@ -267,199 +464,6 @@ public class Game {
 				dm.getHUD().SetCurrentTarget(getCharOnTile(cursorX, cursorY));
 			}
 		}
-	}
-
-	public boolean GetTheCharToPlay() {
-		for (Player p : players) {
-			for (Character c : p.getChars()) {
-				if (c.isReadyToPlay()) {
-					cursorX = c.getCurrentTileX();
-					cursorY = c.getCurrentTileY();
-					currentPlayer = p;
-					currentChar = c;
-					this.dm.getHUD().SetCurrentChar(currentChar);
-					c.setReadyToPlay(false);
-					UpdateCursor();
-					return true;
-				}
-			}
-		}
-		return false;
-	}
-
-	private void HourglassTick() {
-		for (Player p : players) {
-			for (Character c : p.getChars()) {
-				c.HourglassTick();
-			}
-		}
-	}
-
-	public long getTime() {
-		return (Sys.getTime() * 1000) / timerTicksPerSecond;
-	}
-
-	public void run() {
-		initPlacingBeforeBattle();
-		actions act;
-		while (!dm.isRequestClose() && !quit) {
-			act = im.getInputs();
-			if (!dm.getGameBoard().isBusy() && !currentChar.IsMoving()) {
-				manageKeyInput(act);
-
-			} else {
-				act = actions.none;
-			}
-			UpdateLogic();
-			dm.Render();
-		}
-		dm.Clean();
-	}
-
-	private void PlaceChar() {
-		if (map.getTile(cursorX, cursorY).getDeploymentZone() == this.indexPlayer + 1) {
-			if (!isTileOccupied(cursorX, cursorY)) {
-				currentChar.setCurrentTileX(cursorX);
-				currentChar.setCurrentTileY(cursorY);
-				currentChar.setHeight(map.getTile(cursorX, cursorY).getHeight());
-				charPlaced = true;
-				currentChar.setPlaced(true);
-				dm.getGameBoard().getCharsToDRaw().add(players[this.indexPlayer].getChars()[indexChar]);
-			}
-		}
-	}
-
-	private boolean isTileOccupied(int X, int Y) {
-		for (Player p : players) {
-			for (Character c : p.getChars()) {
-				if (c.getCurrentTileX() == X && c.getCurrentTileY() == Y) {
-					return true;
-				}
-			}
-		}
-		return false;
-	}
-
-	private Character getCharOnTile(int X, int Y) {
-		for (Player p : players) {
-			for (Character c : p.getChars()) {
-				if (c.getCurrentTileX() == X && c.getCurrentTileY() == Y) {
-					return c;
-				}
-			}
-		}
-		return null;
-	}
-
-	private void ProcessMenuEnter() {
-		switch (actualMenu) {
-		case Actions:
-			switch (dm.getHUD().getContextMenu().getIndex()) {
-			case 0:
-				if (currentChar.hasMoved()) {
-
-				} else {
-					map.LightUpPossibleMovement(currentChar.getCurrentTileX(), currentChar.getCurrentTileY(), currentChar.getMovement());
-					state = GameStatus.MoveSelection;
-				}
-				break;
-			case 1:
-				break;
-			case 2:
-				break;
-			case 3:
-				break;
-			}
-			break;
-		}
-	}
-
-	private void Move() {
-		if (map.getTile(cursorX, cursorY).isHighlightedGreen() && !isTileOccupied(cursorX, cursorY)) {
-			map.getTile(currentChar.getCurrentTileX(), currentChar.getCurrentTileY()).setHighlighted(false);
-			currentChar.setTileToGoX(cursorX);
-			currentChar.setTileToGoY(cursorY);
-			currentChar.setIsMoving(true);
-			map.CleanLightUpZones();
-			state = GameStatus.InCharMenu;
-		}
-	}
-
-	private void manageKeyInput(actions act) {
-		if (!act.equals(actions.none)) {
-			switch (act) {
-			case VIEW_SOUTH:
-				dm.getGameBoard().RequestView(viewPoint.South);
-				break;
-				
-			case VIEW_NORTH:
-				dm.getGameBoard().RequestView(viewPoint.North);
-				break;
-				
-			case VIEW_EAST:
-				dm.getGameBoard().RequestView(viewPoint.East);
-				break;
-				
-			case VIEW_WEST:
-				dm.getGameBoard().RequestView(viewPoint.West);
-				break;
-				
-			case UP:
-				if (state == GameStatus.PlacingBeforeBattle || state == GameStatus.MoveSelection || state == GameStatus.TargetSelection || state == GameStatus.ExploringMap) {
-					goUp();
-				} else if (state == GameStatus.InCharMenu) {
-					dm.getHUD().getContextMenu().Previous();
-				}
-				break;
-				
-			case DOWN:
-				if (state == GameStatus.PlacingBeforeBattle || state == GameStatus.MoveSelection || state == GameStatus.TargetSelection || state == GameStatus.ExploringMap) {
-					goDown();
-				} else if (state == GameStatus.InCharMenu) {
-					dm.getHUD().getContextMenu().Next();
-				}
-				break;
-				
-			case LEFT:
-				if (state == GameStatus.PlacingBeforeBattle || state == GameStatus.MoveSelection || state == GameStatus.TargetSelection || state == GameStatus.ExploringMap) {
-					goLeft();
-				} else if (state == GameStatus.InCharMenu) {
-					dm.getHUD().getContextMenu().Previous();
-				}
-				break;
-				
-			case RIGHT:
-				if (state == GameStatus.PlacingBeforeBattle || state == GameStatus.MoveSelection || state == GameStatus.TargetSelection || state == GameStatus.ExploringMap) {
-					goRigth();
-				} else if (state == GameStatus.InCharMenu) {
-					dm.getHUD().getContextMenu().Next();
-				}
-				break;
-				
-			case QUIT:
-				quit = true;
-				break;
-
-			case ENTER:
-				switch (state) {
-				case PlacingBeforeBattle:
-					PlaceChar();
-					break;
-				case InCharMenu:
-					ProcessMenuEnter();
-					break;
-				case MoveSelection:
-					Move();
-					break;
-				case TargetSelection:
-					break;
-				case ExploringMap:
-					break;
-				}
-				break;
-			}
-		}
-
 	}
 
 	public static void main(String[] argv) {

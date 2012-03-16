@@ -9,12 +9,14 @@ public class ContextMenu {
 	private float Xdep;
 	private float Ydep;
 	private UnicodeFont font;
-
+	private boolean show;
 	private boolean[] enable;
 
 	public ContextMenu() {
 		this.options = null;
+		this.enable = null;
 		this.index = 0;
+		this.show = true;
 	}
 
 	public void Init(UnicodeFont font) {
@@ -22,7 +24,7 @@ public class ContextMenu {
 	}
 
 	public void Render() {
-		if (options != null) {
+		if (show && options != null) {
 			int i = 0;
 			for (String s : options) {
 				if (i == index) {
@@ -40,12 +42,18 @@ public class ContextMenu {
 		if (index >= options.length) {
 			index = 0;
 		}
+		if (!enable[index]) {
+			Next();
+		}
 	}
 
 	public void Previous() {
 		index--;
 		if (index < 0) {
 			index = options.length - 1;
+		}
+		if (!enable[index]) {
+			Previous();
 		}
 	}
 
@@ -60,6 +68,17 @@ public class ContextMenu {
 	public void setMenu(String[] options) {
 		this.options = options;
 		this.index = 0;
+		this.enable = new boolean[options.length];
+		for (int i = 0; i < enable.length; i++) {
+			enable[i] = true;
+		}
+	}
+
+	public void DisableOption(int i) {
+		enable[i] = false;
+		if (index == i) {
+			Next();
+		}
 	}
 
 	public void Clear() {
@@ -69,5 +88,9 @@ public class ContextMenu {
 
 	public int getIndex() {
 		return this.index;
+	}
+
+	public void setShow(boolean show) {
+		this.show = show;
 	}
 }
