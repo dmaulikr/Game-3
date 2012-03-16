@@ -77,23 +77,30 @@ public class Map {
 	}
 
 	public void LightUpPossibleMovement(int X, int Y, int movement) {
+
 		for (int i = 0; i < length; i++) {
 			for (int j = 0; j < width; j++) {
+				int zEcart;
+				if (getTile(i, j).getHeight() > getTile(X, Y).getHeight()) {
+					zEcart = getTile(i, j).getHeight() - getTile(X, Y).getHeight();
+				} else {
+					zEcart = getTile(X, Y).getHeight() - getTile(i, j).getHeight();
+				}
 				if (i >= (X - movement) && i <= (X + movement)) {
 					if (i < X) {
-						if (j >= ((Y - movement) + (X - i)) && j <= ((Y + movement) - (X - i))) {
+						if (j > ((Y - movement) + (X - i) + zEcart) && j < ((Y + movement) - (X - i) - zEcart)) {
 							getTile(i, j).setHighlightedGreen(true);
 						} else {
 							getTile(i, j).setHighlightedGreen(false);
 						}
 					} else if (i > X) {
-						if (j >= ((Y - movement) + (i - X)) && j <= ((Y + movement) - (i - X))) {
+						if (j > ((Y - movement) + (i - X) + zEcart) && j < ((Y + movement) - (i - X) - zEcart)) {
 							getTile(i, j).setHighlightedGreen(true);
 						} else {
 							getTile(i, j).setHighlightedGreen(false);
 						}
 					} else {
-						if (j >= (Y - movement) && j <= (Y + movement)) {
+						if (j >= (Y - movement)+ zEcart && j <= (Y + movement)- zEcart) {
 							getTile(i, j).setHighlightedGreen(true);
 						} else {
 							getTile(i, j).setHighlightedGreen(false);
@@ -103,6 +110,7 @@ public class Map {
 				}
 			}
 		}
+
 	}
 
 	public ArrayList<textureType> getAllTextureTypes() {

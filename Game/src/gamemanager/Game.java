@@ -126,6 +126,7 @@ public class Game {
 			}
 			break;
 		case InCharMenu:
+			dm.getHUD().getContextMenu().setShow(true);
 			if (currentChar.hasMoved()) {
 				dm.getHUD().getContextMenu().DisableOption(0);
 			}
@@ -245,12 +246,16 @@ public class Game {
 					map.LightUpPossibleMovement(currentChar.getCurrentTileX(), currentChar.getCurrentTileY(), currentChar.getMovement());
 					state = GameStatus.MoveSelection;
 				}
+				dm.getHUD().getContextMenu().setShow(false);
 				break;
 			case 1:
 				break;
 			case 2:
 				break;
 			case 3:
+				currentChar.TurnIsOver();
+				state = GameStatus.Pending;
+				dm.getHUD().getContextMenu().setShow(false);
 				break;
 			}
 			break;
@@ -500,6 +505,8 @@ public class Game {
 		map.getTile(2, 3).setDeploymentZone(2);
 		map.getTile(2, 3).setHeight(7);
 
+		map.getTile(3, 1).setHeight(2);
+		map.getTile(3, 2).setHeight(1);
 		Game g = new Game(1024, 768, map, 2);
 		g.setPlayer(0, p1);
 		g.setPlayer(1, p2);
