@@ -216,9 +216,9 @@ public class TileEditionPan extends JPanel {
 
 		this.sliderHeight.setTheValueTo(tile.getHeight());
 
-		this.textureCombo.setSelectedItem(tile.getTexture().toString());
-		this.typeCombo.setSelectedItem(tile.getType().toString());
-		this.decorationCombo.setSelectedItem(tile.getDecoration().toString());
+		this.textureCombo.setSelectedItem(tile.getTexture());
+		this.typeCombo.setSelectedItem(tile.getType());
+		this.decorationCombo.setSelectedItem(tile.getDecoration());
 		this.deployementZoneNumTextField.setText(String.valueOf(tile.getDeploymentZone()));
 		ActivateActions();
 
@@ -296,19 +296,32 @@ public class TileEditionPan extends JPanel {
 					break;
 
 				case 'q':
-					textureCombo.setSelectedItem(Tile.textureType.Grass.toString());
+					textureCombo.setSelectedItem(Tile.textureType.Grass);
 					SaveTile();
 					break;
 				case 's':
-					textureCombo.setSelectedItem(Tile.textureType.Earth.toString());
+					textureCombo.setSelectedItem(Tile.textureType.Earth);
 					SaveTile();
 					break;
 				case 'd':
-					textureCombo.setSelectedItem(Tile.textureType.Sand.toString());
+					textureCombo.setSelectedItem(Tile.textureType.Sand);
 					SaveTile();
 					break;
 				case 'f':
-					textureCombo.setSelectedItem(Tile.textureType.Stone.toString());
+					textureCombo.setSelectedItem(Tile.textureType.Stone);
+					SaveTile();
+					break;
+
+				case 'w':
+					if (sliderHeight.slide.getValue() > 0) {
+						sliderHeight.slide.setValue(sliderHeight.slide.getValue() - 1);
+					}
+					SaveTile();
+					break;
+				case 'x':
+					if (sliderHeight.slide.getValue() < 25) {
+						sliderHeight.slide.setValue(sliderHeight.slide.getValue() + 1);
+					}
 					SaveTile();
 					break;
 
