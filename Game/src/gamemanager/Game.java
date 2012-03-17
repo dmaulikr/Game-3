@@ -70,6 +70,9 @@ public class Game {
 		this.players = new Player[this.nbPlayers];
 		this.currentPlayer = null;
 		lastLoopTime = getTime();
+		if (nbPlayers == 0) {
+			this.state = GameStatus.ExploringMap;
+		}
 	}
 
 	private void UpdateLogic() {
@@ -183,7 +186,9 @@ public class Game {
 	}
 
 	public void run() {
-		initPlacingBeforeBattle();
+		if (this.nbPlayers != 0) {
+			initPlacingBeforeBattle();
+		}
 		actions act;
 		while (!dm.isRequestClose() && !quit) {
 
@@ -274,11 +279,16 @@ public class Game {
 				} else {
 					zEcart = map.getTile(X, Y).getHeight() - map.getTile(X + 1, Y).getHeight();
 				}
-				if (zEcart <= 2) {
+				if (zEcart >= 2) {
 					if (!isTileOccupied(X + 1, Y)) {
 						map.getTile(X + 1, Y).setHighlightedGreen(true);
 					}
 					LightUpPossibleMovementR(X + 1, Y, movement - (zEcart + 1));
+				} else if (zEcart < 2) {
+					if (!isTileOccupied(X + 1, Y)) {
+						map.getTile(X + 1, Y).setHighlightedGreen(true);
+					}
+					LightUpPossibleMovementR(X + 1, Y, movement - 1);
 				}
 			}
 			if (X > 0) {
@@ -287,11 +297,16 @@ public class Game {
 				} else {
 					zEcart = map.getTile(X, Y).getHeight() - map.getTile(X - 1, Y).getHeight();
 				}
-				if (zEcart <= 2) {
+				if (zEcart >= 2) {
 					if (!isTileOccupied(X - 1, Y)) {
 						map.getTile(X - 1, Y).setHighlightedGreen(true);
 					}
 					LightUpPossibleMovementR(X - 1, Y, movement - (zEcart + 1));
+				} else if (zEcart < 2) {
+					if (!isTileOccupied(X - 1, Y)) {
+						map.getTile(X - 1, Y).setHighlightedGreen(true);
+					}
+					LightUpPossibleMovementR(X - 1, Y, movement - 1);
 				}
 			}
 			if (Y + 1 < map.getWidth()) {
@@ -300,30 +315,40 @@ public class Game {
 				} else {
 					zEcart = map.getTile(X, Y).getHeight() - map.getTile(X, Y + 1).getHeight();
 				}
-				if (zEcart <= 2) {
+				if (zEcart >= 2) {
 					if (!isTileOccupied(X, Y + 1)) {
-						map.getTile(X, Y).setHighlightedGreen(true);
+						map.getTile(X, Y + 1).setHighlightedGreen(true);
 					}
 					LightUpPossibleMovementR(X, Y + 1, movement - (zEcart + 1));
+				} else if (zEcart < 2) {
+					if (!isTileOccupied(X, Y + 1)) {
+						map.getTile(X, Y + 1).setHighlightedGreen(true);
+					}
+					LightUpPossibleMovementR(X, Y + 1, movement - 1);
 				}
 			}
-			if (Y - 1 > 0) {
+			if (Y > 0) {
 				if (map.getTile(X, Y - 1).getHeight() > map.getTile(X, Y).getHeight()) {
 					zEcart = map.getTile(X, Y - 1).getHeight() - map.getTile(X, Y).getHeight();
 				} else {
 					zEcart = map.getTile(X, Y).getHeight() - map.getTile(X, Y - 1).getHeight();
 				}
-				if (zEcart <= 2) {
+				if (zEcart >= 2) {
 					if (!isTileOccupied(X, Y - 1)) {
 						map.getTile(X, Y - 1).setHighlightedGreen(true);
 					}
 					LightUpPossibleMovementR(X, Y - 1, movement - (zEcart + 1));
+				} else if (zEcart < 2) {
+					if (!isTileOccupied(X, Y - 1)) {
+						map.getTile(X, Y - 1).setHighlightedGreen(true);
+					}
+					LightUpPossibleMovementR(X, Y - 1, movement - 1);
 				}
 			}
 
 		}
 	}
-	
+
 	public void LightUpPossibleAttackR(int X, int Y, int range) {
 		if (range <= 0) {
 			return;
